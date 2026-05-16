@@ -125,6 +125,7 @@ export default function AdminCourseForm() {
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Category</label>
                 <select className="input" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
+                  <option value="chip-level">Chip level</option>
                   <option value="laptop-chip-level">Laptop Chip-Level</option>
                   <option value="mobile-chip-level">Mobile Chip-Level</option>
                   <option value="hardware">Hardware</option>

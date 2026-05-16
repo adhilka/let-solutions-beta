@@ -46,7 +46,7 @@ export default function AdminPostsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] overflow-hidden">
+      <div className="hidden md:block bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead className="bg-[var(--color-surface-alt)] border-b border-[var(--color-border)]">
@@ -95,6 +95,45 @@ export default function AdminPostsPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="md:hidden space-y-4">
+        {isLoading ? (
+          <div className="py-8 text-center bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)]">Loading...</div>
+        ) : posts?.length === 0 ? (
+          <div className="py-8 text-center text-[var(--color-text-secondary)] bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)]">No posts found.</div>
+        ) : (
+          posts?.map(post => (
+            <div key={post.id} className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-4 flex flex-col gap-4">
+              <div>
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-bold text-sm line-clamp-2 pr-2">{post.title}</h3>
+                  <span className={`shrink-0 badge ${post.status === 'published' ? 'badge-green' : post.status === 'draft' ? 'badge-yellow' : 'bg-gray-200'} text-[10px]`}>
+                    {post.status}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <span className="badge badge-blue text-[10px]">{post.category}</span>
+                  <span className="text-xs text-slate-500">
+                    {post.publishedAt?.toDate?.() ? new Date(post.publishedAt.toDate()).toLocaleDateString() : 'Draft'}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 border-t pt-3">
+                <Link to={`/admin/posts/${post.id}/edit`} className="flex-1 flex justify-center py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary-600)] bg-[var(--color-primary-50)] rounded transition-colors" title="Edit">
+                  <Edit2 size={16} />
+                </Link>
+                <button onClick={() => toggleStatus(post)} className="flex-1 flex justify-center py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary-600)] bg-[var(--color-primary-50)] rounded transition-colors" title={post.status === 'published' ? 'Unpublish' : 'Publish'}>
+                  {post.status === 'published' ? <Eye size={16} /> : <EyeOff size={16} />}
+                </button>
+                <button onClick={() => deletePost(post)} className="flex-1 flex justify-center py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-error)] bg-[var(--color-primary-50)] rounded transition-colors" title="Delete">
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

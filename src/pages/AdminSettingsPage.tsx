@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getReadDb } from '../lib/firebase/loadBalancer';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, Timestamp } from 'firebase/firestore';
 import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 import { useQueryClient } from '@tanstack/react-query';
 import ConfirmationModal from '../components/ConfirmationModal';
@@ -135,7 +135,8 @@ export default function AdminSettingsPage() {
     { id: 'stats', label: '3. Stats' },
     { id: 'admissions', label: '4. Admissions' },
     { id: 'announcement', label: '5. Announcement' },
-    { id: 'maintenance', label: '6. Maintenance' },
+    { id: 'access', label: '6. Access Control' },
+    { id: 'maintenance', label: '7. Maintenance' },
   ];
 
   const clearCollection = async (collectionPath: string) => {
@@ -357,6 +358,43 @@ export default function AdminSettingsPage() {
                       <p className="mt-2 text-xs text-gray-500">This text will scroll horizontally at the very top of the website (marquee style).</p>
                     </div>
                   )}
+                </div>
+             )}
+
+             {activeTab === 'access' && (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-bold mb-2">Temporary Admin Links</h3>
+                    <p className="text-sm text-slate-500 mb-6">Generate a 24-hour secure link to grant temporary admin access to another user. They will not need a username or password, but their access will expire automatically.</p>
+                    
+                    <button 
+                      onClick={async () => {
+                        const linkId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                        const expiresAt = new Date();
+                        expiresAt.setHours(expiresAt.getHours() + 24);
+                        
+                        await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'admin_links', linkId], {
+                          createdAt: Timestamp.now(),
+                          expiresAt: Timestamp.fromDate(expiresAt)
+                        });
+                        // Since I don't want to hassle with dualWrite parsing, I will write the URL to the screen
+                        const url = `${window.location.origin}/admin?adminToken=${linkId}`;
+                        
+                        setModalConfig({
+                          isOpen: true,
+                          title: 'Link Generated successfully',
+                          message: `Share this link securely:\n\n${url}\n\nThis link will expire in 24 hours.`,
+                          confirmVariant: 'success',
+                          confirmText: 'Done',
+                          mode: 'status',
+                          onConfirm: () => {}
+                        });
+                      }}
+                      className="btn-primary"
+                    >
+                      Generate New Link (24 Hours)
+                    </button>
+                  </div>
                 </div>
              )}
 

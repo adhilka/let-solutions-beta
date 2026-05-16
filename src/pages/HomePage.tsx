@@ -168,7 +168,10 @@ export default function HomePage() {
             </p>
             
             <div className={`flex flex-col sm:flex-row gap-4 ${homeContent?.hero?.bgType === 'photo' ? 'justify-center w-full' : ''}`}>
-              <Link to="/courses" className={`text-center ${homeContent?.hero?.bgType === 'photo' ? `bg-blue-900/40 backdrop-blur-md border border-blue-200/30 hover:bg-blue-800/60 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl` : 'btn-secondary'}`}>
+              <Link to="/admissions" className={`text-center ${homeContent?.hero?.bgType === 'photo' ? 'bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl shadow-blue-900/50' : 'btn-primary px-8 py-4 text-base'}`}>
+                Enroll Now
+              </Link>
+              <Link to="/courses" className={`text-center ${homeContent?.hero?.bgType === 'photo' ? `bg-blue-900/40 backdrop-blur-md border border-blue-200/30 hover:bg-blue-800/60 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl` : 'btn-secondary px-8 py-4 text-base'}`}>
                 Browse Courses
               </Link>
             </div>

@@ -7,6 +7,7 @@ export interface StoredImage {
 }
 
 export type CourseCategory =
+  | 'chip-level'
   | 'laptop-chip-level'
   | 'mobile-chip-level'
   | 'hardware'

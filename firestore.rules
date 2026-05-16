@@ -3,12 +3,36 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
       return request.auth != null && 
+             request.auth.token != null &&
              request.auth.token.email == 'muhammedadhil856@gmail.com' && 
              request.auth.token.email_verified == true;
     }
 
+    function isSharedAdmin() {
+      return request.auth != null && 
+             exists(/databases/$(database)/documents/artifacts/tech-institute/public/data/admin_sessions/$(request.auth.uid)) &&
+             exists(/databases/$(database)/documents/artifacts/tech-institute/public/data/admin_links/$(get(/databases/$(database)/documents/artifacts/tech-institute/public/data/admin_sessions/$(request.auth.uid)).data.linkId)) &&
+             get(/databases/$(database)/documents/artifacts/tech-institute/public/data/admin_links/$(get(/databases/$(database)/documents/artifacts/tech-institute/public/data/admin_sessions/$(request.auth.uid)).data.linkId)).data.expiresAt > request.time;
+    }
+
+    function hasAdminAccess() {
+      return isAdmin() || isSharedAdmin();
+    }
+
     // Default deny
     match /{document=**} {
+      allow read: if true;
+      allow write: if hasAdminAccess();
+    }
+
+    match /artifacts/tech-institute/public/data/admin_sessions/{uid} {
+      allow create: if request.auth != null && request.auth.uid == uid &&
+                    exists(/databases/$(database)/documents/artifacts/tech-institute/public/data/admin_links/$(request.resource.data.linkId)) &&
+                    get(/databases/$(database)/documents/artifacts/tech-institute/public/data/admin_links/$(request.resource.data.linkId)).data.expiresAt > request.time;
+      allow read: if request.auth != null && request.auth.uid == uid || hasAdminAccess();
+    }
+
+    match /artifacts/tech-institute/public/data/admin_links/{linkId} {
       allow read: if true;
       allow write: if isAdmin();
     }

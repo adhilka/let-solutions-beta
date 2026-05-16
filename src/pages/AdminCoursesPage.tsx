@@ -92,7 +92,7 @@ export default function AdminCoursesPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] overflow-hidden">
+      <div className="hidden md:block bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] overflow-hidden">
         <div className="overflow-x-auto">
           {/* ... table content remains same ... */}
           <table className="w-full text-left border-collapse min-w-[800px]">
@@ -113,7 +113,7 @@ export default function AdminCoursesPage() {
               ) : (
                 courses?.map(course => (
                   <tr key={course.id} className="hover:bg-[var(--color-primary-50)] transition-colors">
-                    <td className="py-4 px-6 font-medium max-w-[200px]">
+                    <td className="py-4 px-6 font-medium max-w-[250px]">
                       <div className="flex items-center gap-3">
                         {course.imageUrl && <img src={course.imageUrl} className="w-10 h-10 object-cover rounded border" alt="" />}
                         <span className="truncate">{course.title}</span>
@@ -148,6 +148,50 @@ export default function AdminCoursesPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="md:hidden space-y-4">
+        {isLoading ? (
+          <div className="py-8 text-center bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)]">Loading...</div>
+        ) : courses?.length === 0 ? (
+          <div className="py-8 text-center text-[var(--color-text-secondary)] bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)]">No courses found.</div>
+        ) : (
+          courses?.map(course => (
+            <div key={course.id} className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-4 flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                {course.imageUrl ? (
+                  <img src={course.imageUrl} className="w-12 h-12 object-cover rounded border" alt="" />
+                ) : (
+                  <div className="w-12 h-12 bg-gray-100 rounded border border-gray-200"></div>
+                )}
+                <div>
+                  <h3 className="font-bold text-sm line-clamp-1">{course.title}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`badge ${course.isActive ? 'badge-green' : 'badge-yellow'} text-[10px]`}>
+                      {course.isActive ? 'Active' : 'Draft'}
+                    </span>
+                    <span className="text-xs font-bold text-[var(--color-primary-700)]">₹{course.price}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 border-t pt-3">
+                <Link to={`/admin/courses/${course.id}/edit`} className="flex-1 flex justify-center py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary-600)] bg-[var(--color-primary-50)] rounded transition-colors" title="Edit">
+                  <Edit2 size={16} />
+                </Link>
+                <button onClick={() => toggleStatus(course)} className="flex-1 flex justify-center py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary-600)] bg-[var(--color-primary-50)] rounded transition-colors" title={course.isActive ? 'Make Draft' : 'Publish'}>
+                  {course.isActive ? <Eye size={16} /> : <EyeOff size={16} />}
+                </button>
+                <button onClick={() => togglePinned(course)} className={`flex-1 flex justify-center py-2 rounded transition-colors ${course.isPinned ? 'text-yellow-500 bg-yellow-50 hover:bg-yellow-100' : 'text-[var(--color-text-secondary)] bg-[var(--color-primary-50)] hover:text-yellow-500'}`} title="Toggle Pin">
+                  <Star size={16} fill={course.isPinned ? "currentColor" : "none"} />
+                </button>
+                <button onClick={() => deleteCourse(course)} className="flex-1 flex justify-center py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-error)] bg-[var(--color-primary-50)] rounded transition-colors" title="Delete">
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
       
       <ConfirmationModal 
