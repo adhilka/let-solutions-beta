@@ -4,7 +4,7 @@ import { getOptionalDbB } from './projectB';
 
 type ProjectKey = 'A' | 'B';
 
-let lastUsed: ProjectKey = 'A';
+export let lastUsed: ProjectKey = 'A';
 let failedProject: ProjectKey | null = null;
 let failedAt: number | null = null;
 

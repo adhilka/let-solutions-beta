@@ -1,6 +1,8 @@
 {
-  "name": "Remix: Remix: Untitled",
-  "description": "",
+  "name": "Let Solutions Technical Institute",
+  "description": "Technical training institute management system for chip-level engineering, networking, and student admissions.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
