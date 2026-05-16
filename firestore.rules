@@ -1,12 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isSignedIn() {
-      return request.auth != null;
-    }
-    
     function isAdmin() {
-      return isSignedIn() && 
+      return request.auth != null && 
              request.auth.token.email == 'muhammedadhil856@gmail.com' && 
              request.auth.token.email_verified == true;
     }
@@ -20,29 +16,10 @@ service cloud.firestore {
     // Specific collections that allow public submissions
     match /artifacts/tech-institute/public/data/enquiries/{enquiryId} {
       allow create: if true;
-      allow read, update, delete: if isAdmin();
     }
 
     match /artifacts/tech-institute/public/data/testimonials/{testimonialId} {
       allow create: if true;
-      allow read: if true; // Public can see approved ones
-      allow update, delete: if isAdmin();
-    }
-    
-    // Admin settings and other structural data should be writeable only by admin
-    match /artifacts/tech-institute/public/data/settings/{settingId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    match /artifacts/tech-institute/public/data/courses/{courseId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    match /artifacts/tech-institute/public/data/posts/{postId} {
-      allow read: if true;
-      allow write: if isAdmin();
     }
   }
 }
