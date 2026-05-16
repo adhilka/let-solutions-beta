@@ -26,6 +26,9 @@ import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminOffersPage from './pages/AdminOffersPage';
 import AdminAboutPage from './pages/AdminAboutPage';
 import AdminHomeSettings from './pages/AdminHomeSettings';
+import LoginPage from './pages/LoginPage';
+import AdminRoute from './components/AdminRoute';
+import { AuthProvider } from './hooks/useAuth';
 
 const queryClient = new QueryClient();
 
@@ -33,40 +36,45 @@ export default function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="courses" element={<CoursesPage />} />
-              <Route path="courses/:slug" element={<CourseDetailPage />} />
-              <Route path="about" element={<AboutPage />} />
-              <Route path="contact" element={<ContactPage />} />
-              <Route path="admissions" element={<AdmissionsPage />} />
-              <Route path="blog" element={<BlogListPage />} />
-              <Route path="blog/:slug" element={<BlogDetailPage />} />
-              <Route path="feedbacks" element={<TestimonialsPage />} />
-              {/* Other public routes will go here */}
-            </Route>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="courses" element={<CoursesPage />} />
+                <Route path="courses/:slug" element={<CourseDetailPage />} />
+                <Route path="about" element={<AboutPage />} />
+                <Route path="contact" element={<ContactPage />} />
+                <Route path="admissions" element={<AdmissionsPage />} />
+                <Route path="blog" element={<BlogListPage />} />
+                <Route path="blog/:slug" element={<BlogDetailPage />} />
+                <Route path="feedbacks" element={<TestimonialsPage />} />
+              </Route>
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="courses" element={<AdminCoursesPage />} />
-              <Route path="courses/new" element={<AdminCourseForm />} />
-              <Route path="courses/:id/edit" element={<AdminCourseForm />} />
-              <Route path="enquiries" element={<AdminEnquiriesPage />} />
-              <Route path="posts" element={<AdminPostsPage />} />
-              <Route path="posts/new" element={<AdminPostEditor />} />
-              <Route path="posts/:id/edit" element={<AdminPostEditor />} />
-              <Route path="testimonials" element={<AdminTestimonialsPage />} />
-              <Route path="about" element={<AdminAboutPage />} />
-              <Route path="home" element={<AdminHomeSettings />} />
-              <Route path="offers" element={<AdminOffersPage />} />
-              <Route path="settings" element={<AdminSettingsPage />} />
-              {/* other admin routes */}
-            </Route>
-          </Routes>
-        </BrowserRouter>
+              {/* Admin Login Route */}
+              <Route path="/admin/login" element={<LoginPage />} />
+
+              {/* Protected Admin Routes */}
+              <Route path="/admin" element={<AdminRoute />}>
+                <Route element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="courses" element={<AdminCoursesPage />} />
+                  <Route path="courses/new" element={<AdminCourseForm />} />
+                  <Route path="courses/:id/edit" element={<AdminCourseForm />} />
+                  <Route path="enquiries" element={<AdminEnquiriesPage />} />
+                  <Route path="posts" element={<AdminPostsPage />} />
+                  <Route path="posts/new" element={<AdminPostEditor />} />
+                  <Route path="posts/:id/edit" element={<AdminPostEditor />} />
+                  <Route path="testimonials" element={<AdminTestimonialsPage />} />
+                  <Route path="about" element={<AdminAboutPage />} />
+                  <Route path="home" element={<AdminHomeSettings />} />
+                  <Route path="offers" element={<AdminOffersPage />} />
+                  <Route path="settings" element={<AdminSettingsPage />} />
+                </Route>
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );
