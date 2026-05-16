@@ -1,32 +1,34 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useGlobalSettings } from '../../hooks/useGlobalSettings';
 
 export default function AnnouncementBar() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const { settings } = useGlobalSettings();
   
-  // Note: in a real implementation this would fetch from settings/navbar
-  const announcementText = "🎉 New Batches for Master Diploma in Chip-Level Engineering Starting Soon!";
-  const hashKey = "announcement-new-batches-chip-level";
+  const announcementEnabled = settings?.announcement?.enabled ?? true;
+  const announcementText = settings?.announcement?.text || "🎉 New Batches for Master Diploma in Chip-Level Engineering Starting Soon!";
+  const hashKey = `announcement-${btoa(encodeURIComponent(announcementText)).slice(0, 15)}`;
 
   useEffect(() => {
     if (localStorage.getItem(hashKey)) {
-      setIsVisible(false);
+      setIsDismissed(true);
     }
   }, [hashKey]);
 
-  if (!isVisible) return null;
+  if (!announcementEnabled || isDismissed) return null;
 
   return (
-    <div className="bg-[var(--color-primary-600)] text-white text-xs font-medium py-2 px-4 relative">
-      <div className="max-w-[var(--container-xl)] mx-auto flex items-center justify-center">
-        <span className="text-center truncate pr-6">{announcementText}</span>
+    <div className="bg-[var(--color-primary-600)] text-white text-xs font-medium py-2 px-4 relative flex items-center overflow-hidden h-9">
+      <div className="w-full flex items-center justify-center pointer-events-none">
+        <span className="animate-marquee">{announcementText}</span>
       </div>
       <button 
         onClick={() => {
           localStorage.setItem(hashKey, 'dismissed');
-          setIsVisible(false);
+          setIsDismissed(true);
         }}
-        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 opacity-80 hover:opacity-100"
+        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-[var(--color-primary-600)] text-white opacity-80 hover:opacity-100 z-10 rounded-full"
         aria-label="Dismiss announcement"
       >
         <X size={14} />

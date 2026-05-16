@@ -118,7 +118,7 @@ export default function AdminSettingsPage() {
     }
   };
 
-  const updateSetting = (category: string, key: string, value: string) => {
+  const updateSetting = (category: string, key: string, value: any) => {
     setSettings((prev: any) => ({
       ...prev,
       [category]: {
@@ -133,7 +133,8 @@ export default function AdminSettingsPage() {
     { id: 'contact', label: '2. Contact' },
     { id: 'stats', label: '3. Stats' },
     { id: 'admissions', label: '4. Admissions' },
-    { id: 'maintenance', label: '5. Maintenance' },
+    { id: 'announcement', label: '5. Announcement' },
+    { id: 'maintenance', label: '6. Maintenance' },
   ];
 
   const clearCollection = async (collectionPath: string) => {
@@ -323,6 +324,36 @@ export default function AdminSettingsPage() {
                         value={settings.admissions?.manualText || ''} 
                         onChange={e => updateSetting('admissions', 'manualText', e.target.value)} 
                       />
+                    </div>
+                  )}
+                </div>
+             )}
+
+             {activeTab === 'announcement' && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="flex items-center gap-2 cursor-pointer mb-6">
+                      <input 
+                        type="checkbox"
+                        className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        checked={settings.announcement?.enabled ?? true}
+                        onChange={e => updateSetting('announcement', 'enabled', e.target.checked)}
+                      />
+                      <span className="text-sm font-medium text-slate-700">Enable Top Announcement Bar</span>
+                    </label>
+                  </div>
+                  
+                  {settings.announcement?.enabled !== false && (
+                    <div>
+                      <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Announcement Text</label>
+                      <input 
+                        type="text" 
+                        className="input" 
+                        placeholder="e.g. 🎉 New Batches Starting Soon!"
+                        value={settings.announcement?.text || ''} 
+                        onChange={e => updateSetting('announcement', 'text', e.target.value)} 
+                      />
+                      <p className="mt-2 text-xs text-gray-500">This text will scroll horizontally at the very top of the website (marquee style).</p>
                     </div>
                   )}
                 </div>

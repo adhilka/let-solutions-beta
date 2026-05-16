@@ -106,6 +106,17 @@
 }
 
 @layer utilities {
+  .animate-marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+  }
+  
+  @keyframes marquee {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
   .container-tight {
     max-width: var(--container-md);
     margin-left: auto;

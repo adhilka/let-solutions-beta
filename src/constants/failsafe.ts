@@ -20,6 +20,10 @@ export const FAILSAFE_SETTINGS = {
   admissions: {
     mode: 'auto',
     manualText: 'Admission Open 2024-25'
+  },
+  announcement: {
+    enabled: true,
+    text: '🎉 New Batches for Master Diploma in Chip-Level Engineering Starting Soon!'
   }
 };
 
