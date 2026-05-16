@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { dualWrite } from '../lib/firebase/dualWrite';
+import TipTapEditor from '../components/TipTapEditor';
 
 export default function AdminPostEditor() {
   const { id } = useParams();
@@ -70,12 +71,9 @@ export default function AdminPostEditor() {
              
              <div className="mt-6">
                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Content</label>
-               <textarea 
-                 className="input w-full min-h-[400px]" 
-                 placeholder="Write your post content here..." 
-                 value={formData.content} 
-                 onChange={e => setFormData({ ...formData, content: e.target.value })}
-                 required
+               <TipTapEditor 
+                 content={formData.content} 
+                 onChange={content => setFormData({ ...formData, content })}
                />
              </div>
            </form>

@@ -2,7 +2,6 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPostBySlug, fetchLatestPosts } from '../lib/api';
 import { ChevronRight, Calendar, User, ArrowLeft, Loader2 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
 import SEO from '../components/SEO';
 
 export default function BlogDetailPage() {
@@ -99,9 +98,10 @@ export default function BlogDetailPage() {
           </div>
         )}
 
-        <div className="prose prose-slate prose-lg max-w-none">
-          <ReactMarkdown>{post.content}</ReactMarkdown>
-        </div>
+        <div 
+          className="prose prose-slate prose-lg max-w-none tiptap"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
         <footer className="mt-16 pt-8 border-t">
           <Link to="/blog" className="inline-flex items-center gap-2 text-blue-600 font-bold hover:gap-3 transition-all">

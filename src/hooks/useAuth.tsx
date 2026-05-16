@@ -83,18 +83,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('adminToken');
       
-      if (!user && token) {
-        // Sign in anonymously to assume the session
-        try {
+      try {
+        if (!user && token) {
+          // Sign in anonymously to assume the session
           const cred = await signInAnonymously(authA);
           await handleAdminToken(cred.user);
-        } catch (e) {
-          console.error(e);
+        } else if (user) {
+          await handleAdminToken(user);
+        } else {
+          setIsSharedAdmin(false);
         }
-      } else if (user) {
-        await handleAdminToken(user);
-      } else {
-        setIsSharedAdmin(false);
+      } catch (e) {
+        console.error("Error setting up session admin token:", e);
       }
       
       setLoading(false);

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
+import { AnimatePresence, motion } from 'motion/react';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -40,7 +41,7 @@ export default function Navbar() {
         isHome
           ? isScrolled 
             ? 'bg-white/80 backdrop-blur-md border-[var(--color-border)] shadow-sm' 
-            : 'bg-white/30 backdrop-blur-md border-transparent text-slate-900 shadow-none'
+            : 'bg-white/45 backdrop-blur-md border-transparent text-slate-900 shadow-none'
           : isScrolled
             ? 'bg-white/95 backdrop-blur-sm border-[var(--color-border)] shadow-sm'
             : 'bg-white border-[var(--color-border)]'
@@ -82,29 +83,37 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Drawer */}
-      {isMobileMenuOpen && (
-        <div className="absolute top-16 left-0 w-full bg-white border-b border-[var(--color-border)] shadow-lg md:hidden">
-          <nav className="flex flex-col px-4 py-4 space-y-4">
-            {navLinks.map((link) => (
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="absolute top-16 left-0 w-full bg-white border-b border-[var(--color-border)] shadow-lg md:hidden overflow-hidden"
+          >
+            <nav className="flex flex-col px-4 py-4 space-y-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="font-body font-medium text-lg text-[var(--color-text-primary)] py-2 block"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Link
-                key={link.label}
-                to={link.href}
-                className="font-body font-medium text-lg text-[var(--color-text-primary)] py-2"
+                to="/admissions"
+                className="btn-primary block text-center w-full mt-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {link.label}
+                Enroll Now
               </Link>
-            ))}
-            <Link
-              to="/admissions"
-              className="btn-primary block text-center w-full mt-4"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Enroll Now
-            </Link>
-          </nav>
-        </div>
-      )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
