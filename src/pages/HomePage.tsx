@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -144,34 +144,31 @@ export default function HomePage() {
       />
 
       {/* Hero Section */}
-      <section className={`relative ${homeContent?.hero?.bgType === 'photo' ? 'py-20 md:py-32 2xl:py-40' : 'bg-[var(--color-surface)] py-16 md:py-24 2xl:py-32'}`}>
+      <section className={`relative overflow-hidden -mt-16 ${homeContent?.hero?.bgType === 'photo' ? 'pt-[9.5rem] pb-20 md:pt-[11.5rem] md:pb-32' : 'bg-[var(--color-surface)] pt-28 pb-16 md:pt-36 md:pb-24 2xl:pt-44 2xl:pb-32'}`}>
         {homeContent?.hero?.bgType === 'photo' && (
           <div className="absolute inset-0 z-0">
              <img src={heroImage} alt="Hero Background" className="w-full h-full object-cover" />
-             <div className="absolute inset-0 bg-slate-900/75 mix-blend-multiply"></div>
+              <div className="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30"></div>
           </div>
         )}
         <div className={`relative z-10 container-wide px-4 sm:px-6 lg:px-8 ${homeContent?.hero?.bgType === 'photo' ? 'flex flex-col items-center text-center max-w-4xl mx-auto' : 'grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 2xl:gap-24 items-center'}`}>
           <div className={`space-y-8 animate-fade-up ${homeContent?.hero?.bgType === 'photo' ? 'flex flex-col items-center' : ''}`}>
-            <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-xs uppercase tracking-wide ${homeContent?.hero?.bgType === 'photo' ? 'bg-white/10 text-white backdrop-blur-md border border-white/20' : 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'}`}>
+            <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-xs uppercase tracking-wide ${homeContent?.hero?.bgType === 'photo' ? 'bg-white/20 text-white backdrop-blur-md border border-white/20 shadow-sm' : 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'}`}>
               <span className={`w-2 h-2 rounded-full animate-pulse ${homeContent?.hero?.bgType === 'photo' ? 'bg-white' : 'bg-[var(--color-primary-500)]'}`}></span>
               {admissionStatus}
             </span>
             
-            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] ${homeContent?.hero?.bgType === 'photo' ? 'text-white' : 'text-[var(--color-text-primary)]'}`}>
+            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] ${homeContent?.hero?.bgType === 'photo' ? 'text-white drop-shadow-xl' : 'text-[var(--color-text-primary)]'}`}>
               {heroTitle}
             </h1>
             
-            <p className={`text-lg leading-relaxed max-w-xl ${homeContent?.hero?.bgType === 'photo' ? 'text-slate-200' : 'text-[var(--color-text-secondary)]'}`}>
+            <p className={`text-lg leading-relaxed max-w-xl ${homeContent?.hero?.bgType === 'photo' ? 'text-slate-100 drop-shadow-lg font-medium' : 'text-[var(--color-text-secondary)]'}`}>
               {heroDescription} {heroSubtitle}
             </p>
             
             <div className={`flex flex-col sm:flex-row gap-4 ${homeContent?.hero?.bgType === 'photo' ? 'justify-center w-full' : ''}`}>
-              <Link to="/admissions" className={`btn-primary text-center ${homeContent?.hero?.bgType === 'photo' ? 'bg-blue-600 hover:bg-blue-700 text-white border-transparent' : ''}`}>
-                Enroll Now
-              </Link>
-              <Link to="/courses" className={`text-center ${homeContent?.hero?.bgType === 'photo' ? 'bg-transparent border-2 border-white/40 hover:bg-white/10 text-white rounded-md font-semibold text-sm px-6 py-3 transition-colors' : 'btn-secondary'}`}>
+              <Link to="/courses" className={`text-center ${homeContent?.hero?.bgType === 'photo' ? `bg-blue-900/40 backdrop-blur-md border border-blue-200/30 hover:bg-blue-800/60 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl` : 'btn-secondary'}`}>
                 Browse Courses
               </Link>
             </div>
@@ -180,7 +177,7 @@ export default function HomePage() {
               {heroFeatures.map((feature: string, idx: number) => (
                 <div key={idx} className={`flex items-center gap-2 ${homeContent?.hero?.bgType === 'photo' ? 'text-white' : ''}`}>
                   <CheckCircle size={18} className={homeContent?.hero?.bgType === 'photo' ? 'text-blue-400' : 'text-[var(--color-success)]'} />
-                  <span className="text-sm font-medium">{feature}</span>
+                  <span className="text-sm font-medium drop-shadow-md">{feature}</span>
                 </div>
               ))}
             </div>

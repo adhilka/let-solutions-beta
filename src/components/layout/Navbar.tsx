@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
@@ -8,6 +8,9 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { settings } = useGlobalSettings();
+  const location = useLocation();
+
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,8 +36,14 @@ export default function Navbar() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full h-16 bg-white transition-shadow duration-200 border-b border-[var(--color-border)]',
-        isScrolled ? 'shadow-sm' : ''
+        'sticky top-0 z-50 w-full h-16 transition-all duration-300 border-b',
+        isHome
+          ? isScrolled 
+            ? 'bg-white/80 backdrop-blur-md border-[var(--color-border)] shadow-sm' 
+            : 'bg-white/30 backdrop-blur-md border-transparent text-slate-900 shadow-none'
+          : isScrolled
+            ? 'bg-white/95 backdrop-blur-sm border-[var(--color-border)] shadow-sm'
+            : 'bg-white border-[var(--color-border)]'
       )}
     >
       <div className="container-wide h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
