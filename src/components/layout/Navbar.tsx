@@ -38,7 +38,7 @@ export default function Navbar() {
         isScrolled ? 'shadow-sm' : ''
       )}
     >
-      <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+      <div className="container-wide h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src={logoUrl} alt={instituteName} className="h-10 w-auto object-contain" />

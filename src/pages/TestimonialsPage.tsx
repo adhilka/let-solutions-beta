@@ -5,6 +5,7 @@ import { Quote, Star, PlayCircle, PlusCircle, XCircle } from 'lucide-react';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { dualWrite } from '../lib/firebase/dualWrite';
 import { Testimonial } from '../types';
+import { FAILSAFE_TESTIMONIALS } from '../constants/failsafe';
 
 import SEO from '../components/SEO';
 
@@ -33,7 +34,7 @@ export default function TestimonialsPage() {
       );
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Testimonial));
-      setTestimonials(data);
+      setTestimonials(data.length > 0 ? data : FAILSAFE_TESTIMONIALS as Testimonial[]);
     } catch (error) {
       console.error('Error fetching testimonials:', error);
     } finally {

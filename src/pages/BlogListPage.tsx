@@ -31,7 +31,7 @@ export default function BlogListPage() {
         </div>
       </div>
 
-      <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="container-wide px-4 sm:px-6 lg:px-8 py-16">
          {isLoading ? (
              <div className="text-center py-12 font-medium text-slate-500">Loading posts...</div>
          ) : posts && posts.length > 0 ? (

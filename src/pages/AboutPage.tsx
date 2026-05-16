@@ -22,23 +22,23 @@ export default function AboutPage() {
       />
 
       {/* Hero */}
-      <section className="bg-[var(--color-primary-900)] text-white py-20 relative overflow-hidden">
+      <section className="bg-[var(--color-primary-900)] text-white py-20 md:py-32 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M0 100 C 20 0 50 0 100 100 Z" fill="currentColor" />
            </svg>
         </div>
-        <div className="max-w-[var(--container-md)] mx-auto px-4 text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6">{about.hero.title}</h1>
-          <p className="text-xl text-[var(--color-primary-200)] leading-relaxed">
+        <div className="container-wide px-4 text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6">{about.hero.title}</h1>
+          <p className="text-xl md:text-2xl text-[var(--color-primary-200)] leading-relaxed max-w-3xl mx-auto">
             {about.hero.subtitle}
           </p>
         </div>
       </section>
 
       {/* Our Story */}
-      <section className="py-20 bg-white">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <section className="py-20 md:py-32 bg-white">
+        <div className="container-wide px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
           <div>
             <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-6">{about.story.title}</h2>
             <div className="prose text-[var(--color-text-secondary)] space-y-4 text-lg">
@@ -61,8 +61,8 @@ export default function AboutPage() {
       </section>
 
       {/* Vision & Mission */}
-      <section className="py-20 bg-[var(--color-surface)]">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section className="py-20 md:py-32 bg-[var(--color-surface)]">
+        <div className="container-wide px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           <div className="bg-white p-10 rounded-[var(--radius-2xl)] border border-[var(--color-border)] shadow-sm">
             <div className="w-16 h-16 bg-[var(--color-primary-100)] text-[var(--color-primary-600)] rounded-[var(--radius-xl)] flex items-center justify-center mb-6">
               <Target size={32} />

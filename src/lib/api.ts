@@ -117,6 +117,10 @@ export async function fetchAboutData() {
   return fetchSettings('about');
 }
 
+export async function fetchHomeContent() {
+  return fetchSettings('home');
+}
+
 export async function fetchActiveOffers() {
   try {
     return await withFailover(async (db) => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, MessageSquare, Star, Award, PenLine, Image as ImageIcon, Settings, LogOut, Menu, X, Users, Info } from 'lucide-react';
+import { LayoutDashboard, BookOpen, MessageSquare, Star, Award, PenLine, Image as ImageIcon, Settings, LogOut, Menu, X, Users, Info, Layout } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
 
@@ -20,6 +20,7 @@ export default function AdminLayout() {
 
   const navItems: NavItem[] = [
     { label: 'Dashboard', icon: LayoutDashboard, href: '/admin' },
+    { label: 'Home Page', icon: Layout, href: '/admin/home' },
     { label: 'Courses', icon: BookOpen, href: '/admin/courses' },
     { label: 'Enquiries', icon: MessageSquare, href: '/admin/enquiries' },
     { label: 'Blog Posts', icon: PenLine, href: '/admin/posts' },

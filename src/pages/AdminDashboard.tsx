@@ -120,9 +120,9 @@ export default function AdminDashboard() {
                 <Plus size={20} className="mb-2 text-blue-600" />
                 <span className="text-xs font-medium">New Course</span>
              </Link>
-             <Link to="/admin/events/new" className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
-                <FileText size={20} className="mb-2 text-purple-600" />
-                <span className="text-xs font-medium">Admission Offer</span>
+             <Link to="/admin/home" className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
+                <Layout size={20} className="mb-2 text-orange-600" />
+                <span className="text-xs font-medium">Home Content</span>
              </Link>
              <Link to="/admin/settings" className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
                 <Settings size={20} className="mb-2 text-gray-600" />

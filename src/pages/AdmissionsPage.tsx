@@ -29,7 +29,7 @@ export default function AdmissionsPage() {
       />
 
       <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+        <div className="container-wide px-4 sm:px-6 lg:px-8 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)]">
             {admissionTitle.split(' ')[0]} <span className="text-[var(--color-primary-600)]">{admissionTitle.split(' ').slice(1).join(' ')}</span>
           </h1>

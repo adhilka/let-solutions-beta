@@ -29,7 +29,7 @@ export default function CoursesPage() {
       />
 
       <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-wide px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)]">
             Our <span className="text-[var(--color-primary-600)]">Courses</span>
           </h1>
@@ -39,7 +39,7 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="container-wide px-4 sm:px-6 lg:px-8 py-12">
         {/* Content */}
         {error ? (
            <div className="text-center py-12">

@@ -26,20 +26,20 @@ export const FAILSAFE_SETTINGS = {
 export const FAILSAFE_TESTIMONIALS = [
   {
     id: 'failsafe-t1',
-    name: 'Muhammed Rishad',
-    course: 'MDCE Student',
+    name: 'Muhammad Adhil',
+    course: 'Student',
     rating: 5,
-    content: 'The chip-level engineering course at Let Solutions changed my career. The practical labs are excellent and the instructors are very helpful.',
+    content: 'Good faculties',
     imageUrl: '',
     approved: true,
     isFeatured: true
   },
   {
     id: 'failsafe-t2',
-    name: 'Anjali Nair',
-    course: 'Cybersecurity Batch',
+    name: 'Muhammed Rishad',
+    course: 'MDCE Student',
     rating: 5,
-    content: 'Very detailed training on ethical hacking. I got placed in a reputed firm right after completing the course.',
+    content: 'The chip-level engineering course at Let Solutions changed my career. The practical labs are excellent and the instructors are very helpful.',
     imageUrl: '',
     approved: true,
     isFeatured: true

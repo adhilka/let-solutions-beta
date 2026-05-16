@@ -1,11 +1,22 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Loader2 } from 'lucide-react';
 import { dualWrite } from '../lib/firebase/dualWrite';
+import { useQuery } from '@tanstack/react-query';
+import { fetchActiveCourses } from '../lib/api';
+import { FAILSAFE_COURSES } from '../constants/courses';
 
 import SEO from '../components/SEO';
 
 export default function ContactPage() {
+  const { data: coursesDataRaw, isLoading: isCoursesLoading } = useQuery({
+    queryKey: ['active-courses-dropdown'],
+    queryFn: fetchActiveCourses,
+    initialData: FAILSAFE_COURSES
+  });
+
+  const courses = (coursesDataRaw && coursesDataRaw.length > 0) ? coursesDataRaw : FAILSAFE_COURSES;
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -44,7 +55,7 @@ export default function ContactPage() {
       />
 
       <div className="bg-[var(--color-primary-900)] text-white py-16">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="container-wide px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
             Get in <span className="text-[var(--color-primary-400)]">Touch</span>
           </h1>
@@ -54,7 +65,7 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-8">
+      <div className="container-wide px-4 sm:px-6 lg:px-8 py-16 -mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Details Cards */}
           <div className="lg:col-span-1 space-y-6">
@@ -135,13 +146,26 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label className="block font-medium text-sm text-[var(--color-text-secondary)] mb-2">Course Interested In</label>
-                  <select className="input bg-white appearance-none" value={formData.courseInterested} onChange={e => setFormData({ ...formData, courseInterested: e.target.value })}>
-                    <option value="">Select a course...</option>
-                    <option value="mdce">Master Diploma in Chip-Level Eng.</option>
-                    <option value="cyber">Cybersecurity</option>
-                    <option value="networking">Hardware & Networking</option>
-                    <option value="laptop">Laptop Chip-Level</option>
-                  </select>
+                  <div className="relative">
+                    <select 
+                      className="input bg-white appearance-none pr-10" 
+                      value={formData.courseInterested} 
+                      onChange={e => setFormData({ ...formData, courseInterested: e.target.value })}
+                      required
+                    >
+                      <option value="">Select a course...</option>
+                      {courses.map((course: any) => (
+                        <option key={course.id} value={course.title}>
+                          {course.title}
+                        </option>
+                      ))}
+                    </select>
+                    {isCoursesLoading && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <Loader2 size={16} className="animate-spin text-slate-400" />
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block font-medium text-sm text-[var(--color-text-secondary)] mb-2">Message</label>
@@ -155,7 +179,12 @@ export default function ContactPage() {
             
             {/* Map Placeholder, would be an iframe */}
             <div className="h-[400px] w-full bg-gray-200 rounded-[var(--radius-2xl)] overflow-hidden shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-center justify-center">
-              <span className="text-[var(--color-text-tertiary)] font-medium">Google Maps Embed</span>
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.634123545671!2d75.922119!3d10.990479!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b16555555555%3A0xc000000000000000!2sLet%20Solutions!5e0!3m2!1sen!2sin!4v1625555555555!5m2!1sen!2sin" 
+                className="w-full h-full border-0"
+                allowFullScreen={true} 
+                loading="lazy"
+              ></iframe>
             </div>
           </div>
         </div>

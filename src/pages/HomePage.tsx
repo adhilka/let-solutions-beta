@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { fetchFeaturedTestimonials, fetchActiveCourses } from '../lib/api';
+import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent } from '../lib/api';
 import { Testimonial } from '../types';
 import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import { dualWrite } from '../lib/firebase/dualWrite';
@@ -34,7 +34,7 @@ export default function HomePage() {
     initialData: FAILSAFE_TESTIMONIALS as any
   });
 
-  const feedbacks = feedbacksData || FAILSAFE_TESTIMONIALS;
+  const feedbacks = (feedbacksData && feedbacksData.length > 0) ? feedbacksData : FAILSAFE_TESTIMONIALS;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +77,11 @@ export default function HomePage() {
     initialData: FAILSAFE_COURSES
   });
 
+  const { data: homeContent } = useQuery({
+    queryKey: ['home-content'],
+    queryFn: fetchHomeContent
+  });
+
   const coursesData = (coursesDataRaw && coursesDataRaw.length > 0) ? coursesDataRaw : FAILSAFE_COURSES;
 
   const featuredCourses = (() => {
@@ -100,6 +105,12 @@ export default function HomePage() {
     placementRate: '0',
     courseModules: '0'
   };
+
+  const heroImage = homeContent?.hero?.imageUrl || "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+  const heroTitle = homeContent?.hero?.title || "Master Chip-Level Engineering & Secure Your Future";
+  const heroSubtitle = homeContent?.hero?.subtitle || `Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.`;
+  const heroDescription = homeContent?.hero?.description || tagline;
+  const heroFeatures = homeContent?.hero?.features || ["100% Job Assistance", "Industry Experts", "Hands-on Labs"];
 
   // Structured Data for Organization
   const orgSchema = {
@@ -133,8 +144,8 @@ export default function HomePage() {
       />
 
       {/* Hero Section */}
-      <section className="bg-[var(--color-surface)] py-16 md:py-24">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="bg-[var(--color-surface)] py-16 md:py-24 2xl:py-32">
+        <div className="container-wide px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 2xl:gap-24 items-center">
           <div className="space-y-8 animate-fade-up">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary-100)] text-[var(--color-primary-700)] font-semibold text-xs uppercase tracking-wide">
               <span className="w-2 h-2 rounded-full bg-[var(--color-primary-500)] animate-pulse"></span>
@@ -142,11 +153,11 @@ export default function HomePage() {
             </span>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--color-text-primary)] leading-[1.1]">
-              Master Chip-Level <span className="text-[var(--color-primary-600)]">Engineering</span> & Secure Your Future
+              {heroTitle}
             </h1>
             
             <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed max-w-xl">
-              {tagline} Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.
+              {heroDescription} {heroSubtitle}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -159,18 +170,12 @@ export default function HomePage() {
             </div>
             
             <div className="flex flex-wrap gap-x-6 gap-y-3 pt-4 border-t border-[var(--color-border)]">
-              <div className="flex items-center gap-2">
-                <CheckCircle size={18} className="text-[var(--color-success)]" />
-                <span className="text-sm font-medium">100% Job Assistance</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={18} className="text-[var(--color-success)]" />
-                <span className="text-sm font-medium">Industry Experts</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={18} className="text-[var(--color-success)]" />
-                <span className="text-sm font-medium">Hands-on Labs</span>
-              </div>
+              {heroFeatures.map((feature: string, idx: number) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <CheckCircle size={18} className="text-[var(--color-success)]" />
+                  <span className="text-sm font-medium">{feature}</span>
+                </div>
+              ))}
             </div>
           </div>
           
@@ -178,7 +183,7 @@ export default function HomePage() {
             {/* Visual placeholder for hero */}
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary-200)] to-[var(--color-primary-50)] rounded-[var(--radius-2xl)] blur-3xl opacity-50 -z-10 transform translate-x-4 translate-y-4"></div>
             <img 
-              src="https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+              src={heroImage} 
               alt="Students in a technical repair lab working on circuit boards" 
               className="w-full h-auto rounded-[var(--radius-2xl)] shadow-[var(--shadow-lg)] object-cover aspect-[4/3]"
             />
@@ -187,9 +192,9 @@ export default function HomePage() {
       </section>
 
       {/* Stats Bar */}
-      <section className="bg-white border-y border-[var(--color-border)] py-8">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-[var(--color-border)] text-center">
+      <section className="bg-white border-y border-[var(--color-border)] py-8 md:py-12">
+        <div className="container-wide px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 2xl:gap-12 lg:divide-x divide-[var(--color-border)] text-center">
             <div>
               <div className="text-3xl font-bold text-[var(--color-primary-700)] mb-1">{statsValues.studentsTrained}</div>
               <div className="text-sm font-medium uppercase tracking-wide text-[var(--color-text-tertiary)]">Students Trained</div>
@@ -211,9 +216,9 @@ export default function HomePage() {
       </section>
 
       {/* Featured Courses */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+      <section className="py-16 md:py-24 2xl:py-32">
+        <div className="container-wide px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 lg:mb-16 gap-4">
             <div>
               <h2 className="text-3xl font-bold mb-3">Featured Courses</h2>
               <p className="text-[var(--color-text-secondary)]">Master the most in-demand technical skills.</p>
@@ -296,8 +301,8 @@ export default function HomePage() {
 
       {/* Featured Feedbacks */}
       {feedbacks.length > 0 && (
-        <section className="py-16 md:py-24 bg-slate-50 border-t border-[var(--color-border)] overflow-hidden">
-          <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 md:py-24 2xl:py-32 bg-slate-50 border-t border-[var(--color-border)] overflow-hidden">
+          <div className="container-wide px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
               <div className="max-w-2xl">
                 <h2 className="text-3xl font-bold mb-4 tracking-tight">Student Success Stories</h2>

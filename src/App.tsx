@@ -25,6 +25,7 @@ import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminOffersPage from './pages/AdminOffersPage';
 import AdminAboutPage from './pages/AdminAboutPage';
+import AdminHomeSettings from './pages/AdminHomeSettings';
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,7 @@ export default function App() {
               <Route path="posts/:id/edit" element={<AdminPostEditor />} />
               <Route path="testimonials" element={<AdminTestimonialsPage />} />
               <Route path="about" element={<AdminAboutPage />} />
+              <Route path="home" element={<AdminHomeSettings />} />
               <Route path="offers" element={<AdminOffersPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
               {/* other admin routes */}
