@@ -23,7 +23,6 @@ import AdminPostEditor from './pages/AdminPostEditor';
 import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminOffersPage from './pages/AdminOffersPage';
-import AdminBatchesPage from './pages/AdminBatchesPage';
 
 const queryClient = new QueryClient();
 
@@ -57,7 +56,6 @@ export default function App() {
               <Route path="posts/:id/edit" element={<AdminPostEditor />} />
               <Route path="testimonials" element={<AdminTestimonialsPage />} />
               <Route path="offers" element={<AdminOffersPage />} />
-              <Route path="batches" element={<AdminBatchesPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
               {/* other admin routes */}
             </Route>

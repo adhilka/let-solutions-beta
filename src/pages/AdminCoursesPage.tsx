@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { fetchActiveCourses } from '../lib/api';
+import { fetchActiveCourses, fetchAllCourses } from '../lib/api';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { Edit2, Eye, EyeOff, Star, Trash2 } from 'lucide-react';
@@ -31,12 +31,7 @@ export default function AdminCoursesPage() {
 
   const { data: courses, isLoading } = useQuery({
     queryKey: ['admin-courses'],
-    queryFn: async () => {
-      const db = getReadDb();
-      const q = query(collection(db, 'artifacts/tech-institute/public/data/courses'), orderBy('order', 'asc'));
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => docToData<any>(doc));
-    }
+    queryFn: fetchAllCourses
   });
 
   const toggleStatus = async (course: any) => {

@@ -1,33 +1,62 @@
-import { doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, Firestore } from 'firebase/firestore';
 import { getWriteDb, getMirrorDb } from './loadBalancer';
+
+// Timeout helper for Firestore writes
+async function withWriteTimeout<T>(promise: Promise<T>, timeoutMs: number = 10000): Promise<T> {
+  let timeoutId: any;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error('FIRESTORE_WRITE_TIMEOUT')), timeoutMs);
+  });
+  
+  try {
+    const result = await Promise.race([promise, timeoutPromise]);
+    clearTimeout(timeoutId);
+    return result;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
 
 // Custom wrapper to ensure dual writes to workaround free plan restrictions
 export async function dualWrite(pathSegments: string[], data: any): Promise<void> {
     const dbA = getWriteDb();
-    const dbB = getMirrorDb();
-    const pathA = doc(dbA, pathSegments.join('/'));
+    const dbB_instance = getMirrorDb();
     
-    const promises = [setDoc(pathA, data, { merge: true })];
+    const writeOp = async (db: Firestore) => {
+        const path = doc(db, pathSegments.join('/'));
+        return withWriteTimeout(setDoc(path, data, { merge: true }));
+    };
 
-    if (dbB) {
-        const pathB = doc(dbB, pathSegments.join('/'));
-        promises.push(setDoc(pathB, data, { merge: true }));
+    const results = await Promise.allSettled([
+        writeOp(dbA),
+        ...(dbB_instance ? [writeOp(dbB_instance)] : [])
+    ]);
+
+    const anySuccess = results.some(r => r.status === 'fulfilled');
+    if (!anySuccess) {
+        const error = results[0].status === 'rejected' ? results[0].reason : new Error('Write failed on all projects');
+        throw error;
     }
-
-    await Promise.all(promises);
 }
 
 export async function dualDelete(pathSegments: string[]): Promise<void> {
     const dbA = getWriteDb();
-    const dbB = getMirrorDb();
-    const pathA = doc(dbA, pathSegments.join('/'));
+    const dbB_instance = getMirrorDb();
     
-    const promises = [deleteDoc(pathA)];
+    const deleteOp = async (db: Firestore) => {
+        const path = doc(db, pathSegments.join('/'));
+        return withWriteTimeout(deleteDoc(path));
+    };
 
-    if (dbB) {
-        const pathB = doc(dbB, pathSegments.join('/'));
-        promises.push(deleteDoc(pathB));
+    const results = await Promise.allSettled([
+        deleteOp(dbA),
+        ...(dbB_instance ? [deleteOp(dbB_instance)] : [])
+    ]);
+
+    const anySuccess = results.some(r => r.status === 'fulfilled');
+    if (!anySuccess) {
+        const error = results[0].status === 'rejected' ? results[0].reason : new Error('Delete failed on all projects');
+        throw error;
     }
-
-    await Promise.all(promises);
 }

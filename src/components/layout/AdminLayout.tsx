@@ -11,14 +11,20 @@ export default function AdminLayout() {
 
   const instituteName = settings?.branding?.instituteName || "Let Solutions";
 
-  const navItems = [
+  interface NavItem {
+    label: string;
+    icon: any;
+    href: string;
+    badge?: string | number;
+  }
+
+  const navItems: NavItem[] = [
     { label: 'Dashboard', icon: LayoutDashboard, href: '/admin' },
     { label: 'Courses', icon: BookOpen, href: '/admin/courses' },
     { label: 'Enquiries', icon: MessageSquare, href: '/admin/enquiries' },
     { label: 'Blog Posts', icon: PenLine, href: '/admin/posts' },
     { label: 'Feedbacks', icon: Star, href: '/admin/testimonials' },
     { label: 'Offers', icon: Award, href: '/admin/offers' },
-    { label: 'Batches', icon: Users, href: '/admin/batches' },
     { label: 'Settings', icon: Settings, href: '/admin/settings' },
   ];
 

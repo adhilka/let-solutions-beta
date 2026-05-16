@@ -43,7 +43,8 @@ export default function AdminCourseForm() {
     slug: '',
     isActive: true,
     price: 0,
-    category: 'hardware',
+    order: 1,
+    category: 'laptop-chip-level',
     duration: '',
     level: 'Beginner',
     shortDescription: '',
@@ -105,10 +106,14 @@ export default function AdminCourseForm() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Price (₹)</label>
                 <input type="number" className="input" placeholder="e.g. 15000" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Sort Order</label>
+                <input type="number" className="input" placeholder="e.g. 1" value={formData.order} onChange={e => setFormData({ ...formData, order: Number(e.target.value) })} required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Badge (Optional)</label>

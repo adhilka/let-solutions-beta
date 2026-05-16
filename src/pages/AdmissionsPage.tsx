@@ -6,6 +6,7 @@ import { getReadDb } from '../lib/firebase/loadBalancer';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import { getAdmissionYearText } from '../lib/dateUtils';
+import { FAILSAFE_OFFERS } from '../constants/failsafe';
 
 export default function AdmissionsPage() {
   const { settings } = useGlobalSettings();
@@ -14,19 +15,7 @@ export default function AdmissionsPage() {
   const { data: offers } = useQuery({
     queryKey: ['active-offers'],
     queryFn: fetchActiveOffers,
-  });
-
-  const { data: batches } = useQuery({
-    queryKey: ['active-batches'],
-    queryFn: async () => {
-      const db = getReadDb();
-      const q = query(
-        collection(db, 'artifacts/tech-institute/public/data/batches'),
-        orderBy('order', 'asc')
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    }
+    initialData: FAILSAFE_OFFERS
   });
 
   return (
@@ -71,43 +60,6 @@ export default function AdmissionsPage() {
                   <p>No active offers at the moment. Please check back later.</p>
                 </div>
              )}
-          </div>
-        </div>
-
-        {/* Upcoming Batches */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-6">Upcoming Batches</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse bg-white rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
-              <thead className="bg-[var(--color-surface-alt)] border-b border-[var(--color-border)]">
-                <tr>
-                  <th className="py-4 px-6 font-semibold text-[var(--color-text-secondary)]">Course Name</th>
-                  <th className="py-4 px-6 font-semibold text-[var(--color-text-secondary)]">Start Date</th>
-                  <th className="py-4 px-6 font-semibold text-[var(--color-text-secondary)]">Timings</th>
-                  <th className="py-4 px-6 font-semibold text-[var(--color-text-secondary)]">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--color-border)]">
-                {batches && batches.length > 0 ? (
-                  batches.map((batch: any) => (
-                    <tr key={batch.id} className="hover:bg-[var(--color-primary-50)] transition-colors">
-                      <td className="py-4 px-6 font-medium">{batch.courseName}</td>
-                      <td className="py-4 px-6">{batch.startDate}</td>
-                      <td className="py-4 px-6">{batch.timings}</td>
-                      <td className="py-4 px-6">
-                        <span className={`badge ${batch.status === 'Open' ? 'badge-green' : batch.status === 'Filling Fast' ? 'badge-yellow' : 'badge-blue'} text-[10px]`}>
-                          {batch.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="py-8 text-center text-gray-500">No batches announced yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
           </div>
         </div>
 

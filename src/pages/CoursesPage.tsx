@@ -7,15 +7,16 @@ import { fetchActiveCourses } from '../lib/api';
 import { FAILSAFE_COURSES } from '../constants/courses';
 
 export default function CoursesPage() {
-  const { data: coursesData, isLoading, error } = useQuery({
+  const { data: coursesDataRaw, error } = useQuery({
     queryKey: ['active-courses'],
     queryFn: fetchActiveCourses,
+    initialData: FAILSAFE_COURSES
   });
 
   const allCourses = useMemo(() => {
-    if (!coursesData || coursesData.length === 0) return FAILSAFE_COURSES;
-    return coursesData;
-  }, [coursesData]);
+    if (coursesDataRaw && coursesDataRaw.length > 0) return coursesDataRaw;
+    return FAILSAFE_COURSES;
+  }, [coursesDataRaw]);
 
   return (
     <>
@@ -37,13 +38,7 @@ export default function CoursesPage() {
 
       <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Content */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
-            {[1,2,3,4,5,6].map(i => (
-              <div key={i} className="bg-white rounded-[var(--radius-xl)] shadow-sm h-96 border border-[var(--color-border)]"></div>
-            ))}
-          </div>
-        ) : error ? (
+        {error ? (
            <div className="text-center py-12">
              <p className="text-[var(--color-error)]">Failed to load courses. Please try again.</p>
            </div>

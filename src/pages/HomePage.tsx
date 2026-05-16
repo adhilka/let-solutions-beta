@@ -9,10 +9,10 @@ import { dualWrite } from '../lib/firebase/dualWrite';
 import { getAdmissionYearText } from '../lib/dateUtils';
 import { useQuery } from '@tanstack/react-query';
 import { FAILSAFE_COURSES } from '../constants/courses';
+import { FAILSAFE_TESTIMONIALS } from '../constants/failsafe';
 import { motion } from 'motion/react';
 
 export default function HomePage() {
-  const [feedbacks, setFeedbacks] = useState<Testimonial[]>([]);
   const { settings } = useGlobalSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,13 +26,13 @@ export default function HomePage() {
 
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const loadFeedbacks = () => {
-    fetchFeaturedTestimonials().then(setFeedbacks);
-  };
+  const { data: feedbacksData } = useQuery({
+    queryKey: ['featured-testimonials'],
+    queryFn: fetchFeaturedTestimonials,
+    initialData: FAILSAFE_TESTIMONIALS as any
+  });
 
-  useEffect(() => {
-    loadFeedbacks();
-  }, []);
+  const feedbacks = feedbacksData || FAILSAFE_TESTIMONIALS;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +59,8 @@ export default function HomePage() {
       setIsModalOpen(false);
       setFormData({ name: '', course: '', rating: 5, content: '', imageUrl: '' });
       setImageFile(null);
-      loadFeedbacks();
+      // Invalidate to refresh
+      window.location.reload(); 
     } catch (error) {
       console.error('Error submitting feedback:', error);
       alert('Failed to submit feedback.');
@@ -68,15 +69,16 @@ export default function HomePage() {
     }
   };
 
-  const { data: coursesData, isLoading: coursesLoading } = useQuery({
+  const { data: coursesDataRaw } = useQuery({
     queryKey: ['active-courses-featured'],
     queryFn: fetchActiveCourses,
+    initialData: FAILSAFE_COURSES
   });
 
+  const coursesData = (coursesDataRaw && coursesDataRaw.length > 0) ? coursesDataRaw : FAILSAFE_COURSES;
+
   const featuredCourses = (() => {
-    if (!coursesData || coursesData.length === 0) return FAILSAFE_COURSES;
-    
-    // Get pinned courses first
+    // Get pinned courses first from whatever source we are using (server or failsafe)
     const pinned = coursesData.filter((c: any) => c.isPinned).slice(0, 3);
     
     if (pinned.length >= 3) return pinned;
@@ -96,8 +98,6 @@ export default function HomePage() {
     placementRate: '0',
     courseModules: '0'
   };
-
-  if (coursesLoading) return <div className="min-h-screen animate-pulse bg-slate-50" />;
 
   return (
     <>
