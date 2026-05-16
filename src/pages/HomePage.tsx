@@ -12,6 +12,8 @@ import { FAILSAFE_COURSES } from '../constants/courses';
 import { FAILSAFE_TESTIMONIALS } from '../constants/failsafe';
 import { motion } from 'motion/react';
 
+import SEO from '../components/SEO';
+
 export default function HomePage() {
   const { settings } = useGlobalSettings();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,12 +101,36 @@ export default function HomePage() {
     courseModules: '0'
   };
 
+  // Structured Data for Organization
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Let Solutions Technical Institute",
+    "url": "https://letsolutions.in",
+    "logo": "https://i.ibb.co/SXRGw6x8/logo.png",
+    "description": "Leading technical training institute specializing in chip-level repairing, networking, and security systems.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1st Floor, Bus Stand Building",
+      "addressLocality": "Tirur",
+      "addressRegion": "Kerala",
+      "postalCode": "676101",
+      "addressCountry": "IN"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-9562854444",
+      "contactType": "customer service"
+    }
+  };
+
   return (
     <>
-      <Helmet>
-        <title>{instituteName} | Technical Training Institute</title>
-        <meta name="description" content={`${tagline} Accessible, high-end technical education in chip-level repairing, networking, and CCTV.`} />
-      </Helmet>
+      <SEO 
+        title="Technical Training Institute | Chip-Level Engineering & Networking"
+        description={`${tagline} Expert training in Laptop, Smartphone Repairing, Networking and CCTV in Tirur, Kerala.`}
+        structuredData={orgSchema}
+      />
 
       {/* Hero Section */}
       <section className="bg-[var(--color-surface)] py-16 md:py-24">

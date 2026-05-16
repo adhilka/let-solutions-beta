@@ -6,6 +6,8 @@ import { getReadDb } from '../lib/firebase/loadBalancer';
 import { dualWrite } from '../lib/firebase/dualWrite';
 import { Testimonial } from '../types';
 
+import SEO from '../components/SEO';
+
 export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,10 +81,11 @@ export default function TestimonialsPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen pt-24 pb-16">
-      <Helmet>
-        <title>Student Feedbacks - LET Solutions</title>
-        <meta name="description" content="Read what our students say about their learning experience at LET Solutions." />
-      </Helmet>
+      <SEO 
+        title="Student Reviews & Success Stories"
+        description="Read real student reviews and success stories from Let Solutions Technical Institute. Join our successful alumni network."
+        canonical="/feedbacks"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">

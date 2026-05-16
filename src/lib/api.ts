@@ -113,6 +113,10 @@ export async function fetchSettings(documentId: string) {
   }
 }
 
+export async function fetchAboutData() {
+  return fetchSettings('about');
+}
+
 export async function fetchActiveOffers() {
   try {
     return await withFailover(async (db) => {
@@ -148,6 +152,24 @@ export async function fetchFeaturedTestimonials() {
   }
 }
 
+export async function fetchPostBySlug(slug: string) {
+  try {
+    return await withFailover(async (db) => {
+      const q = query(
+        collection(db, 'artifacts/tech-institute/public/data/posts'), 
+        where('slug', '==', slug), 
+        limit(1)
+      );
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) return null;
+      return docToData<any>(snapshot.docs[0]);
+    });
+  } catch (err) {
+    console.error("Error fetching post by slug:", err);
+    return null;
+  }
+}
+
 export async function fetchLatestPosts() {
   try {
     return await withFailover(async (db) => {
@@ -155,7 +177,7 @@ export async function fetchLatestPosts() {
         collection(db, 'artifacts/tech-institute/public/data/posts'), 
         where('status', '==', 'published'),
         orderBy('publishedAt', 'desc'),
-        limit(3)
+        limit(10)
       );
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => docToData<any>(doc));

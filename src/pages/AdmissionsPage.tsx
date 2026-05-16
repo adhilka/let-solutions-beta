@@ -8,6 +8,8 @@ import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import { getAdmissionYearText } from '../lib/dateUtils';
 import { FAILSAFE_OFFERS } from '../constants/failsafe';
 
+import SEO from '../components/SEO';
+
 export default function AdmissionsPage() {
   const { settings } = useGlobalSettings();
   const admissionTitle = getAdmissionYearText(settings);
@@ -20,10 +22,11 @@ export default function AdmissionsPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Admissions & Offers | Let Solutions</title>
-        <meta name="description" content="Join Let Solutions. Check out our latest batches and admission offers." />
-      </Helmet>
+      <SEO 
+        title="Admissions & Scholarship Offers"
+        description="Join Let Solutions Technical Institute. Apply now for professional technical courses with 100% job placement assistance."
+        canonical="/admissions"
+      />
 
       <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">
         <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">

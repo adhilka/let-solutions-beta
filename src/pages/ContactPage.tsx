@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { dualWrite } from '../lib/firebase/dualWrite';
 
+import SEO from '../components/SEO';
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -35,10 +37,11 @@ export default function ContactPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Contact Us | Let Solutions</title>
-        <meta name="description" content="Get in touch with Let Solutions for admissions, course details, and general inquiries." />
-      </Helmet>
+      <SEO 
+        title="Contact Us"
+        description="Get in touch with Let Solutions Technical Institute in Tirur, Kerala. Call us at +91 95628 54444 for admissions and course enquiries."
+        canonical="/contact"
+      />
 
       <div className="bg-[var(--color-primary-900)] text-white py-16">
         <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 text-center">

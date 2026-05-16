@@ -1,6 +1,6 @@
 {
   "name": "Let Solutions Technical Institute",
-  "description": "Technical training institute management system for chip-level engineering, networking, and student admissions.",
+  "description": "Let Solutions provides industry-standard technical training in chip-level repairing, laptop engineering, and networking with 100% placement support.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

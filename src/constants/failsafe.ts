@@ -58,3 +58,43 @@ export const FAILSAFE_OFFERS = [
     order: 1
   }
 ];
+
+export const FAILSAFE_ABOUT = {
+  hero: {
+    title: 'Empowering Future Technicians',
+    subtitle: 'At Let Solutions, we bridge the gap between ambition and career stability by offering industry-standard training.'
+  },
+  story: {
+    title: 'Our Story',
+    content: [
+      'Founded with a vision to make high-end technical education accessible, Let Solutions has grown into a premier training institute in Tirur, Kerala.',
+      'We realized that many ambitious students lacked the financial resources to pursue specialized engineering degrees. Our short-term, high-impact curriculum is designed to transform these students into skilled professionals without the burden of excessive educational expenses.'
+    ],
+    images: [
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+      'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+    ]
+  },
+  vision: {
+    title: 'Our Vision',
+    content: 'To become the most trusted and accessible technical training institute, fostering a self-reliant generation equipped with the skills to thrive in the rapid digital transformation of the modern world.'
+  },
+  mission: {
+    title: 'Our Mission',
+    content: 'To deliver practical, industry-aligned training bridging the gap between theoretical knowledge and real-world application, ensuring 100% employability for our graduates.'
+  },
+  leadership: [
+    {
+      name: 'Sanal SP',
+      role: 'Academic Director',
+      bio: 'Driving academic excellence and industry-standard curriculum development.',
+      imageUrl: ''
+    },
+    {
+      name: 'Faisal KK',
+      role: 'Center Incharge',
+      bio: 'Ensuring state-of-the-art infrastructure and seamless student experiences.',
+      imageUrl: ''
+    }
+  ]
+};

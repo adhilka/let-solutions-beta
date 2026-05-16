@@ -6,6 +6,8 @@ import { MonitorSmartphone, ShieldCheck, Server, Filter, Clock, Zap, MessageSqua
 import { fetchActiveCourses } from '../lib/api';
 import { FAILSAFE_COURSES } from '../constants/courses';
 
+import SEO from '../components/SEO';
+
 export default function CoursesPage() {
   const { data: coursesDataRaw, error } = useQuery({
     queryKey: ['active-courses'],
@@ -20,10 +22,11 @@ export default function CoursesPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Our Courses | Let Solutions</title>
-        <meta name="description" content="Browse our industry-standard technical training courses." />
-      </Helmet>
+      <SEO 
+        title="Technical Courses & Training Programs"
+        description="Explore our range of professional technical courses including Chip-Level Repairing, Networking, and CCTV systems."
+        canonical="/courses"
+      />
 
       <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">
         <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8">

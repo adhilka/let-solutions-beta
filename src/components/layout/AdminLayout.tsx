@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, MessageSquare, Star, Award, PenLine, Image as ImageIcon, Settings, LogOut, Menu, X, Users } from 'lucide-react';
+import { LayoutDashboard, BookOpen, MessageSquare, Star, Award, PenLine, Image as ImageIcon, Settings, LogOut, Menu, X, Users, Info } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
 
@@ -24,6 +24,7 @@ export default function AdminLayout() {
     { label: 'Enquiries', icon: MessageSquare, href: '/admin/enquiries' },
     { label: 'Blog Posts', icon: PenLine, href: '/admin/posts' },
     { label: 'Feedbacks', icon: Star, href: '/admin/testimonials' },
+    { label: 'About Page', icon: Info, href: '/admin/about' },
     { label: 'Offers', icon: Award, href: '/admin/offers' },
     { label: 'Settings', icon: Settings, href: '/admin/settings' },
   ];

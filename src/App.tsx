@@ -11,6 +11,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import AdmissionsPage from './pages/AdmissionsPage';
 import BlogListPage from './pages/BlogListPage';
+import BlogDetailPage from './pages/BlogDetailPage';
 import TestimonialsPage from './pages/TestimonialsPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import AdminDashboard from './pages/AdminDashboard';
@@ -23,6 +24,7 @@ import AdminPostEditor from './pages/AdminPostEditor';
 import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminOffersPage from './pages/AdminOffersPage';
+import AdminAboutPage from './pages/AdminAboutPage';
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,7 @@ export default function App() {
               <Route path="contact" element={<ContactPage />} />
               <Route path="admissions" element={<AdmissionsPage />} />
               <Route path="blog" element={<BlogListPage />} />
+              <Route path="blog/:slug" element={<BlogDetailPage />} />
               <Route path="feedbacks" element={<TestimonialsPage />} />
               {/* Other public routes will go here */}
             </Route>
@@ -55,6 +58,7 @@ export default function App() {
               <Route path="posts/new" element={<AdminPostEditor />} />
               <Route path="posts/:id/edit" element={<AdminPostEditor />} />
               <Route path="testimonials" element={<AdminTestimonialsPage />} />
+              <Route path="about" element={<AdminAboutPage />} />
               <Route path="offers" element={<AdminOffersPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
               {/* other admin routes */}
