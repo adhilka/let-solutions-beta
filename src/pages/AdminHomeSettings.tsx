@@ -3,8 +3,10 @@ import { Layout, Save, Plus, Trash2, Image as ImageIcon, Loader2 } from 'lucide-
 import { fetchHomeContent } from '../lib/api';
 import { dualWrite } from '../lib/firebase/dualWrite';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function AdminHomeSettings() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -13,6 +15,7 @@ export default function AdminHomeSettings() {
       title: 'Master Chip-Level Engineering & Secure Your Future',
       subtitle: 'Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.',
       description: '',
+      bgType: 'solid',
       imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       features: ['100% Job Assistance', 'Industry Experts', 'Hands-on Labs']
     }
@@ -81,6 +84,8 @@ export default function AdminHomeSettings() {
       };
 
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'settings', 'home'], updatedData);
+      
+      queryClient.invalidateQueries({ queryKey: ['home-content'] });
       alert('Home content updated successfully!');
       navigate('/admin');
     } catch (error) {
@@ -147,6 +152,35 @@ export default function AdminHomeSettings() {
                   placeholder="Equip yourself with industry-standard training..."
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Hero Layout Background</label>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="heroBgType"
+                    value="solid"
+                    checked={homeData.hero.bgType === 'solid'}
+                    onChange={e => setHomeData({ ...homeData, hero: { ...homeData.hero, bgType: e.target.value } })}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <span>Solid Background</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="heroBgType"
+                    value="photo"
+                    checked={homeData.hero.bgType === 'photo'}
+                    onChange={e => setHomeData({ ...homeData, hero: { ...homeData.hero, bgType: e.target.value } })}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <span>Photo Background</span>
+                </label>
+              </div>
+              <p className="mt-1 text-xs text-slate-500">Choose whether the hero section has a solid color or a large photo background.</p>
             </div>
 
             <div>

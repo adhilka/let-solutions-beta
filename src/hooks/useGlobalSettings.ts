@@ -6,8 +6,8 @@ export function useGlobalSettings() {
   const { data: settings, isLoading } = useQuery({
     queryKey: ['settings-global'],
     queryFn: () => fetchSettings('global'),
-    staleTime: 1000 * 60 * 60, // 1 hour
-    initialData: FAILSAFE_SETTINGS
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    placeholderData: FAILSAFE_SETTINGS
   });
 
   return { settings: settings ?? FAILSAFE_SETTINGS, isLoading };

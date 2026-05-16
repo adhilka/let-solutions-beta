@@ -92,6 +92,7 @@ export default function AdminSettingsPage() {
       setSettings(updatedSettings);
       setLogoFile(null);
       setFaviconFile(null);
+      queryClient.invalidateQueries({ queryKey: ['settings-global'] });
       
       setModalConfig({
         isOpen: true,

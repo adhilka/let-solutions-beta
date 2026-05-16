@@ -4,8 +4,10 @@ import { Plus, Search, CheckCircle, XCircle, Trash2, Edit2, PlayCircle, Star, Fi
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 import { Testimonial } from '../types';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function AdminTestimonialsPage() {
+  const queryClient = useQueryClient();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -50,6 +52,8 @@ export default function AdminTestimonialsPage() {
       if (!window.confirm(`Are you sure you want to ${currentStatus ? 'unapprove' : 'approve'} this feedback?`)) return;
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'testimonials', id], { approved: !currentStatus });
       setTestimonials(prev => prev.map(t => t.id === id ? { ...t, approved: !currentStatus } : t));
+      queryClient.invalidateQueries({ queryKey: ['featured-testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['all-testimonials'] });
     } catch (error) {
       console.error('Error updating approval:', error);
     }
@@ -59,6 +63,7 @@ export default function AdminTestimonialsPage() {
     try {
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'testimonials', id], { isFeatured: !currentStatus });
       setTestimonials(prev => prev.map(t => t.id === id ? { ...t, isFeatured: !currentStatus } : t));
+      queryClient.invalidateQueries({ queryKey: ['featured-testimonials'] });
     } catch (error) {
       console.error('Error updating featured status:', error);
     }
@@ -69,6 +74,8 @@ export default function AdminTestimonialsPage() {
       if (!window.confirm("Are you sure you want to delete this feedback?")) return;
       await dualDelete(['artifacts', 'tech-institute', 'public', 'data', 'testimonials', id]);
       setTestimonials(prev => prev.filter(t => t.id !== id));
+      queryClient.invalidateQueries({ queryKey: ['featured-testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['all-testimonials'] });
     } catch (error) {
       console.error("Error deleting testimonial:", error);
     }
@@ -94,6 +101,8 @@ export default function AdminTestimonialsPage() {
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'testimonials', newId], testimonialData);
       
       setTestimonials(prev => [{ id: newId, ...testimonialData } as Testimonial, ...prev]);
+      queryClient.invalidateQueries({ queryKey: ['featured-testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['all-testimonials'] });
       setIsModalOpen(false);
       setFormData({ name: '', course: '', batch: '', rating: 5, content: '', videoUrl: '', imageUrl: '' });
     } catch (error) {

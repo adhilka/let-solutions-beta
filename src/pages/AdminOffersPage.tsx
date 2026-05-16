@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, CheckCircle, XCircle, Trash2, Edit2 } from 'lucide-react';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 
 export default function AdminOffersPage() {
+  const queryClient = useQueryClient();
   const [offers, setOffers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,6 +49,7 @@ export default function AdminOffersPage() {
     try {
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'offers', id], { showOnAdmissions: !currentStatus });
       setOffers(prev => prev.map(t => t.id === id ? { ...t, showOnAdmissions: !currentStatus } : t));
+      queryClient.invalidateQueries({ queryKey: ['active-offers'] });
     } catch (error) {
       console.error('Error updating visibility:', error);
     }
@@ -57,6 +60,7 @@ export default function AdminOffersPage() {
       if (!window.confirm("Are you sure you want to delete this offer?")) return;
       await dualDelete(['artifacts', 'tech-institute', 'public', 'data', 'offers', id]);
       setOffers(prev => prev.filter(t => t.id !== id));
+      queryClient.invalidateQueries({ queryKey: ['active-offers'] });
     } catch (error) {
       console.error("Error deleting offer:", error);
     }
@@ -78,6 +82,7 @@ export default function AdminOffersPage() {
       const offerData = { ...formData, imageUrl: finalImageUrl };
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'offers', newId], offerData);
       setOffers(prev => [...prev, { id: newId, ...offerData }]);
+      queryClient.invalidateQueries({ queryKey: ['active-offers'] });
       setIsModalOpen(false);
       setFormData({ headline: '', subtext: '', badgeLabel: 'LIMITED', ctaLabel: 'Claim Now', ctaHref: '/contact', showOnAdmissions: true, order: 0, imageUrl: '' });
       setImageFile(null);

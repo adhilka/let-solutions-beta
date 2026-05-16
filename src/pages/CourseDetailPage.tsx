@@ -181,9 +181,11 @@ export default function CourseDetailPage() {
             <div className="sticky top-24 space-y-6">
               <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-6">
                 <div className="flex items-center justify-between border-b pb-4">
-                  <span className="text-3xl font-extrabold text-blue-700">
-                    {course.price > 0 ? `₹${course.price}` : 'Free'}
-                  </span>
+                  {course.price > 0 ? (
+                    <span className="text-3xl font-extrabold text-blue-700">
+                      ₹{course.price}
+                    </span>
+                  ) : <div></div>}
                   {course.badge && <span className="badge badge-red">{course.badge}</span>}
                 </div>
 
@@ -202,19 +204,9 @@ export default function CourseDetailPage() {
                     </div>
                     <span className="font-bold text-slate-900">{course.level}</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm py-1">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <MessageSquare size={16} />
-                      <span>Language</span>
-                    </div>
-                    <span className="font-bold text-slate-900">English / Hindi</span>
-                  </div>
                 </div>
 
-                <button className="w-full btn-primary py-4 px-6 text-lg font-bold shadow-lg shadow-blue-100">
-                  Enroll Now
-                </button>
-                <Link to="/contact" className="block w-full btn-secondary text-center">
+                <Link to="/contact" className="block w-full btn-primary text-center py-4 px-6 text-lg font-bold shadow-lg shadow-blue-100">
                   Enquire for Details
                 </Link>
 
