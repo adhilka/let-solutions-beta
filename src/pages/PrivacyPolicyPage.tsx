@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
 
       <div className="container-narrow py-16 px-4">
         <div className="prose prose-slate max-w-none">
-          <p className="text-slate-500 italic mb-8">Last Updated: May 16, 2024</p>
+          <p className="text-slate-500 italic mb-8">Last Updated: May 14, 2026</p>
 
           <section className="mb-12">
             <div className="flex items-center gap-3 mb-4">
