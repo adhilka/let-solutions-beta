@@ -96,8 +96,9 @@ export default function CourseDetailPage() {
   return (
     <>
       <SEO 
-        title={`${course.title} Course`}
+        title={`${course.title} | Technical Training Course in Tirur`}
         description={course.shortDescription}
+        keywords={`${course.title.toLowerCase()}, technician course kerala, vocational training Tirur, ${course.category} training`}
         ogType="course"
         ogImage={course.imageUrl}
         canonical={`/courses/${course.slug}`}

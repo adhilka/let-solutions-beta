@@ -4,18 +4,28 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 import { docToData } from '../lib/api';
-import { Edit2, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Edit2, Eye, EyeOff, Trash2, File as FileIcon, FileText, Github } from 'lucide-react';
 
 export default function AdminPostsPage() {
   const queryClient = useQueryClient();
+
+  const isGitHubLink = (url?: string) => url?.includes('github.com');
 
   const { data: posts, isLoading } = useQuery({
     queryKey: ['admin-posts'],
     queryFn: async () => {
       const db = getReadDb();
-      const q = query(collection(db, 'artifacts/tech-institute/public/data/posts'), orderBy('createdAt', 'desc'));
+      // Fetch all posts without orderBy to ensure posts with missing fields show up
+      const q = query(collection(db, 'artifacts/tech-institute/public/data/posts'));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => docToData<any>(doc));
+      const data = snapshot.docs.map(doc => docToData<any>(doc));
+      
+      // Sort manually in memory
+      return data.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
     }
   });
 
@@ -53,7 +63,7 @@ export default function AdminPostsPage() {
               <tr>
                 <th className="py-4 px-6 font-semibold text-sm text-[var(--color-text-secondary)]">Published</th>
                 <th className="py-4 px-6 font-semibold text-sm text-[var(--color-text-secondary)]">Title</th>
-                <th className="py-4 px-6 font-semibold text-sm text-[var(--color-text-secondary)]">Category</th>
+                <th className="py-4 px-6 font-semibold text-sm text-[var(--color-text-secondary)]">Type</th>
                 <th className="py-4 px-6 font-semibold text-sm text-[var(--color-text-secondary)]">Status</th>
                 <th className="py-4 px-6 font-semibold text-sm text-[var(--color-text-secondary)]">Actions</th>
               </tr>
@@ -67,10 +77,30 @@ export default function AdminPostsPage() {
                 posts?.map(post => (
                   <tr key={post.id} className="hover:bg-[var(--color-primary-50)] transition-colors">
                     <td className="py-4 px-6 text-sm whitespace-nowrap">
-                      {post.publishedAt?.toDate?.() ? new Date(post.publishedAt.toDate()).toLocaleDateString() : '-'}
+                      {post.publishedAt 
+                        ? (typeof post.publishedAt === 'string' 
+                            ? new Date(post.publishedAt).toLocaleDateString() 
+                            : post.publishedAt.toDate?.() 
+                              ? new Date(post.publishedAt.toDate()).toLocaleDateString() 
+                              : '-'
+                          ) 
+                        : '-'}
                     </td>
                     <td className="py-4 px-6 font-medium max-w-[200px] truncate">{post.title}</td>
-                    <td className="py-4 px-6 text-sm"><span className="badge badge-blue">{post.category}</span></td>
+                    <td className="py-4 px-6 text-sm">
+                      <div className="flex items-center gap-2">
+                        {post.isFile ? (
+                          <span className={`flex items-center gap-1.5 font-bold px-2 py-0.5 rounded text-[10px] uppercase ${isGitHubLink(post.downloadUrl) ? 'text-slate-900 bg-slate-100' : 'text-indigo-600 bg-indigo-50'}`}>
+                            {isGitHubLink(post.downloadUrl) ? <Github size={12} /> : <FileIcon size={12} />}
+                            {isGitHubLink(post.downloadUrl) ? 'GitHub' : 'File'}
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1.5 text-slate-600 font-bold bg-slate-50 px-2 py-0.5 rounded text-[10px] uppercase">
+                            <FileText size={12} /> Post
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="py-4 px-6">
                       <span className={`badge ${post.status === 'published' ? 'badge-green' : post.status === 'draft' ? 'badge-yellow' : 'bg-gray-200'}`}>
                         {post.status}
@@ -113,9 +143,25 @@ export default function AdminPostsPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <span className="badge badge-blue text-[10px]">{post.category}</span>
+                  {post.isFile ? (
+                    <span className={`flex items-center gap-1.5 font-bold px-2 py-0.5 rounded text-[10px] uppercase ${isGitHubLink(post.downloadUrl) ? 'text-slate-900 bg-slate-100' : 'text-indigo-600 bg-indigo-50'}`}>
+                      {isGitHubLink(post.downloadUrl) ? <Github size={10} /> : <FileIcon size={10} />}
+                      {isGitHubLink(post.downloadUrl) ? 'GitHub' : 'File'}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5 text-slate-600 font-bold bg-slate-50 px-2 py-0.5 rounded text-[10px] uppercase">
+                      <FileText size={10} /> Post
+                    </span>
+                  )}
                   <span className="text-xs text-slate-500">
-                    {post.publishedAt?.toDate?.() ? new Date(post.publishedAt.toDate()).toLocaleDateString() : 'Draft'}
+                    {post.publishedAt 
+                      ? (typeof post.publishedAt === 'string' 
+                          ? new Date(post.publishedAt).toLocaleDateString() 
+                          : post.publishedAt.toDate?.() 
+                            ? new Date(post.publishedAt.toDate()).toLocaleDateString() 
+                            : 'Draft'
+                        ) 
+                      : 'Draft'}
                   </span>
                 </div>
               </div>

@@ -46,12 +46,50 @@ export default function ContactPage() {
     }
   };
 
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Let Solutions Technical Institute",
+    "image": "https://i.ibb.co/SXRGw6x8/logo.png",
+    "@id": "https://letsolutions.in",
+    "url": "https://letsolutions.in",
+    "telephone": "+919562854444",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1st Floor, Bus Stand Building",
+      "addressLocality": "Tirur",
+      "addressRegion": "Malappuram",
+      "postalCode": "676101",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 10.990,
+      "longitude": 75.922
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "opens": "09:30",
+      "closes": "17:30"
+    }
+  };
+
   return (
     <>
       <SEO 
-        title="Contact Us"
-        description="Get in touch with Let Solutions Technical Institute in Tirur, Kerala. Call us at +91 95628 54444 for admissions and course enquiries."
+        title="Contact Us | Let Solutions Tirur"
+        description="Get in touch with Let Solutions Technical Institute in Tirur. Call +91 95628 54444 or visit us for smartphone repair courses and technical training admissions."
+        keywords="contact let solutions, tirur technical institute address, phone number smartphone repair course, malappuram tech training contact"
         canonical="/contact"
+        structuredData={contactSchema}
       />
 
       <div className="bg-[var(--color-primary-900)] text-white py-16">
@@ -67,66 +105,8 @@ export default function ContactPage() {
 
       <div className="container-wide px-4 sm:px-6 lg:px-8 py-16 -mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contact Details Cards */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
-              <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
-                <MapPin size={24} />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg mb-2">Visit Us</h3>
-                <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed">
-                  1st Floor, Bus Stand Building,<br />
-                  Tirur, Malappuram (Dist),<br />
-                  Kerala, India - 676101
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
-              <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
-                <Phone size={24} />
-              </div>
-              <div>
-                 <h3 className="font-bold text-lg mb-2">Call Us</h3>
-                 <p className="text-[var(--color-text-secondary)] text-sm mb-1">
-                   Primary: <a href="tel:+919562854444" className="text-[var(--color-primary-600)] hover:underline">+91 95628 54444</a>
-                 </p>
-                 <p className="text-[var(--color-text-secondary)] text-sm">
-                   WhatsApp: <a href="https://wa.me/919562854444" className="text-[var(--color-primary-600)] hover:underline">+91 95628 54444</a>
-                 </p>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
-               <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
-                <Mail size={24} />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg mb-2">Email</h3>
-                <p className="text-[var(--color-text-secondary)] text-sm mb-1">
-                   <a href="mailto:info@letsolutions.in" className="text-[var(--color-primary-600)] hover:underline">info@letsolutions.in</a>
-                </p>
-                <p className="text-[var(--color-text-secondary)] text-sm">
-                   <a href="mailto:letsolutionstirur@gmail.com" className="text-[var(--color-primary-600)] hover:underline">letsolutionstirur@gmail.com</a>
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
-              <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
-                <Clock size={24} />
-              </div>
-               <div>
-                <h3 className="font-bold text-lg mb-2">Working Hours</h3>
-                <p className="text-[var(--color-text-secondary)] text-sm mb-1">Monday – Saturday</p>
-                <p className="text-[var(--color-primary-600)] font-medium text-sm border bg-[var(--color-primary-50)] border-[var(--color-primary-200)] mt-2 inline-block px-2 py-1 rounded">09:30 AM – 05:30 PM</p>
-              </div>
-            </div>
-          </div>
-
           {/* Form and Map */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-8 order-1">
             <div className="bg-white p-8 rounded-[var(--radius-2xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)]">
               <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -177,14 +157,78 @@ export default function ContactPage() {
               </form>
             </div>
             
-            {/* Map Placeholder, would be an iframe */}
+            {/* Map */}
             <div className="h-[400px] w-full bg-gray-200 rounded-[var(--radius-2xl)] overflow-hidden shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-center justify-center">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.634123545671!2d75.922119!3d10.990479!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b16555555555%3A0xc000000000000000!2sLet%20Solutions!5e0!3m2!1sen!2sin!4v1625555555555!5m2!1sen!2sin" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.63!2d75.922!3d10.990!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b16555555555%3A0xc000000000000000!2sLet%20Solutions!5e0!3m2!1sen!2sin!4v1625555555555!5m2!1sen!2sin" 
                 className="w-full h-full border-0"
                 allowFullScreen={true} 
                 loading="lazy"
+                title="Let Solutions Tirur Map"
               ></iframe>
+            </div>
+          </div>
+
+          {/* Contact Details Cards */}
+          <div className="lg:col-span-1 space-y-6 order-2">
+            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+              <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+                <MapPin size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-2">Visit Us</h3>
+                <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed">
+                  1st Floor, Bus Stand Building,<br />
+                  Tirur, Malappuram (Dist),<br />
+                  Kerala, India - 676101
+                </p>
+                <div className="mt-4">
+                    <a href="https://maps.app.goo.gl/ea72pp63CzXkSybo8" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--color-primary-600)] hover:underline flex items-center gap-1">
+                        View on Google Maps
+                    </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+              <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+                <Phone size={24} />
+              </div>
+              <div>
+                 <h3 className="font-bold text-lg mb-2">Call Us</h3>
+                 <p className="text-[var(--color-text-secondary)] text-sm mb-1">
+                   Primary: <a href="tel:+919562854444" className="text-[var(--color-primary-600)] hover:underline">+91 95628 54444</a>
+                 </p>
+                 <p className="text-[var(--color-text-secondary)] text-sm">
+                   WhatsApp: <a href="https://wa.me/919562854444" className="text-[var(--color-primary-600)] hover:underline">+91 95628 54444</a>
+                 </p>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+               <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+                <Mail size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-2">Email</h3>
+                <p className="text-[var(--color-text-secondary)] text-sm mb-1">
+                   <a href="mailto:info@letsolutions.in" className="text-[var(--color-primary-600)] hover:underline">info@letsolutions.in</a>
+                </p>
+                <p className="text-[var(--color-text-secondary)] text-sm">
+                   <a href="mailto:letsolutionstirur@gmail.com" className="text-[var(--color-primary-600)] hover:underline">letsolutionstirur@gmail.com</a>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+              <div className="w-12 h-12 bg-[var(--color-primary-50)] text-[var(--color-primary-600)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+                <Clock size={24} />
+              </div>
+               <div>
+                <h3 className="font-bold text-lg mb-2">Working Hours</h3>
+                <p className="text-[var(--color-text-secondary)] text-sm mb-1">Monday – Saturday</p>
+                <p className="text-[var(--color-primary-600)] font-medium text-sm border bg-[var(--color-primary-50)] border-[var(--color-primary-200)] mt-2 inline-block px-2 py-1 rounded">09:30 AM – 05:30 PM</p>
+              </div>
             </div>
           </div>
         </div>

@@ -13,6 +13,9 @@ import AdmissionsPage from './pages/AdmissionsPage';
 import BlogListPage from './pages/BlogListPage';
 import BlogDetailPage from './pages/BlogDetailPage';
 import TestimonialsPage from './pages/TestimonialsPage';
+import GalleryPage from './pages/GalleryPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import AdminDashboard from './pages/AdminDashboard';
 
@@ -24,10 +27,12 @@ import AdminPostEditor from './pages/AdminPostEditor';
 import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminOffersPage from './pages/AdminOffersPage';
+import AdminGalleryPage from './pages/AdminGalleryPage';
 import AdminAboutPage from './pages/AdminAboutPage';
 import AdminHomeSettings from './pages/AdminHomeSettings';
 import LoginPage from './pages/LoginPage';
 import AdminRoute from './components/AdminRoute';
+import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './hooks/useAuth';
 
 const queryClient = new QueryClient();
@@ -38,6 +43,7 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<HomePage />} />
@@ -49,6 +55,9 @@ export default function App() {
                 <Route path="blog" element={<BlogListPage />} />
                 <Route path="blog/:slug" element={<BlogDetailPage />} />
                 <Route path="feedbacks" element={<TestimonialsPage />} />
+                <Route path="gallery" element={<GalleryPage />} />
+                <Route path="privacy" element={<PrivacyPolicyPage />} />
+                <Route path="terms" element={<TermsOfUsePage />} />
               </Route>
 
               {/* Admin Login Route */}
@@ -66,6 +75,7 @@ export default function App() {
                   <Route path="posts/new" element={<AdminPostEditor />} />
                   <Route path="posts/:id/edit" element={<AdminPostEditor />} />
                   <Route path="testimonials" element={<AdminTestimonialsPage />} />
+                  <Route path="gallery" element={<AdminGalleryPage />} />
                   <Route path="about" element={<AdminAboutPage />} />
                   <Route path="home" element={<AdminHomeSettings />} />
                   <Route path="offers" element={<AdminOffersPage />} />

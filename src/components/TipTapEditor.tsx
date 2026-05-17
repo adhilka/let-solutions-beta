@@ -50,8 +50,8 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
       
       const data = await res.json();
       if (data.success && data.url) {
-        // insert link to file
-        editor.chain().focus().insertContent(`<a href="${data.url}" target="_blank" rel="noopener noreferrer">${data.name}</a>&nbsp;`).run();
+        // insert structured link that looks like a file badge
+        editor.chain().focus().insertContent(`<a href="${data.url}" target="_blank" rel="noopener noreferrer" class="github-file-link"><span>📄</span> ${data.name}</a>&nbsp;`).run();
       } else {
         alert(data.error || 'Upload failed');
       }
@@ -132,7 +132,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           <Redo size={16} />
         </button>
       </div>
-      <div className="p-4 flex-1 prose max-w-none prose-sm sm:prose-base min-h-[400px]">
+      <div className="p-4 flex-1 prose max-w-none prose-sm sm:prose-base min-h-[400px] tiptap">
         <EditorContent editor={editor} />
       </div>
     </div>

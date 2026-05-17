@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { LogIn, Loader2, AlertCircle } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function LoginPage() {
   const { login, user, isAdmin, loading } = useAuth();
@@ -31,6 +32,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <SEO title="Admin Login" noindex />
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-200">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">

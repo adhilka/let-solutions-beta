@@ -98,9 +98,14 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-blue-200 text-sm">
-            &copy; {new Date().getFullYear()} {instituteName}. All rights reserved.
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+            <p className="text-blue-200 text-sm text-center md:text-left">
+              &copy; {new Date().getFullYear()} {instituteName}. All rights reserved.
+            </p>
+            <p className="text-blue-200/60 text-sm">
+              Build By <a href="https://www.instagram.com/axhilxif" target="_blank" rel="noopener noreferrer" className="font-semibold text-white/90 hover:text-white transition-colors">Muhammed Adhil</a>
+            </p>
+          </div>
           <div className="flex gap-4">
             <Link to="/privacy" className="text-blue-200 hover:text-white transition-colors text-sm">Privacy Policy</Link>
             <Link to="/terms" className="text-blue-200 hover:text-white transition-colors text-sm">Terms of Use</Link>

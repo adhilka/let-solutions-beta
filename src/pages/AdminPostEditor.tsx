@@ -1,8 +1,12 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { dualWrite } from '../lib/firebase/dualWrite';
 import TipTapEditor from '../components/TipTapEditor';
+import { ChevronLeft, Save, Globe, FileText, Image as ImageIcon, Layout, Type, Link as LinkIcon, AlertCircle, Plus } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { getReadDb } from '../lib/firebase/loadBalancer';
+import { docToData } from '../lib/api';
 
 export default function AdminPostEditor() {
   const { id } = useParams();
@@ -16,9 +20,40 @@ export default function AdminPostEditor() {
     title: '',
     slug: '',
     status: 'draft',
-    category: 'industry-updates',
+    downloadUrl: '',
     content: '',
-    coverImage: ''
+    excerpt: '',
+    coverImage: '',
+    author: {
+      name: 'Admin',
+      role: 'Staff'
+    }
+  });
+
+  // Fetch post if editing
+  const { isLoading: isFetching } = useQuery({
+    queryKey: ['admin-post', id],
+    queryFn: async () => {
+      if (!id) return null;
+      const db = getReadDb();
+      const d = await getDoc(doc(db, `artifacts/tech-institute/public/data/posts/${id}`));
+      if (d.exists()) {
+        const data = docToData<any>(d);
+        setFormData({
+          title: data.title || '',
+          slug: data.slug || '',
+          status: data.status || 'draft',
+          downloadUrl: data.downloadUrl || '',
+          content: data.content || '',
+          excerpt: data.excerpt || '',
+          coverImage: data.coverImage || '',
+          author: data.author || { name: 'Admin', role: 'Staff' }
+        });
+        return data;
+      }
+      return null;
+    },
+    enabled: isEdit
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,13 +70,31 @@ export default function AdminPostEditor() {
       }
 
       const docId = id || `post_${Date.now()}`;
-      await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'posts', docId], {
+      const now = new Date().toISOString();
+      
+      const payload: any = {
         ...formData,
+        isFile: !!formData.downloadUrl,
         coverImage: finalCoverImage,
-        updatedAt: new Date().toISOString()
-      });
+        updatedAt: now
+      };
+
+      // Set createdAt if new
+      if (!isEdit) {
+        payload.createdAt = now;
+      }
+
+      // Set publishedAt if status is published and not already set
+      if (formData.status === 'published') {
+        payload.publishedAt = now;
+      }
+
+      await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'posts', docId], payload);
+      
       queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
       queryClient.invalidateQueries({ queryKey: ['latest-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-post', docId] });
+      
       navigate('/admin/posts');
     } catch (err) {
       console.error(err);
@@ -51,65 +104,188 @@ export default function AdminPostEditor() {
     }
   };
 
+  if (isFetching) {
+    return <div className="flex items-center justify-center min-h-[400px]">Loading post data...</div>;
+  }
+
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-display font-bold text-[var(--color-text-primary)] mb-2">
-            {isEdit ? 'Edit Post' : 'New Post'}
-          </h1>
+    <div className="max-w-6xl mx-auto pb-20">
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Link to="/admin/posts" className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+            <ChevronLeft size={20} />
+          </Link>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">
+              {isEdit ? 'Edit Post' : 'Create New Article'}
+            </h1>
+            <p className="text-[var(--color-text-secondary)] text-sm">Craft compelling stories for your audience.</p>
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <button type="button" onClick={() => navigate('/admin/posts')} className="btn-secondary">Cancel</button>
+          <button 
+            type="submit" 
+            form="post-form" 
+            disabled={isSubmitting} 
+            className="btn-primary flex items-center gap-2"
+          >
+            {isSubmitting ? <span className="animate-spin text-lg">◌</span> : <Save size={18} />}
+            {isSubmitting ? 'Saving...' : (formData.status === 'published' ? 'Publish Now' : 'Save as Draft')}
+          </button>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-3 bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-8">
-           <form id="post-form" onSubmit={handleSubmit} className="space-y-6">
-             <div>
-               <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Post Title</label>
-               <input type="text" className="input text-lg font-bold" placeholder="Write a catchy title..." value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') })} required />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8 space-y-6">
+          {/* Main Content Card */}
+          <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] overflow-hidden">
+             <div className="p-1 bg-slate-50 border-b border-[var(--color-border)] flex items-center px-6 py-3">
+               <Type size={16} className="text-slate-400 mr-2" />
+               <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Main Content</span>
              </div>
-             
-             <div className="mt-6">
-               <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Content</label>
-               <TipTapEditor 
-                 content={formData.content} 
-                 onChange={content => setFormData({ ...formData, content })}
-               />
-             </div>
-           </form>
+             <form id="post-form" onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+               <div>
+                 <label className="block text-sm font-bold text-[var(--color-text-primary)] mb-2">Title</label>
+                 <input 
+                    type="text" 
+                    className="w-full text-2xl md:text-3xl font-bold bg-transparent border-none p-0 focus:ring-0 placeholder:text-slate-300" 
+                    placeholder="Enter post title..." 
+                    value={formData.title} 
+                    onChange={e => {
+                      const title = e.target.value;
+                      const slug = title.toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/(^-|-$)/g, '');
+                      setFormData({ ...formData, title, slug });
+                    }} 
+                    required 
+                 />
+                 <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+                    <LinkIcon size={12} />
+                    <span>Slug: </span>
+                    <span className="font-mono text-slate-600">/blog/{formData.slug || 'your-post-url'}</span>
+                 </div>
+               </div>
+               
+               <div className="pt-6 border-t">
+                 <label className="block text-sm font-bold text-[var(--color-text-primary)] mb-4">Post Content</label>
+                 <TipTapEditor 
+                   content={formData.content} 
+                   onChange={content => setFormData({ ...formData, content })}
+                 />
+               </div>
+             </form>
+          </div>
+
+          {/* Excerpt/Summary */}
+          <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-6 md:p-8">
+            <div className="flex items-center gap-2 mb-4">
+              <FileText size={18} className="text-blue-500" />
+              <h3 className="font-bold">Short Excerpt</h3>
+            </div>
+            <p className="text-sm text-[var(--color-text-secondary)] mb-4">
+              This summary will appear on the blog listing page and in search results. Keep it catchy!
+            </p>
+            <textarea 
+              className="input w-full min-h-[100px] text-sm" 
+              placeholder="Brief summary of the article..."
+              value={formData.excerpt}
+              onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
+            />
+          </div>
         </div>
         
-        <div className="space-y-6">
+        <div className="lg:col-span-4 space-y-6">
+           {/* Publishing Status Card */}
            <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-6">
-               <h3 className="font-bold mb-4">Publishing</h3>
-               <button type="submit" form="post-form" disabled={isSubmitting} className="btn-primary w-full mb-3">
-                 {isSubmitting ? 'Saving...' : 'Save Draft'}
-               </button>
-               <button type="button" onClick={() => navigate('/admin/posts')} className="btn-secondary w-full">Cancel</button>
+               <div className="flex items-center justify-between mb-4">
+                 <h3 className="font-bold flex items-center gap-2">
+                   <Globe size={18} className="text-green-500" />
+                   Publishing
+                 </h3>
+                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                   formData.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                 }`}>
+                   {formData.status}
+                 </span>
+               </div>
+               
+               <div className="space-y-4">
+                 <div>
+                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Change Status</label>
+                   <select 
+                      className="input w-full" 
+                      value={formData.status} 
+                      onChange={e => setFormData({ ...formData, status: e.target.value })}
+                   >
+                     <option value="draft">Draft</option>
+                     <option value="published">Published</option>
+                     <option value="archived">Archived</option>
+                   </select>
+                 </div>
+                 
+                 <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <div className="flex gap-3">
+                      <AlertCircle size={16} className="text-blue-600 shrink-0 mt-0.5" />
+                      <p className="text-xs text-blue-700">
+                        {formData.status === 'published' 
+                          ? 'This post will be visible to everyone on your website.' 
+                          : 'This post is currently hidden from the public site.'}
+                      </p>
+                    </div>
+                 </div>
+               </div>
            </div>
            
-           <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-6">
-               <h3 className="font-bold mb-4">Meta Data</h3>
+            {/* Cover Image & Type Card */}
+            <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <Layout size={18} className="text-purple-500" />
+                  <h3 className="font-bold">Visuals & Meta</h3>
+                </div>
 
-               <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-2">Cover Image</label>
-               <div className="space-y-2 mb-4">
-                 {formData.coverImage && <img src={formData.coverImage} className="w-full h-32 object-cover rounded border" alt="Cover" />}
-                 <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} className="text-[10px]" />
-               </div>
-               <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-2">Category</label>
-               <select className="input mb-4 text-sm py-2 px-3" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
-                 <option value="chip-level">Chip Level</option>
-                 <option value="hardware-tips">Hardware Tips</option>
-                 <option value="industry-updates">Industry Updates</option>
-               </select>
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <ImageIcon size={14} /> Cover Image
+                    </label>
+                    <div className="group relative aspect-video bg-slate-100 rounded-lg border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-all hover:border-blue-400">
+                      {formData.coverImage ? (
+                        <>
+                          <img src={formData.coverImage} className="w-full h-full object-cover" alt="Cover" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <label className="cursor-pointer bg-white text-slate-900 px-4 py-2 rounded-full text-xs font-bold shadow-lg">Change Image</label>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center p-4">
+                          <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                             <Plus size={20} className="text-slate-400" />
+                          </div>
+                          <p className="text-xs text-slate-400">Click to upload photo</p>
+                        </div>
+                      )}
+                      <input 
+                         type="file" 
+                         accept="image/*" 
+                         onChange={e => setImageFile(e.target.files?.[0] || null)} 
+                         className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                    </div>
+                  </div>
 
-               <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-2 mt-4">Status</label>
-               <select className="input mb-4 text-sm py-2 px-3" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}>
-                 <option value="draft">Draft</option>
-                 <option value="published">Published</option>
-                 <option value="archived">Archived</option>
-               </select>
-           </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Author Name</label>
+                    <input 
+                       type="text" 
+                       className="input w-full text-sm" 
+                       value={formData.author.name} 
+                       onChange={e => setFormData({ ...formData, author: { ...formData.author, name: e.target.value } })}
+                    />
+                  </div>
+                </div>
+            </div>
         </div>
       </div>
     </div>

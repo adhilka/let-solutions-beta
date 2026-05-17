@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { fetchActiveOffers } from '../lib/api';
 import { Calendar, MonitorSmartphone, Server, ShieldCheck } from 'lucide-react';
 import { getReadDb } from '../lib/firebase/loadBalancer';
@@ -13,12 +15,29 @@ import SEO from '../components/SEO';
 export default function AdmissionsPage() {
   const { settings } = useGlobalSettings();
   const admissionTitle = getAdmissionYearText(settings);
+  const navigate = useNavigate();
 
-  const { data: offers } = useQuery({
+  const { data: offers, isLoading } = useQuery({
     queryKey: ['active-offers'],
-    queryFn: fetchActiveOffers,
-    initialData: FAILSAFE_OFFERS
+    queryFn: fetchActiveOffers
   });
+
+  const filteredOffers = offers?.filter((o: any) => o.showOnAdmissions) || [];
+
+  useEffect(() => {
+    // If not loading and no filtered offers, redirect to contact
+    if (!isLoading && filteredOffers.length === 0) {
+      navigate('/contact', { replace: true });
+    }
+  }, [filteredOffers, isLoading, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -42,11 +61,11 @@ export default function AdmissionsPage() {
       <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
         {/* Dynamic Offers from API (Fallback to dummy if empty) */}
-        <div className="mb-16">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold mb-6">Current Offers & Notices</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {offers && offers.length > 0 && offers.filter((o: any) => o.showOnAdmissions).length > 0 ? (
-                offers.filter((o: any) => o.showOnAdmissions).map((offer: any) => (
+             {filteredOffers.length > 0 ? (
+                filteredOffers.map((offer: any) => (
                   <div key={offer.id} className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border-l-4 border-[var(--color-primary-500)] flex flex-col items-start">
                      {offer.badgeLabel && (
                        <span className={`badge ${offer.badgeLabel === 'LIMITED' ? 'badge-red' : 'badge-blue'} mb-3`}>{offer.badgeLabel}</span>
@@ -60,37 +79,15 @@ export default function AdmissionsPage() {
                 ))
              ) : (
                 <div className="col-span-full py-12 text-center text-[var(--color-text-secondary)]">
-                  <p>No active offers at the moment. Please check back later.</p>
+                  <p>Redirecting to application...</p>
                 </div>
              )}
           </div>
         </div>
 
-        {/* How to Apply */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6 text-center">Admission Process</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-             <div className="text-center p-6 border border-[var(--color-border)] rounded-[var(--radius-xl)] bg-white relative">
-                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[var(--color-primary-600)] text-white flex items-center justify-center font-bold">1</div>
-                 <h3 className="font-bold text-lg mb-2 mt-2">Enquire Online</h3>
-                 <p className="text-sm text-[var(--color-text-secondary)]">Browse our courses and fill out the online enquiry form with your basic details.</p>
-             </div>
-             <div className="text-center p-6 border border-[var(--color-border)] rounded-[var(--radius-xl)] bg-white relative">
-                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[var(--color-primary-600)] text-white flex items-center justify-center font-bold">2</div>
-                 <h3 className="font-bold text-lg mb-2 mt-2">Expert Counseling</h3>
-                 <p className="text-sm text-[var(--color-text-secondary)]">Our academic counselor will contact you to discuss your career goals and suggest the best fit.</p>
-             </div>
-             <div className="text-center p-6 border border-[var(--color-border)] rounded-[var(--radius-xl)] bg-white relative">
-                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[var(--color-primary-600)] text-white flex items-center justify-center font-bold">3</div>
-                 <h3 className="font-bold text-lg mb-2 mt-2">Confirm Admission</h3>
-                 <p className="text-sm text-[var(--color-text-secondary)]">Visit the institute to complete your registration, check the lab facilities, and join the batch.</p>
-             </div>
-          </div>
-          <div className="mt-12 text-center">
-             <a href="/contact" className="btn-primary" style={{ display: 'inline-block' }}>Start Your Application</a>
-          </div>
+        <div className="mt-12 text-center">
+           <a href="/contact" className="btn-primary" style={{ display: 'inline-block' }}>Start Your Application</a>
         </div>
-
       </div>
     </>
   );

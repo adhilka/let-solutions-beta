@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, MessageSquare, Star, Award, PenLine, Image as ImageIcon, Settings, LogOut, Menu, X, Users, Info, Layout } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
+import SEO from '../SEO';
 
 export default function AdminLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -25,6 +26,7 @@ export default function AdminLayout() {
     { label: 'Enquiries', icon: MessageSquare, href: '/admin/enquiries' },
     { label: 'Blog Posts', icon: PenLine, href: '/admin/posts' },
     { label: 'Feedbacks', icon: Star, href: '/admin/testimonials' },
+    { label: 'Gallery', icon: ImageIcon, href: '/admin/gallery' },
     { label: 'About Page', icon: Info, href: '/admin/about' },
     { label: 'Offers', icon: Award, href: '/admin/offers' },
     { label: 'Settings', icon: Settings, href: '/admin/settings' },
@@ -39,6 +41,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex bg-[var(--color-surface)] min-h-screen">
+      <SEO title="Admin Panel" noindex />
       {/* Sidebar Desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-[var(--color-primary-900)] text-white fixed h-full shrink-0">
         <div className="p-6">

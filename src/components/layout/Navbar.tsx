@@ -3,12 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
+import { useAuth } from '../../hooks/useAuth';
 import { AnimatePresence, motion } from 'motion/react';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { settings } = useGlobalSettings();
+  const { isAdmin } = useAuth();
   const location = useLocation();
 
   const isHome = location.pathname === '/';
@@ -26,9 +28,11 @@ export default function Navbar() {
     { label: 'Courses', href: '/courses' },
     { label: 'Admissions', href: '/admissions' },
     { label: 'Feedbacks', href: '/feedbacks' },
+    { label: 'Gallery', href: '/gallery' },
     { label: 'Blog', href: '/blog' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
+    { label: 'Admin', href: '/admin' },
   ];
 
   const logoUrl = settings?.branding?.logoUrl || "https://i.ibb.co/SXRGw6x8/logo.png";

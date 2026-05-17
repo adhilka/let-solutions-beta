@@ -235,3 +235,41 @@
 .input::placeholder { color: var(--color-muted); }
 .input.error { border-color: var(--color-error); }
 
+/* TipTap & Blog Content Styles for File Links */
+.tiptap .github-file-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  text-decoration: none !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.875rem !important;
+  transition: all 150ms ease !important;
+  margin: 0.5rem 0.25rem !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+.tiptap .github-file-link:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.tiptap .github-file-link span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background-color: #e2e8f0;
+  border-radius: 6px;
+  font-size: 1.1rem;
+}
+

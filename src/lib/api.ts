@@ -177,17 +177,39 @@ export async function fetchPostBySlug(slug: string) {
 export async function fetchLatestPosts() {
   try {
     return await withFailover(async (db) => {
+      // We still want only published posts
       const q = query(
         collection(db, 'artifacts/tech-institute/public/data/posts'), 
-        where('status', '==', 'published'),
-        orderBy('publishedAt', 'desc'),
-        limit(10)
+        where('status', '==', 'published')
+      );
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map(doc => docToData<any>(doc));
+      
+      // Sort in JS to handle documents missing publishedAt
+      return data.sort((a, b) => {
+        const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+        const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        return dateB - dateA;
+      }).slice(0, 12); // Limit to top 12
+    });
+  } catch (err) {
+    console.error("Error fetching latest posts:", err);
+    return [];
+  }
+}
+
+export async function fetchGalleryImages() {
+  try {
+    return await withFailover(async (db) => {
+      const q = query(
+        collection(db, 'artifacts/tech-institute/public/data/gallery'),
+        orderBy('createdAt', 'desc')
       );
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => docToData<any>(doc));
     });
   } catch (err) {
-    console.error("Error fetching latest posts:", err);
+    console.error("Error fetching gallery images:", err);
     return [];
   }
 }

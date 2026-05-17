@@ -1,12 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
-import { useQueryClient } from '@tanstack/react-query';
+import { collection, query, orderBy, getDocs, where } from 'firebase/firestore';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { Plus, Search, CheckCircle, XCircle, Trash2, Edit2 } from 'lucide-react';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 
 export default function AdminOffersPage() {
   const queryClient = useQueryClient();
+  
+  // Fetch all available links for suggestions
+  const { data: siteLinks } = useQuery({
+    queryKey: ['all-site-links'],
+    queryFn: async () => {
+      const db = getReadDb();
+      const staticLinks = [
+        { label: 'Home', value: '/' },
+        { label: 'Courses', value: '/courses' },
+        { label: 'About Us', value: '/about' },
+        { label: 'Contact', value: '/contact' },
+        { label: 'Admissions', value: '/admissions' },
+        { label: 'Blog', value: '/blog' },
+        { label: 'Feedbacks', value: '/feedbacks' },
+      ];
+
+      try {
+        // Fetch Courses
+        const coursesSnap = await getDocs(query(collection(db, 'artifacts/tech-institute/public/data/courses'), where('isActive', '==', true)));
+        const courseLinks = coursesSnap.docs.map(doc => ({
+          label: `Course: ${doc.data().title}`,
+          value: `/courses/${doc.data().slug}`
+        }));
+
+        // Fetch Posts
+        const postsSnap = await getDocs(query(collection(db, 'artifacts/tech-institute/public/data/posts'), where('status', '==', 'published')));
+        const postLinks = postsSnap.docs.map(doc => ({
+          label: `Blog: ${doc.data().title}`,
+          value: `/blog/${doc.data().slug}`
+        }));
+
+        return [...staticLinks, ...courseLinks, ...postLinks];
+      } catch (err) {
+        console.error("Error fetching links for suggestions:", err);
+        return staticLinks;
+      }
+    }
+  });
+
   const [offers, setOffers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -197,7 +236,19 @@ export default function AdminOffersPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">CTA Href</label>
-                  <input type="text" value={formData.ctaHref} onChange={e => setFormData({ ...formData, ctaHref: e.target.value })} className="w-full border rounded-lg px-3 py-2" placeholder="/contact" />
+                  <input 
+                    type="text" 
+                    list="site-links"
+                    value={formData.ctaHref} 
+                    onChange={e => setFormData({ ...formData, ctaHref: e.target.value })} 
+                    className="w-full border rounded-lg px-3 py-2" 
+                    placeholder="/contact" 
+                  />
+                  <datalist id="site-links">
+                    {siteLinks?.map((link, idx) => (
+                      <option key={idx} value={link.value}>{link.label}</option>
+                    ))}
+                  </datalist>
                 </div>
               </div>
 

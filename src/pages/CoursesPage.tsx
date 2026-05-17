@@ -23,8 +23,9 @@ export default function CoursesPage() {
   return (
     <>
       <SEO 
-        title="Technical Courses & Training Programs"
-        description="Explore our range of professional technical courses including Chip-Level Repairing, Networking, and CCTV systems."
+        title="Technical Skills Training Courses in Tirur"
+        description="Comprehensive training programs at Let Solutions including Smartphone Repair, Laptop Chip-Level engineering, CCTV, and Networking courses with 100% placement."
+        keywords="smartphone repair course tirur, laptop repair training kerala, chip level engineering malappuram, cctv technician training tirur, computer networking course kerala, hardware diploma courses"
         canonical="/courses"
       />
 
@@ -53,7 +54,11 @@ export default function CoursesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Real Data rendering logic will map over allCourses */}
             {allCourses.map(course => (
-              <div key={course.id} className="bg-white border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-primary-200)] flex flex-col h-full group">
+              <Link 
+                key={course.id} 
+                to={`/courses/${course.slug}`}
+                className="bg-white border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-primary-200)] flex flex-col h-full group"
+              >
                 <div className="relative aspect-video overflow-hidden">
                   <img 
                     src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&w=600&q=80'} 
@@ -93,12 +98,12 @@ export default function CoursesPage() {
                     <div className="font-bold text-lg text-[var(--color-primary-700)]">
                       {course.price > 0 ? `₹${course.price}` : 'Fee Details →'}
                     </div>
-                    <Link to={`/courses/${course.slug}`} className="btn-primary">
+                    <div className="btn-primary">
                       {course.price > 0 ? 'View Details' : 'Enquire Now'}
-                    </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

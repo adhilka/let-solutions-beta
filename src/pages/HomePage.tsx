@@ -138,8 +138,9 @@ export default function HomePage() {
   return (
     <>
       <SEO 
-        title="Technical Training Institute | Chip-Level Engineering & Networking"
-        description={`${tagline} Expert training in Laptop, Smartphone Repairing, Networking and CCTV in Tirur, Kerala.`}
+        title="Let Solutions | #1 Technical Training Institute in Tirur, Kerala"
+        description="Master Smartphone Repairing, Laptop Chip-Level Engineering, Networking & CCTV at Let Solutions. Tirur's leading technical institute with 100% placement assistance."
+        keywords="smartphone repair course tirur, laptop chip level training malappuram, cctv technician course kerala, networking training tirur, technical institute kerala, let solutions vocational training"
         structuredData={orgSchema}
       />
 
@@ -239,7 +240,11 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredCourses.map((course) => (
-              <div key={course.id} className="bg-white border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-primary-200)] flex flex-col h-full group">
+              <Link 
+                key={course.id} 
+                to={`/courses/${course.slug}`}
+                className="bg-white border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-primary-200)] flex flex-col h-full group"
+              >
                 <div className="relative aspect-video overflow-hidden">
                   <img 
                     src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'} 
@@ -279,12 +284,12 @@ export default function HomePage() {
                     <div className="font-bold text-lg text-[var(--color-primary-700)]">
                       {course.price > 0 ? `₹${course.price}` : 'Fee Details →'}
                     </div>
-                    <Link to={`/courses/${course.slug}`} className="btn-primary">
+                    <div className="btn-primary">
                       {course.price > 0 ? 'View Details' : 'Enquire Now'}
-                    </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

@@ -83,8 +83,9 @@ export default function TestimonialsPage() {
   return (
     <div className="bg-gray-50 min-h-screen pt-24 pb-16">
       <SEO 
-        title="Student Reviews & Success Stories"
-        description="Read real student reviews and success stories from Let Solutions Technical Institute. Join our successful alumni network."
+        title="Student Success Stories & Reviews | Let Solutions Tirur"
+        description="Read what our students say about their learning experience at Let Solutions. Join hundreds of successful technicians who started their journey with us."
+        keywords="student reviews let solutions, tirur technical institute testimonials, repair course success stories, malappuram tech training reviews"
         canonical="/feedbacks"
       />
 

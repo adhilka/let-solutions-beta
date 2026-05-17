@@ -39,9 +39,6 @@ export default function AdminEnquiriesPage() {
           <h1 className="text-3xl font-display font-bold text-[var(--color-text-primary)] mb-2">Enquiries</h1>
           <p className="text-[var(--color-text-secondary)] text-sm">Manage student leads and applications.</p>
         </div>
-        <button className="btn-secondary btn-sm" onClick={() => alert("CSV Export feature not implemented in this demo.")}>
-          Export CSV
-        </button>
       </div>
 
       <div className="space-y-4">

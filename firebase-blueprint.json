@@ -1,0 +1,22 @@
+{
+  "entities": {
+    "gallery_image": {
+      "title": "Gallery Image",
+      "description": "An image in the institute gallery",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "category": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["imageUrl", "createdAt"]
+    }
+  },
+  "firestore": {
+    "artifacts/tech-institute/public/data/gallery": {
+      "schema": "gallery_image",
+      "description": "Collection of gallery images"
+    }
+  }
+}

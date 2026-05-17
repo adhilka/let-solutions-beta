@@ -16,8 +16,9 @@ export default function AboutPage() {
   return (
     <>
       <SEO 
-        title="About Our Technical Institute"
-        description="Learn about Let Solutions Technical Institute, our history, vision, and the expert faculty training the next generation of engineers."
+        title="About Let Solutions | Premier Technical Training Center in Tirur"
+        description="Learn about Let Solutions, Tirur's leading technical institute. We provide industry-standard training in smartphone repair, laptop technology, and security systems since inception."
+        keywords="about let solutions, technical institute tirur, vocational training malappuram history, let solutions leadership, tech training mission kerala"
         canonical="/about"
       />
 
