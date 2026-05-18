@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import cors from 'cors';
+import compression from 'compression';
 import { createServer as createViteServer } from 'vite';
 import multer from 'multer';
 import dotenv from 'dotenv';
@@ -22,8 +23,21 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // Essential for Cloud Run/Load Balancer to trust headers like X-Forwarded-For
+  app.set('trust proxy', 1);
+
+  app.use(compression());
   app.use(cors());
   app.use(express.json());
+
+  // Health check endpoint for Load Balancer
+  app.get('/api/health', (req, res) => {
+    res.json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime()
+    });
+  });
 
   // API route for GitHub upload
   app.post('/api/github/upload', upload.single('file'), async (req, res) => {

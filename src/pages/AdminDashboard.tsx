@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, BookOpen, MessageSquare, Award, Plus, FileText, Settings, Layout } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
-import { getReadDb } from '../lib/firebase/loadBalancer';
+import { fetchDashboardStats, fetchRecentEnquiries } from '../lib/api';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -18,30 +17,13 @@ export default function AdminDashboard() {
     async function fetchData() {
       setIsLoading(true);
       try {
-        const db = getReadDb();
-        
-        // Fetch Stats
-        const coursesSnap = await getDocs(query(collection(db, 'artifacts/tech-institute/public/data/courses')));
-        const enquiriesSnap = await getDocs(query(collection(db, 'artifacts/tech-institute/public/data/enquiries')));
-        const testimonialsSnap = await getDocs(query(collection(db, 'artifacts/tech-institute/public/data/testimonials')));
-        const offersSnap = await getDocs(query(collection(db, 'artifacts/tech-institute/public/data/offers'), where('showOnAdmissions', '==', true)));
+        const [statsData, enquiriesData] = await Promise.all([
+          fetchDashboardStats(),
+          fetchRecentEnquiries(5)
+        ]);
 
-        setStats({
-          courses: coursesSnap.size,
-          enquiries: enquiriesSnap.size,
-          testimonials: testimonialsSnap.size,
-          offers: offersSnap.size
-        });
-
-        // Recent Enquiries
-        const enquiriesQ = query(
-          collection(db, 'artifacts/tech-institute/public/data/enquiries'),
-          orderBy('submittedAt', 'desc'),
-          limit(5)
-        );
-        const recentSnap = await getDocs(enquiriesQ);
-        setRecentEnquiries(recentSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-
+        if (statsData) setStats(statsData);
+        if (enquiriesData) setRecentEnquiries(enquiriesData);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {

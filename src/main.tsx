@@ -85,18 +85,32 @@ const showErrorCapsule = (message: string, stack: string = '', type: 'error' | '
 };
 
 window.addEventListener('error', (event) => {
+  const message = event.error?.message || event.message;
+  
+  // Filter out benign environment errors
+  if (message?.includes('WebSocket') || message?.includes('vite/client')) {
+    return;
+  }
+
   console.error("Global Error Caught:", event.error);
   showErrorCapsule(
-    event.error?.message || event.message,
+    message,
     event.error?.stack,
     'error'
   );
 });
 
 window.addEventListener('unhandledrejection', (event) => {
+  const message = event.reason?.message || String(event.reason);
+
+  // Filter out benign environment errors (Common in sandboxed dev environments)
+  if (message?.includes('WebSocket') || message?.includes('vite/client')) {
+    return;
+  }
+
   console.error("Unhandled Promise Rejection:", event.reason);
   showErrorCapsule(
-    event.reason?.message || String(event.reason),
+    message,
     event.reason?.stack,
     'rejection'
   );

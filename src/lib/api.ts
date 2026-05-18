@@ -9,20 +9,36 @@ export const docToData = <T>(docSnapshot: any): T => ({
 } as T);
 
 // Timeout helper for Firestore calls
-async function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 8000): Promise<T> {
-  let timeoutId: any;
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 20000): Promise<T> {
+  let timer: any;
+  let finished = false;
+
   const timeoutPromise = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(() => reject(new Error('FIRESTORE_TIMEOUT')), timeoutMs);
+    timer = setTimeout(() => {
+      if (!finished) {
+        finished = true;
+        reject(new Error(`FIRESTORE_TIMEOUT_${timeoutMs}ms`));
+      }
+    }, timeoutMs);
   });
-  
-  try {
-    const result = await Promise.race([promise, timeoutPromise]);
-    clearTimeout(timeoutId);
-    return result;
-  } catch (err) {
-    clearTimeout(timeoutId);
-    throw err;
-  }
+
+  return Promise.race([
+    promise.then(res => {
+      if (finished) return res;
+      finished = true;
+      clearTimeout(timer);
+      return res;
+    }).catch(err => {
+      if (finished) {
+        console.warn('Late Firestore error silenced:', err);
+        return undefined as any; 
+      }
+      finished = true;
+      clearTimeout(timer);
+      throw err;
+    }),
+    timeoutPromise
+  ]);
 }
 
 async function withFailover<T>(operation: (db: Firestore) => Promise<T>): Promise<T> {
@@ -31,18 +47,20 @@ async function withFailover<T>(operation: (db: Firestore) => Promise<T>): Promis
   try {
     return await withTimeout(operation(db));
   } catch (err: any) {
-    console.error(`[withFailover] Error on project ${currentProject}:`, err);
+    const errorMsg = err.message || String(err);
+    console.error(`[withFailover] Error on project ${currentProject}:`, errorMsg);
     
     // Only failover on timeout or connection issues
-    const isRetryable = err.message === 'FIRESTORE_TIMEOUT' || 
+    const isRetryable = errorMsg.includes('FIRESTORE_TIMEOUT') || 
                        err.code === 'unavailable' || 
-                       err.message?.includes('failed-precondition') ||
-                       err.message?.includes('offline');
+                       errorMsg.toLowerCase().includes('failed-precondition') ||
+                       errorMsg.toLowerCase().includes('offline');
 
     if (isRetryable) {
       reportReadFailure(currentProject);
       const nextDb = getReadDb();
-      console.log(`[withFailover] Retrying with opposite project...`);
+      const nextProject = lastUsed;
+      console.log(`[withFailover] Project ${currentProject} failed. Retrying with project ${nextProject}...`);
       return await withTimeout(operation(nextDb));
     }
     throw err;
@@ -171,6 +189,48 @@ export async function fetchPostBySlug(slug: string) {
   } catch (err) {
     console.error("Error fetching post by slug:", err);
     return null;
+  }
+}
+
+export async function fetchDashboardStats() {
+  try {
+    return await withFailover(async (db) => {
+      const projects = [
+        getDocs(query(collection(db, 'artifacts/tech-institute/public/data/courses'))),
+        getDocs(query(collection(db, 'artifacts/tech-institute/public/data/enquiries'))),
+        getDocs(query(collection(db, 'artifacts/tech-institute/public/data/testimonials'))),
+        getDocs(query(collection(db, 'artifacts/tech-institute/public/data/offers'), where('showOnAdmissions', '==', true)))
+      ];
+      
+      const [courses, enquiries, testimonials, offers] = await Promise.all(projects);
+      
+      return {
+        courses: courses.size,
+        enquiries: enquiries.size,
+        testimonials: testimonials.size,
+        offers: offers.size
+      };
+    });
+  } catch (err) {
+    console.error("Error fetching dashboard stats:", err);
+    return { courses: 0, enquiries: 0, testimonials: 0, offers: 0 };
+  }
+}
+
+export async function fetchRecentEnquiries(limitCount: number = 5) {
+  try {
+    return await withFailover(async (db) => {
+      const q = query(
+        collection(db, 'artifacts/tech-institute/public/data/enquiries'),
+        orderBy('submittedAt', 'desc'),
+        limit(limitCount)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => docToData<any>(doc));
+    });
+  } catch (err) {
+    console.error("Error fetching recent enquiries:", err);
+    return [];
   }
 }
 
