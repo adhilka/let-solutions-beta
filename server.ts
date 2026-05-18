@@ -32,11 +32,22 @@ async function startServer() {
 
   // Health check endpoint for Load Balancer
   app.get('/api/health', (req, res) => {
+    console.log('Health check requested at:', new Date().toISOString());
     res.json({ 
       status: 'ok', 
       timestamp: new Date().toISOString(),
       uptime: process.uptime()
     });
+  });
+
+  app.get('/api/ping', (req, res) => {
+    res.send('pong');
+  });
+
+  // Simple logging for all requests
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
   });
 
   // API route for GitHub upload
