@@ -46,7 +46,7 @@ export default function AdminLayout() {
       <aside className="hidden md:flex flex-col w-64 bg-[var(--color-primary-900)] text-white fixed h-full shrink-0">
         <div className="p-6">
           <Link to="/" className="flex items-center gap-2">
-            <img src={settings?.branding?.logoUrl || "https://i.ibb.co/Q705yK0d/logo-only.png"} alt={instituteName} className="h-8 w-auto brightness-0 invert" />
+            <img src={settings?.branding?.logoUrl || "https://i.ibb.co/DDmJMDzP/1000107715.png"} alt={instituteName} className="h-8 w-auto brightness-0 invert" />
             <span className="font-display font-bold text-lg tracking-tight text-white">{instituteName.split(' ')[0]}. Admin</span>
           </Link>
         </div>

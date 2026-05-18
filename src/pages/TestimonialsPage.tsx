@@ -80,6 +80,25 @@ export default function TestimonialsPage() {
     }
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Student Reviews",
+        "item": "https://letsolutions.in/feedbacks"
+      }
+    ]
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen pt-24 pb-16">
       <SEO 
@@ -87,6 +106,7 @@ export default function TestimonialsPage() {
         description="Read what our students say about their learning experience at Let Solutions. Join hundreds of successful technicians who started their journey with us."
         keywords="student reviews let solutions, tirur technical institute testimonials, repair course success stories, malappuram tech training reviews"
         canonical="/feedbacks"
+        structuredData={breadcrumbSchema}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

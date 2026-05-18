@@ -82,6 +82,25 @@ export default function ContactPage() {
     }
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Contact Us",
+        "item": "https://letsolutions.in/contact"
+      }
+    ]
+  };
+
   return (
     <>
       <SEO 
@@ -89,7 +108,7 @@ export default function ContactPage() {
         description="Get in touch with Let Solutions Technical Institute in Tirur. Call +91 95628 54444 or visit us for smartphone repair courses and technical training admissions."
         keywords="contact let solutions, tirur technical institute address, phone number smartphone repair course, malappuram tech training contact"
         canonical="/contact"
-        structuredData={contactSchema}
+        structuredData={[contactSchema, breadcrumbSchema]}
       />
 
       <div className="bg-[var(--color-primary-900)] text-white py-16">

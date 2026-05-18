@@ -39,25 +39,53 @@ export default function CourseDetailPage() {
 
   const course = serverCourse || FAILSAFE_COURSES.find(c => c.slug === slug);
 
-  // Structured Data for Course
-  const courseSchema = course ? {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    "name": course.title,
-    "description": course.shortDescription,
-    "provider": {
-      "@type": "EducationalOrganization",
-      "name": "Let Solutions Technical Institute",
-      "sameAs": "https://letsolutions.in"
+  // Structured Data for Course & Breadcrumbs
+  const detailSchemas = course ? [
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": course.title,
+      "description": course.shortDescription,
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "Let Solutions Technical Institute",
+        "sameAs": "https://letsolutions.in",
+        "url": "https://letsolutions.in",
+        "logo": "https://i.ibb.co/SXRGw6x8/logo.png"
+      },
+      "image": course.imageUrl,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "INR",
+        "price": course.price > 0 ? course.price : undefined,
+        "availability": "https://schema.org/InStock"
+      }
     },
-    "image": course.imageUrl,
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "INR",
-      "price": course.price > 0 ? course.price : undefined,
-      "availability": "https://schema.org/InStock"
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://letsolutions.in/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Courses",
+          "item": "https://letsolutions.in/courses"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": course.title,
+          "item": `https://letsolutions.in/courses/${course.slug}`
+        }
+      ]
     }
-  } : undefined;
+  ] : [];
 
   if (isLoading) {
     return (
@@ -102,7 +130,7 @@ export default function CourseDetailPage() {
         ogType="course"
         ogImage={course.imageUrl}
         canonical={`/courses/${course.slug}`}
-        structuredData={courseSchema}
+        structuredData={detailSchemas}
       />
 
       {/* Breadcrumbs */}

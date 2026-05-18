@@ -13,6 +13,25 @@ export default function AboutPage() {
 
   const about = aboutDataRaw || FAILSAFE_ABOUT;
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About Us",
+        "item": "https://letsolutions.in/about"
+      }
+    ]
+  };
+
   return (
     <>
       <SEO 
@@ -20,6 +39,7 @@ export default function AboutPage() {
         description="Learn about Let Solutions, Tirur's leading technical institute. We provide industry-standard training in smartphone repair, laptop technology, and security systems since inception."
         keywords="about let solutions, technical institute tirur, vocational training malappuram history, let solutions leadership, tech training mission kerala"
         canonical="/about"
+        structuredData={breadcrumbSchema}
       />
 
       {/* Hero */}

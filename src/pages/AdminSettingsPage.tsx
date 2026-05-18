@@ -40,7 +40,7 @@ export default function AdminSettingsPage() {
       instituteName: "Let Solutions",
       tagline: "A Ray of Hope For Your Future",
       logoUrl: "https://i.ibb.co/SXRGw6x8/logo.png",
-      faviconUrl: "https://i.ibb.co/cKW3pK30/logo-only.jpg",
+      faviconUrl: "https://i.ibb.co/DDmJMDzP/1000107715.png",
     },
     contact: {
       email: "info@letsolutions.in",

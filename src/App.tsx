@@ -31,6 +31,8 @@ import AdminGalleryPage from './pages/AdminGalleryPage';
 import AdminAboutPage from './pages/AdminAboutPage';
 import AdminHomeSettings from './pages/AdminHomeSettings';
 import LoginPage from './pages/LoginPage';
+import DesignSystemPage from './pages/DesignSystemPage';
+import AdminDocumentationPage from './pages/AdminDocumentationPage';
 import AdminRoute from './components/AdminRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './hooks/useAuth';
@@ -58,6 +60,8 @@ export default function App() {
                 <Route path="gallery" element={<GalleryPage />} />
                 <Route path="privacy" element={<PrivacyPolicyPage />} />
                 <Route path="terms" element={<TermsOfUsePage />} />
+                <Route path="design-system" element={<DesignSystemPage />} />
+                <Route path="admin-manual" element={<AdminDocumentationPage />} />
               </Route>
 
               {/* Admin Login Route */}

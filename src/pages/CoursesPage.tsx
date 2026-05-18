@@ -20,6 +20,64 @@ export default function CoursesPage() {
     return FAILSAFE_COURSES;
   }, [coursesDataRaw]);
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Courses",
+        "item": "https://letsolutions.in/courses"
+      }
+    ]
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What courses are offered at Let Solutions Tirur?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Let Solutions offers professional training in Smartphone Repair, Laptop Chip-Level Engineering, CCTV Technician courses, and Computer Networking (A+ N+)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Let Solutions provide job placement assistance?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we provide 100% job placement assistance to all our students who complete the course successfully. We have a strong network of electronics service centers and IT companies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are the courses practical-oriented?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our training is 100% practical-oriented. Students get to work with live projects and the latest laboratory equipment used in the industry."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is Let Solutions Technical Institute located?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We are located at the 1st Floor, Bus Stand Building, Tirur, Malappuram, Kerala - 676101."
+        }
+      }
+    ]
+  };
+
   return (
     <>
       <SEO 
@@ -27,6 +85,7 @@ export default function CoursesPage() {
         description="Comprehensive training programs at Let Solutions including Smartphone Repair, Laptop Chip-Level engineering, CCTV, and Networking courses with 100% placement."
         keywords="smartphone repair course tirur, laptop repair training kerala, chip level engineering malappuram, cctv technician training tirur, computer networking course kerala, hardware diploma courses"
         canonical="/courses"
+        structuredData={[breadcrumbSchema, faqSchema]}
       />
 
       <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">
@@ -107,6 +166,24 @@ export default function CoursesPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* FAQ Section */}
+      <div className="bg-slate-50 border-t border-[var(--color-border)] py-16 md:py-24">
+        <div className="container-narrow px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+            <p className="text-slate-600">Everything you need to know about our training programs.</p>
+          </div>
+          <div className="space-y-6">
+            {faqSchema.mainEntity.map((faq, index) => (
+              <div key={index} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 className="font-bold text-lg mb-2 text-slate-900">{faq.name}</h3>
+                <p className="text-slate-600 leading-relaxed">{faq.acceptedAnswer.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

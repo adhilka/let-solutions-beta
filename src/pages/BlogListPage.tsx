@@ -14,6 +14,25 @@ export default function BlogListPage() {
 
   const isGitHubLink = (url?: string) => url?.includes('github.com');
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://letsolutions.in/blog"
+      }
+    ]
+  };
+
   return (
     <>
       <SEO
@@ -21,6 +40,7 @@ export default function BlogListPage() {
         description="Stay updated with the latest in electronics repair, chip-level engineering tutorials, and institute news from Let Solutions Tirur."
         keywords="technical blog tirur, smartphone repair guides kerala, electronics repair tutorials malappuram, chip level engineering updates, tech training news kerala"
         canonical="/blog"
+        structuredData={breadcrumbSchema}
       />
 
       <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">

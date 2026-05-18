@@ -39,12 +39,33 @@ export default function AdmissionsPage() {
     );
   }
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Admissions",
+        "item": "https://letsolutions.in/admissions"
+      }
+    ]
+  };
+
   return (
     <>
       <SEO 
         title="Admissions & Scholarship Offers"
         description="Join Let Solutions Technical Institute. Apply now for professional technical courses with 100% job placement assistance."
+        keywords="technical institute admissions, smartphone repair scholarship, laptop training application tirur, vocational training maladppuram"
         canonical="/admissions"
+        structuredData={breadcrumbSchema}
       />
 
       <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">

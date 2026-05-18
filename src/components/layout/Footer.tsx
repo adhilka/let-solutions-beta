@@ -5,7 +5,7 @@ import { useGlobalSettings } from '../../hooks/useGlobalSettings';
 export default function Footer() {
   const { settings } = useGlobalSettings();
 
-  const logoUrl = settings?.branding?.logoUrl || "https://i.ibb.co/SXRGw6x8/logo.png";
+  const logoUrl = settings?.branding?.logoUrl || "https://i.ibb.co/DDmJMDzP/1000107715.png";
   const instituteName = settings?.branding?.instituteName || "Let Solutions";
   const tagline = settings?.branding?.tagline || "A Ray of Hope For Your Future. Empowering the next generation of technicians through accessible, high-end technical education.";
   const contact = settings?.contact || {

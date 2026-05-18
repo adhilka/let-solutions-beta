@@ -20,6 +20,25 @@ export default function GalleryPage() {
     selectedCategory === 'All' || img.category === selectedCategory.toLowerCase()
   ) || [];
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Gallery",
+        "item": "https://letsolutions.in/gallery"
+      }
+    ]
+  };
+
   return (
     <>
       <SEO 
@@ -27,6 +46,7 @@ export default function GalleryPage() {
         description="View our technical labs, classroom activities, and student achievements at Let Solutions. Tirur's most advanced chip-level engineering lab photos."
         keywords="technical institute gallery, tirur repair lab photos, vocational training student activities, electronics workshop kerala, let solutions campus tour"
         canonical="/gallery"
+        structuredData={breadcrumbSchema}
       />
 
       <div className="bg-[var(--color-primary-600)] text-white py-16">

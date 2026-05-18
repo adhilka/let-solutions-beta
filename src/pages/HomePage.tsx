@@ -112,28 +112,20 @@ export default function HomePage() {
   const heroDescription = homeContent?.hero?.description || tagline;
   const heroFeatures = homeContent?.hero?.features || ["100% Job Assistance", "Industry Experts", "Hands-on Labs"];
 
-  // Structured Data for Organization
-  const orgSchema = {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "name": "Let Solutions Technical Institute",
-    "url": "https://letsolutions.in",
-    "logo": "https://i.ibb.co/SXRGw6x8/logo.png",
-    "description": "Leading technical training institute specializing in chip-level repairing, networking, and security systems.",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "1st Floor, Bus Stand Building",
-      "addressLocality": "Tirur",
-      "addressRegion": "Kerala",
-      "postalCode": "676101",
-      "addressCountry": "IN"
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+91-9562854444",
-      "contactType": "customer service"
+  // Structured Data for Organization & WebSite
+  const homeSchemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Let Solutions",
+      "url": "https://letsolutions.in",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://letsolutions.in/courses?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
-  };
+  ];
 
   return (
     <>
@@ -141,7 +133,7 @@ export default function HomePage() {
         title="Let Solutions | #1 Technical Training Institute in Tirur, Kerala"
         description="Master Smartphone Repairing, Laptop Chip-Level Engineering, Networking & CCTV at Let Solutions. Tirur's leading technical institute with 100% placement assistance."
         keywords="smartphone repair course tirur, laptop chip level training malappuram, cctv technician course kerala, networking training tirur, technical institute kerala, let solutions vocational training"
-        structuredData={orgSchema}
+        structuredData={homeSchemas}
       />
 
       {/* Hero Section */}

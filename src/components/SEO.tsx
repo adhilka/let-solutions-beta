@@ -7,7 +7,7 @@ interface SEOProps {
   canonical?: string;
   ogType?: 'website' | 'article' | 'course';
   ogImage?: string;
-  structuredData?: object;
+  structuredData?: object | object[];
   noindex?: boolean;
 }
 
@@ -39,6 +39,8 @@ export default function SEO({
     "name": "Let Solutions Technical Institute",
     "url": "https://letsolutions.in",
     "logo": "https://i.ibb.co/SXRGw6x8/logo.png",
+    "image": "https://i.ibb.co/SXRGw6x8/logo.png",
+    "description": defaultDescription,
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "1st Floor, Bus Stand Building",
@@ -49,8 +51,9 @@ export default function SEO({
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+91-1234567890", // Placeholder or from settings if available
-      "contactType": "customer service"
+      "telephone": "+91-9562854444",
+      "contactType": "customer service",
+      "availableLanguage": ["English", "Malayalam", "Hindi"]
     },
     "sameAs": [
       "https://www.instagram.com/letsolutions",
@@ -58,7 +61,11 @@ export default function SEO({
     ]
   };
 
-  const finalStructuredData = structuredData || defaultStructuredData;
+  const schemas = Array.isArray(structuredData) 
+    ? [defaultStructuredData, ...structuredData] 
+    : structuredData 
+      ? [defaultStructuredData, structuredData] 
+      : [defaultStructuredData];
 
   return (
     <Helmet>
@@ -77,17 +84,21 @@ export default function SEO({
       <meta property="og:image" content={ogImage} />
       <meta property="og:url" content={fullCanonical} />
       <meta property="og:site_name" content={siteName} />
+      <meta property="og:locale" content="en_IN" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:site" content="@letsolutions" />
 
       {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(finalStructuredData)}
-      </script>
+      {schemas.map((schema, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+      ))}
     </Helmet>
   );
 }

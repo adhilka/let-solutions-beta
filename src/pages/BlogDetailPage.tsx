@@ -111,6 +111,32 @@ export default function BlogDetailPage() {
     "description": post.excerpt || post.content.substring(0, 160)
   } : undefined;
 
+  // Breadcrumb Schema
+  const breadcrumbSchema = post ? {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://letsolutions.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://letsolutions.in/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": post.title,
+        "item": `https://letsolutions.in/blog/${post.slug}`
+      }
+    ]
+  } : undefined;
+
   return (
     <>
       <SEO
@@ -120,7 +146,7 @@ export default function BlogDetailPage() {
         ogType="article"
         ogImage={post.coverImage}
         canonical={`/blog/${post.slug}`}
-        structuredData={articleSchema}
+        structuredData={[articleSchema, breadcrumbSchema].filter(Boolean) as object[]}
       />
 
       <div className="bg-slate-50 border-b">
