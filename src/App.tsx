@@ -34,6 +34,7 @@ import LoginPage from './pages/LoginPage';
 import DesignSystemPage from './pages/DesignSystemPage';
 import AdminDocumentationPage from './pages/AdminDocumentationPage';
 import SystemStatusPage from './pages/SystemStatusPage';
+import NotFoundPage from './pages/NotFoundPage';
 import AdminRoute from './components/AdminRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './hooks/useAuth';
@@ -64,6 +65,7 @@ export default function App() {
                 <Route path="design-system" element={<DesignSystemPage />} />
                 <Route path="admin-manual" element={<AdminDocumentationPage />} />
                 <Route path="status" element={<SystemStatusPage />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
 
               {/* Admin Login Route */}

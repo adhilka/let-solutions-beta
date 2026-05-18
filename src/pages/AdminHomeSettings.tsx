@@ -15,7 +15,7 @@ export default function AdminHomeSettings() {
       title: 'Master Chip-Level Engineering & Secure Your Future',
       subtitle: 'Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.',
       description: '',
-      bgType: 'solid',
+      bgType: 'photo',
       imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       features: ['100% Job Assistance', 'Industry Experts', 'Hands-on Labs']
     }

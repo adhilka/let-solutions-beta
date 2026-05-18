@@ -50,6 +50,7 @@ export default function AdminOffersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     headline: '',
@@ -61,6 +62,37 @@ export default function AdminOffersPage() {
     order: 0,
     imageUrl: ''
   });
+
+  const openEditModal = (offer: any) => {
+    setEditingId(offer.id);
+    setFormData({
+      headline: offer.headline || '',
+      subtext: offer.subtext || '',
+      badgeLabel: offer.badgeLabel || 'LIMITED',
+      ctaLabel: offer.ctaLabel || 'Claim Now',
+      ctaHref: offer.ctaHref || '/contact',
+      showOnAdmissions: offer.showOnAdmissions ?? true,
+      order: offer.order || 0,
+      imageUrl: offer.imageUrl || ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const openAddModal = () => {
+    setEditingId(null);
+    setFormData({
+      headline: '',
+      subtext: '',
+      badgeLabel: 'LIMITED',
+      ctaLabel: 'Claim Now',
+      ctaHref: '/contact',
+      showOnAdmissions: true,
+      order: 0,
+      imageUrl: ''
+    });
+    setImageFile(null);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     fetchOffers();
@@ -117,17 +149,24 @@ export default function AdminOffersPage() {
         finalImageUrl = res.url;
       }
 
-      const newId = `offer-${Date.now()}`;
+      const id = editingId || `offer-${Date.now()}`;
       const offerData = { ...formData, imageUrl: finalImageUrl };
-      await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'offers', newId], offerData);
-      setOffers(prev => [...prev, { id: newId, ...offerData }]);
+      await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'offers', id], offerData);
+      
+      if (editingId) {
+        setOffers(prev => prev.map(o => o.id === editingId ? { id, ...offerData } : o));
+      } else {
+        setOffers(prev => [...prev, { id, ...offerData }]);
+      }
+
       queryClient.invalidateQueries({ queryKey: ['active-offers'] });
       setIsModalOpen(false);
+      setEditingId(null);
       setFormData({ headline: '', subtext: '', badgeLabel: 'LIMITED', ctaLabel: 'Claim Now', ctaHref: '/contact', showOnAdmissions: true, order: 0, imageUrl: '' });
       setImageFile(null);
     } catch (error) {
-      console.error('Error adding offer:', error);
-      alert('Failed to add offer');
+      console.error('Error saving offer:', error);
+      alert('Failed to save offer');
     } finally {
       setIsSubmitting(false);
     }
@@ -141,8 +180,8 @@ export default function AdminOffersPage() {
           <p className="mt-1 text-sm text-gray-500">Manage admission offers, scholarships, and notices.</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition"
+          onClick={openAddModal}
+          className="bg-[var(--color-primary-600)] text-white px-4 py-2 rounded-lg flex items-center hover:bg-[var(--color-primary-700)] transition"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Offer
@@ -151,7 +190,7 @@ export default function AdminOffersPage() {
 
       {isLoading ? (
         <div className="flex justify-center p-8">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+          <div className="animate-spin w-8 h-8 border-4 border-[var(--color-primary-500)] border-t-transparent rounded-full" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -166,6 +205,13 @@ export default function AdminOffersPage() {
                     {offer.showOnAdmissions ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                   </button>
                   <button 
+                    onClick={() => openEditModal(offer)}
+                    className="p-1.5 text-gray-500 hover:text-[var(--color-primary-600)] hover:bg-blue-50 rounded-md"
+                    title="Edit"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button 
                     onClick={() => handleDelete(offer.id!)}
                     className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md"
                     title="Delete"
@@ -176,11 +222,11 @@ export default function AdminOffersPage() {
               
               <div className="flex items-start gap-4 mb-3 w-full">
                 {offer.imageUrl && <img src={offer.imageUrl} className="w-16 h-16 object-cover rounded-lg border flex-shrink-0" alt="" />}
-                <div className="flex-grow min-w-0">
+                <div className="flex-grow min-w-0 pr-24">
                   {offer.badgeLabel && (
-                    <span className={`badge ${offer.badgeLabel === 'LIMITED' ? 'badge-red' : 'badge-blue'} mb-1 inline-block`}>{offer.badgeLabel}</span>
+                    <span className={`badge ${offer.badgeLabel === 'LIMITED' ? 'badge-red' : 'badge-blue'} mb-1 inline-block text-[10px]`}>{offer.badgeLabel}</span>
                   )}
-                  <h3 className="font-bold text-lg leading-tight truncate pr-10">{offer.headline}</h3>
+                  <h3 className="font-bold text-lg leading-tight truncate">{offer.headline}</h3>
                 </div>
               </div>
               <p className="text-sm text-[var(--color-text-secondary)] mb-4 flex-grow line-clamp-2">{offer.subtext}</p>
@@ -195,12 +241,12 @@ export default function AdminOffersPage() {
         </div>
       )}
 
-      {/* Add Offer Modal */}
+      {/* Add/Edit Offer Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-xl font-bold text-gray-900">Add New Offer</h2>
+              <h2 className="text-xl font-bold text-gray-900">{editingId ? 'Edit Offer' : 'Add New Offer'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <XCircle className="w-6 h-6" />
               </button>
@@ -223,8 +269,13 @@ export default function AdminOffersPage() {
                   <input type="text" value={formData.badgeLabel} onChange={e => setFormData({ ...formData, badgeLabel: e.target.value })} className="w-full border rounded-lg px-3 py-2" placeholder="e.g. EARLY BIRD" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Thumbnail</label>
-                  <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} className="w-full text-xs" />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Offer Photo (Banner)</label>
+                  <div className="flex items-center gap-3">
+                    {formData.imageUrl && !imageFile && (
+                      <img src={formData.imageUrl} className="w-10 h-10 object-cover rounded border" alt="" />
+                    )}
+                    <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} className="w-full text-xs" />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
@@ -253,13 +304,15 @@ export default function AdminOffersPage() {
               </div>
 
               <div className="flex items-center mt-4">
-                <input type="checkbox" id="showOnAdmissions" checked={formData.showOnAdmissions} onChange={e => setFormData({ ...formData, showOnAdmissions: e.target.checked })} className="mr-2" />
-                <label htmlFor="showOnAdmissions" className="text-sm font-medium text-gray-700">Show on Admissions Page</label>
+                <input type="checkbox" id="showOnAdmissions" checked={formData.showOnAdmissions} onChange={e => setFormData({ ...formData, showOnAdmissions: e.target.checked })} className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-2" />
+                <label htmlFor="showOnAdmissions" className="text-sm font-medium text-gray-700">Show on Admissions & Home Page</label>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-6">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border rounded-lg" disabled={isSubmitting}>Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg" disabled={isSubmitting}>{isSubmitting ? 'Saving...' : 'Save Offer'}</button>
+              <div className="flex justify-end space-x-3 pt-6 border-t">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border rounded-lg hover:bg-gray-50" disabled={isSubmitting}>Cancel</button>
+                <button type="submit" className="px-6 py-2 bg-[var(--color-primary-600)] text-white rounded-lg font-bold hover:bg-[var(--color-primary-700)] shadow-lg shadow-blue-100" disabled={isSubmitting}>
+                  {isSubmitting ? 'Saving...' : (editingId ? 'Update Offer' : 'Create Offer')}
+                </button>
               </div>
             </form>
           </div>

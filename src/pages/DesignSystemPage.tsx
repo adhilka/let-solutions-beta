@@ -117,23 +117,23 @@ export default function DesignSystemPage() {
             <div>
               <h3 className="text-xl font-bold mb-6">Primary Blue</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-                <Swatch name="50" hex="#EFF6FF" variable="--color-primary-50" />
-                <Swatch name="100" hex="#DBEAFE" variable="--color-primary-100" />
-                <Swatch name="200" hex="#BFDBFE" variable="--color-primary-200" />
-                <Swatch name="400" hex="#60A5FA" variable="--color-primary-400" />
-                <Swatch name="500" hex="#3B82F6" variable="--color-primary-500" />
-                <Swatch name="600" hex="#2563EB" variable="--color-primary-600" />
-                <Swatch name="700" hex="#1D4ED8" variable="--color-primary-700" />
-                <Swatch name="900" hex="#1E3A8A" variable="--color-primary-900" />
+                <Swatch name="50" hex="#EEF4F9" variable="--color-primary-50" />
+                <Swatch name="100" hex="#DAE6F0" variable="--color-primary-100" />
+                <Swatch name="200" hex="#B7CCDE" variable="--color-primary-200" />
+                <Swatch name="400" hex="#5D8EBA" variable="--color-primary-400" />
+                <Swatch name="500" hex="#265D8C" variable="--color-primary-500" />
+                <Swatch name="600" hex="#1F4A70" variable="--color-primary-600" />
+                <Swatch name="700" hex="#183855" variable="--color-primary-700" />
+                <Swatch name="900" hex="#0B1A27" variable="--color-primary-900" />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div>
                 <h3 className="text-xl font-bold mb-6">Neutrals</h3>
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Swatch name="Surface" hex="#F8FAFF" variable="--color-surface" />
-                  <Swatch name="Surface Alt" hex="#EEF3FB" variable="--color-surface-alt" />
-                  <Swatch name="Border" hex="#D1E3FF" variable="--color-border" />
+                  <Swatch name="Surface" hex="#F9FBFE" variable="--color-surface" />
+                  <Swatch name="Surface Alt" hex="#F1F5F9" variable="--color-surface-alt" />
+                  <Swatch name="Border" hex="#E2E8F0" variable="--color-border" />
                 </div>
               </div>
               <div>

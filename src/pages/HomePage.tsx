@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent } from '../lib/api';
+import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent, fetchActiveOffers } from '../lib/api';
 import { Testimonial } from '../types';
 import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import { dualWrite } from '../lib/firebase/dualWrite';
@@ -35,6 +35,11 @@ export default function HomePage() {
   });
 
   const feedbacks = (feedbacksData && feedbacksData.length > 0) ? feedbacksData : FAILSAFE_TESTIMONIALS;
+
+  const { data: offers } = useQuery({
+    queryKey: ['active-offers-home'],
+    queryFn: fetchActiveOffers
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,6 +132,8 @@ export default function HomePage() {
     }
   ];
 
+  const isPhotoBg = homeContent?.hero?.bgType !== 'solid';
+
   return (
     <>
       <SEO 
@@ -137,49 +144,49 @@ export default function HomePage() {
       />
 
       {/* Hero Section */}
-      <section className={`relative overflow-hidden -mt-16 ${homeContent?.hero?.bgType === 'photo' ? 'pt-[9.5rem] pb-20 md:pt-[11.5rem] md:pb-32' : 'bg-[var(--color-surface)] pt-28 pb-16 md:pt-36 md:pb-24 2xl:pt-44 2xl:pb-32'}`}>
-        {homeContent?.hero?.bgType === 'photo' && (
+      <section className={`relative overflow-hidden -mt-16 ${isPhotoBg ? 'pt-[9.5rem] pb-20 md:pt-[11.5rem] md:pb-32' : 'bg-[var(--color-surface)] pt-28 pb-16 md:pt-36 md:pb-24 2xl:pt-44 2xl:pb-32'}`}>
+        {isPhotoBg && (
           <div className="absolute inset-0 z-0">
              <img src={heroImage} alt="Hero Background" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30"></div>
           </div>
         )}
-        <div className={`relative z-10 container-wide px-4 sm:px-6 lg:px-8 ${homeContent?.hero?.bgType === 'photo' ? 'flex flex-col items-center text-center max-w-4xl mx-auto' : 'grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 2xl:gap-24 items-center'}`}>
-          <div className={`space-y-8 animate-fade-up ${homeContent?.hero?.bgType === 'photo' ? 'flex flex-col items-center' : ''}`}>
-            <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-xs uppercase tracking-wide ${homeContent?.hero?.bgType === 'photo' ? 'bg-white/20 text-white backdrop-blur-md border border-white/20 shadow-sm' : 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'}`}>
-              <span className={`w-2 h-2 rounded-full animate-pulse ${homeContent?.hero?.bgType === 'photo' ? 'bg-white' : 'bg-[var(--color-primary-500)]'}`}></span>
+        <div className={`relative z-10 container-wide px-4 sm:px-6 lg:px-8 ${isPhotoBg ? 'flex flex-col items-center text-center max-w-4xl mx-auto' : 'grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 2xl:gap-24 items-center'}`}>
+          <div className={`space-y-8 animate-fade-up ${isPhotoBg ? 'flex flex-col items-center' : ''}`}>
+            <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-xs uppercase tracking-wide ${isPhotoBg ? 'bg-white/20 text-white backdrop-blur-md border border-white/20 shadow-sm' : 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'}`}>
+              <span className={`w-2 h-2 rounded-full animate-pulse ${isPhotoBg ? 'bg-white' : 'bg-[var(--color-primary-500)]'}`}></span>
               {admissionStatus}
             </span>
             
-            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] ${homeContent?.hero?.bgType === 'photo' ? 'text-white drop-shadow-xl' : 'text-[var(--color-text-primary)]'}`}>
+            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] ${isPhotoBg ? 'text-white drop-shadow-xl' : 'text-[var(--color-text-primary)]'}`}>
               {heroTitle}
             </h1>
             
-            <p className={`text-lg leading-relaxed max-w-xl ${homeContent?.hero?.bgType === 'photo' ? 'text-slate-100 drop-shadow-lg font-medium' : 'text-[var(--color-text-secondary)]'}`}>
+            <p className={`text-lg leading-relaxed max-w-xl ${isPhotoBg ? 'text-slate-100 drop-shadow-lg font-medium' : 'text-[var(--color-text-secondary)]'}`}>
               {heroDescription} {heroSubtitle}
             </p>
             
-            <div className={`flex flex-col sm:flex-row gap-4 ${homeContent?.hero?.bgType === 'photo' ? 'justify-center w-full' : ''}`}>
-              <Link to="/admissions" className={`text-center ${homeContent?.hero?.bgType === 'photo' ? 'bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl shadow-blue-900/50' : 'btn-primary px-8 py-4 text-base'}`}>
+            <div className={`flex flex-col sm:flex-row gap-4 ${isPhotoBg ? 'justify-center w-full' : ''}`}>
+              <Link to="/admissions" className={`text-center ${isPhotoBg ? 'bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl shadow-blue-900/50' : 'btn-primary px-8 py-4 text-base'}`}>
                 Enroll Now
               </Link>
-              <Link to="/courses" className={`text-center ${homeContent?.hero?.bgType === 'photo' ? `bg-blue-900/40 backdrop-blur-md border border-blue-200/30 hover:bg-blue-800/60 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl` : 'btn-secondary px-8 py-4 text-base'}`}>
+              <Link to="/courses" className={`text-center ${isPhotoBg ? `bg-blue-900/40 backdrop-blur-md border border-blue-200/30 hover:bg-blue-800/60 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl` : 'btn-secondary px-8 py-4 text-base'}`}>
                 Browse Courses
               </Link>
             </div>
             
-            <div className={`flex flex-wrap gap-x-6 gap-y-3 pt-4 border-t ${homeContent?.hero?.bgType === 'photo' ? 'border-white/20 justify-center' : 'border-[var(--color-border)]'}`}>
+            <div className={`flex flex-wrap gap-x-6 gap-y-3 pt-4 border-t ${isPhotoBg ? 'border-white/20 justify-center' : 'border-[var(--color-border)]'}`}>
               {heroFeatures.map((feature: string, idx: number) => (
-                <div key={idx} className={`flex items-center gap-2 ${homeContent?.hero?.bgType === 'photo' ? 'text-white' : ''}`}>
-                  <CheckCircle size={18} className={homeContent?.hero?.bgType === 'photo' ? 'text-blue-400' : 'text-[var(--color-success)]'} />
+                <div key={idx} className={`flex items-center gap-2 ${isPhotoBg ? 'text-white' : ''}`}>
+                  <CheckCircle size={18} className={isPhotoBg ? 'text-blue-400' : 'text-[var(--color-success)]'} />
                   <span className="text-sm font-medium drop-shadow-md">{feature}</span>
                 </div>
               ))}
             </div>
           </div>
           
-          {homeContent?.hero?.bgType !== 'photo' && (
+          {!isPhotoBg && (
             <div className="relative">
               {/* Visual placeholder for hero */}
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary-200)] to-[var(--color-primary-50)] rounded-[var(--radius-2xl)] blur-3xl opacity-50 -z-10 transform translate-x-4 translate-y-4"></div>
@@ -192,6 +199,7 @@ export default function HomePage() {
           )}
         </div>
       </section>
+
 
       {/* Stats Bar */}
       <section className="bg-white border-y border-[var(--color-border)] py-8 md:py-12">
@@ -287,23 +295,68 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Offer Banner */}
-      <section className="bg-[var(--color-primary-600)] text-white py-12 my-8">
-        <div className="max-w-[var(--container-lg)] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div className="flex items-start gap-4">
-            <div className="p-3 bg-white/20 rounded-full hidden md:block">
-              <Award size={32} />
+      {/* Offer Banner / Dynamic Offers */}
+      {offers && offers.length > 0 ? (
+        <section className="py-16 md:py-24 bg-[var(--color-primary-50)]">
+          <div className="container-wide px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <span className="badge badge-blue mb-3">Limited Opportunities</span>
+              <h2 className="text-3xl font-bold text-slate-900">Current Offers & Scholarships</h2>
             </div>
-            <div>
-              <h2 className="text-2xl font-bold mb-2">{admissionStatus} — New Batch!</h2>
-              <p className="text-[var(--color-primary-100)]">Register now to secure your seat and avail early enrollment scholarship facilities.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {offers.map((offer: any) => (
+                <div key={offer.id} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col group">
+                  <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-slate-100 italic">
+                    {offer.imageUrl ? (
+                      <img src={offer.imageUrl} alt={offer.headline} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-[var(--color-primary-200)]">
+                        <Award size={48} />
+                      </div>
+                    )}
+                    {offer.badgeLabel && (
+                      <div className="absolute top-4 left-4 shadow-lg">
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-tighter text-white ${
+                          offer.badgeLabel.toLowerCase().includes('limit') || offer.badgeLabel.toLowerCase().includes('off')
+                          ? 'bg-red-600' 
+                          : 'bg-[var(--color-primary-600)]'
+                        }`}>
+                          {offer.badgeLabel}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-extrabold mb-3 line-clamp-1">{offer.headline}</h3>
+                  <p className="text-slate-600 text-sm mb-6 line-clamp-2 leading-relaxed h-10">{offer.subtext}</p>
+                  <Link 
+                    to={offer.ctaHref || '/admissions'} 
+                    className="mt-auto flex items-center justify-center gap-2 w-full py-3 bg-[var(--color-primary-600)] text-white font-bold rounded-xl hover:bg-[var(--color-primary-700)] transition-colors shadow-lg shadow-blue-100"
+                  >
+                    {offer.ctaLabel || 'Enquire Now'} <ArrowRight size={16} />
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
-          <Link to="/admissions" className="bg-white text-[var(--color-primary-700)] font-bold py-3 px-8 rounded-md hover:bg-gray-100 transition-colors whitespace-nowrap">
-            Register Today
-          </Link>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="bg-[var(--color-primary-600)] text-white py-12 my-8">
+          <div className="max-w-[var(--container-lg)] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-white/20 rounded-full hidden md:block">
+                <Award size={32} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold mb-2">{admissionStatus} — New Batch!</h2>
+                <p className="text-[var(--color-primary-100)]">Register now to secure your seat and avail early enrollment scholarship facilities.</p>
+              </div>
+            </div>
+            <Link to="/admissions" className="bg-white text-[var(--color-primary-700)] font-bold py-3 px-8 rounded-md hover:bg-gray-100 transition-colors whitespace-nowrap">
+              Register Today
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Featured Feedbacks */}
       {feedbacks.length > 0 && (

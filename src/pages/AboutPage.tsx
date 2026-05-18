@@ -43,14 +43,14 @@ export default function AboutPage() {
       />
 
       {/* Hero */}
-      <section className="bg-[var(--color-primary-900)] text-white py-20 md:py-32 relative overflow-hidden">
+      <section className="bg-[var(--color-primary-900)] py-20 md:py-32 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-           <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+           <svg className="w-full h-full text-white" viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M0 100 C 20 0 50 0 100 100 Z" fill="currentColor" />
            </svg>
         </div>
         <div className="container-wide px-4 text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6">{about.hero.title}</h1>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 text-white">{about.hero.title}</h1>
           <p className="text-xl md:text-2xl text-[var(--color-primary-200)] leading-relaxed max-w-3xl mx-auto">
             {about.hero.subtitle}
           </p>

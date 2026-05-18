@@ -13,7 +13,7 @@ export function getAdmissionYearText(settings: any): string {
   const currentYear = now.getFullYear();
   
   let startYear, endYear;
-  if (currentMonth >= 5) { // June or later
+  if (currentMonth >= 4) { // May or later
     startYear = currentYear;
     endYear = currentYear + 1;
   } else {

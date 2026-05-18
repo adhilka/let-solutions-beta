@@ -19,7 +19,7 @@ export const FAILSAFE_SETTINGS = {
   },
   admissions: {
     mode: 'auto',
-    manualText: 'Admission Open 2024-25'
+    manualText: 'Admission Open 2026-27'
   },
   announcement: {
     enabled: true,

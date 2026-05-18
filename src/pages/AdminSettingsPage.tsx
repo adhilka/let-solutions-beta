@@ -57,7 +57,7 @@ export default function AdminSettingsPage() {
     },
     admissions: {
       mode: "auto",
-      manualText: "Admission Open 2024-25",
+      manualText: "Admission Open 2026-27",
     },
   });
 
@@ -507,7 +507,7 @@ export default function AdminSettingsPage() {
                     <input
                       type="text"
                       className="input"
-                      placeholder="e.g. Admission Open 2024-25"
+                      placeholder="e.g. Admission Open 2026-27"
                       value={settings.admissions?.manualText || ""}
                       onChange={(e) =>
                         updateSetting(

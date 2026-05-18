@@ -49,9 +49,9 @@ export default function GalleryPage() {
         structuredData={breadcrumbSchema}
       />
 
-      <div className="bg-[var(--color-primary-600)] text-white py-16">
+      <div className="bg-[var(--color-primary-600)] py-16">
         <div className="container-wide px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Our Gallery</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-white">Our Gallery</h1>
           <p className="text-xl text-[var(--color-primary-100)] max-w-2xl mx-auto">
             A glimpse into the hands-on learning environment and student life at our institute.
           </p>

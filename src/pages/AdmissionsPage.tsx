@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { fetchActiveOffers } from '../lib/api';
-import { Calendar, MonitorSmartphone, Server, ShieldCheck } from 'lucide-react';
+import { Calendar, MonitorSmartphone, Server, ShieldCheck, ArrowRight } from 'lucide-react';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { useGlobalSettings } from '../hooks/useGlobalSettings';
@@ -81,33 +81,79 @@ export default function AdmissionsPage() {
 
       <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
-        {/* Dynamic Offers from API (Fallback to dummy if empty) */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6">Current Offers & Notices</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Dynamic Offers Redesigned with Image Support */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-display font-extrabold text-slate-900 tracking-tight">Current Offers & Notices</h2>
+            <div className="hidden md:block h-[1px] flex-grow mx-8 bg-slate-100"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
              {filteredOffers.length > 0 ? (
                 filteredOffers.map((offer: any) => (
-                  <div key={offer.id} className="bg-white p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border-l-4 border-[var(--color-primary-500)] flex flex-col items-start">
-                     {offer.badgeLabel && (
-                       <span className={`badge ${offer.badgeLabel === 'LIMITED' ? 'badge-red' : 'badge-blue'} mb-3`}>{offer.badgeLabel}</span>
-                     )}
-                     <h3 className="font-bold text-lg mb-2">{offer.headline}</h3>
-                     <p className="text-sm text-[var(--color-text-secondary)] mb-4 flex-grow">{offer.subtext}</p>
-                     {offer.ctaLabel && (
-                       <a href={offer.ctaHref} className="btn-secondary btn-sm">{offer.ctaLabel}</a>
-                     )}
+                  <div key={offer.id} className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden">
+                     {/* Image Header */}
+                     <div className="relative aspect-[16/10] bg-slate-50 overflow-hidden">
+                        {offer.imageUrl ? (
+                          <img 
+                            src={offer.imageUrl} 
+                            alt={offer.headline} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-50)] text-[var(--color-primary-200)]">
+                            <MonitorSmartphone size={48} strokeWidth={1.5} />
+                          </div>
+                        )}
+                        
+                        {offer.badgeLabel && (
+                          <div className="absolute top-4 left-4">
+                            <span className={`px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest shadow-lg ${
+                              offer.badgeLabel.toLowerCase().includes('limit') || offer.badgeLabel.toLowerCase().includes('off')
+                              ? 'bg-red-600 text-white' 
+                              : 'bg-[var(--color-primary-600)] text-white'
+                            }`}>
+                              {offer.badgeLabel}
+                            </span>
+                          </div>
+                        )}
+                     </div>
+
+                     <div className="p-8 flex flex-col flex-grow">
+                        <h3 className="font-display font-extrabold text-xl text-slate-900 mb-3 group-hover:text-[var(--color-primary-600)] transition-colors">
+                          {offer.headline}
+                        </h3>
+                        <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">
+                          {offer.subtext}
+                        </p>
+                        
+                        {offer.ctaLabel && (
+                          <a 
+                            href={offer.ctaHref || '/admissions'} 
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-md active:scale-95"
+                          >
+                            {offer.ctaLabel}
+                            <Calendar size={16} />
+                          </a>
+                        )}
+                     </div>
                   </div>
                 ))
              ) : (
-                <div className="col-span-full py-12 text-center text-[var(--color-text-secondary)]">
-                  <p>Redirecting to application...</p>
+                <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-dashed border-slate-200">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                     <ShieldCheck size={32} />
+                  </div>
+                  <p className="text-slate-400 font-medium italic">Redirecting to our contact specialists...</p>
                 </div>
              )}
           </div>
         </div>
 
-        <div className="mt-12 text-center">
-           <a href="/contact" className="btn-primary" style={{ display: 'inline-block' }}>Start Your Application</a>
+        <div className="mt-16 text-center">
+           <a href="/contact" className="btn-primary inline-flex items-center gap-3 px-10 py-5 rounded-[2rem] text-lg shadow-xl shadow-blue-100 hover:scale-105 transition-transform active:scale-95">
+              Start Your Application <ArrowRight size={20} />
+           </a>
         </div>
       </div>
     </>
