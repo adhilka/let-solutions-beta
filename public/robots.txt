@@ -1,6 +1,9 @@
 User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /admin/login
+Disallow: /admin/
+Disallow: /login
+Disallow: /status
+Disallow: /design-system
+Disallow: /admin-manual
+Disallow: /api/
 
-Sitemap: https://letsolutions.in/sitemap.xml
+Sitemap: https://let-solutions.in/sitemap.xml

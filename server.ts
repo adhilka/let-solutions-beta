@@ -33,6 +33,7 @@ async function startServer() {
   // Health check endpoint for Load Balancer
   app.get('/api/health', (req, res) => {
     console.log('Health check requested at:', new Date().toISOString());
+    res.set('X-Robots-Tag', 'noindex');
     res.json({ 
       status: 'ok', 
       timestamp: new Date().toISOString(),
