@@ -33,6 +33,7 @@ import AdminHomeSettings from './pages/AdminHomeSettings';
 import LoginPage from './pages/LoginPage';
 import DesignSystemPage from './pages/DesignSystemPage';
 import AdminDocumentationPage from './pages/AdminDocumentationPage';
+import SystemStatusPage from './pages/SystemStatusPage';
 import AdminRoute from './components/AdminRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './hooks/useAuth';
@@ -62,6 +63,7 @@ export default function App() {
                 <Route path="terms" element={<TermsOfUsePage />} />
                 <Route path="design-system" element={<DesignSystemPage />} />
                 <Route path="admin-manual" element={<AdminDocumentationPage />} />
+                <Route path="status" element={<SystemStatusPage />} />
               </Route>
 
               {/* Admin Login Route */}
