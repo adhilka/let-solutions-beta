@@ -10,7 +10,8 @@ import {
 import { dualWrite, dualDelete } from "../lib/firebase/dualWrite";
 import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationModal from "../components/ConfirmationModal";
-import { AlertTriangle, Trash2, Database, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Trash2, Database, ShieldAlert, Image } from "lucide-react";
+import { FAILSAFE_SETTINGS } from "../constants/failsafe";
 
 export default function AdminSettingsPage() {
   const queryClient = useQueryClient();
@@ -226,6 +227,65 @@ export default function AdminSettingsPage() {
         mode: "status",
         onConfirm: () => {},
       });
+    }
+  };
+
+  const handleRestoreDefaultImages = async () => {
+    setIsSaving(true);
+    try {
+      // 1. Restore Global branding logos
+      const updatedGlobalSettings = {
+        ...settings,
+        branding: {
+          ...settings.branding,
+          logoUrl: FAILSAFE_SETTINGS.branding.logoUrl,
+          faviconUrl: FAILSAFE_SETTINGS.branding.faviconUrl,
+        }
+      };
+
+      await dualWrite(
+        ["artifacts", "tech-institute", "public", "data", "settings", "global"],
+        updatedGlobalSettings,
+      );
+      setSettings(updatedGlobalSettings);
+
+      // 2. Restore Home Hero Image
+      // We fetch current home settings first to preserve other text
+      const db = getReadDb();
+      const homeDoc = await getDoc(doc(db, "artifacts/tech-institute/public/data/settings", "home"));
+      if (homeDoc.exists()) {
+        const homeData = homeDoc.data();
+        const updatedHomeData = {
+          ...homeData,
+          hero: {
+            ...homeData.hero,
+            imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            bgType: 'photo'
+          }
+        };
+        await dualWrite(
+          ["artifacts", "tech-institute", "public", "data", "settings", "home"],
+          updatedHomeData
+        );
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["settings-global"] });
+      queryClient.invalidateQueries({ queryKey: ["home-content"] });
+
+      setModalConfig({
+        isOpen: true,
+        title: "All Assets Restored",
+        message: "Branding logos, favicon, and home hero image have been reset to their original official links.",
+        confirmVariant: "success",
+        confirmText: "Done",
+        mode: "status",
+        onConfirm: () => {},
+      });
+    } catch (error) {
+      console.error("Error restoring images:", error);
+      alert("Failed to restore images");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -698,6 +758,36 @@ export default function AdminSettingsPage() {
                       className="w-full py-2 bg-red-100 text-red-700 font-bold rounded-xl text-sm hover:bg-red-200 transition-colors"
                     >
                       Wipe Enquiries
+                    </button>
+                  </div>
+
+                  <div className="p-6 rounded-3xl border border-slate-200 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-blue-100 text-blue-600 rounded-xl">
+                        <Image size={20} />
+                      </div>
+                      <h4 className="font-bold text-slate-900">
+                        Restore Default Assets
+                      </h4>
+                    </div>
+                    <p className="text-slate-500 text-xs mb-6">
+                      Resets Logo, Favicon, and Home Hero links to the original official defaults.
+                    </p>
+                    <button
+                      onClick={() =>
+                        setModalConfig({
+                          isOpen: true,
+                          title: "Restore Default Links?",
+                          message: "This will replace your current logo and favicon URLs with the default institute links. Your text content will remain unchanged.",
+                          confirmVariant: "primary",
+                          confirmText: "Yes, Restore Defaults",
+                          mode: "confirm",
+                          onConfirm: handleRestoreDefaultImages,
+                        })
+                      }
+                      className="w-full py-2 bg-blue-100 text-blue-700 font-bold rounded-xl text-sm hover:bg-blue-200 transition-colors"
+                    >
+                      Restore Image Links
                     </button>
                   </div>
 

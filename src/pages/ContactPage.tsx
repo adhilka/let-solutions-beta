@@ -116,7 +116,7 @@ export default function ContactPage() {
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">
             Get in <span className="text-[var(--color-primary-400)]">Touch</span>
           </h1>
-          <p className="text-lg text-[var(--color-primary-200)] max-w-2xl mx-auto">
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
             We are always here to help you. Reach out to us for any queries regarding courses or admissions.
           </p>
         </div>

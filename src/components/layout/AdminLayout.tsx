@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, MessageSquare, Star, Award, PenLine, Image as ImageIcon, Settings, LogOut, Menu, X, Users, Info, Layout } from 'lucide-react';
+import { LayoutDashboard, BookOpen, MessageSquare, Star, Award, PenLine, Image as ImageIcon, Settings, LogOut, Menu, X, Users, Info, Layout, ExternalLink } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
 import SEO from '../SEO';
@@ -43,7 +43,7 @@ export default function AdminLayout() {
     <div className="flex bg-[var(--color-surface)] min-h-screen">
       <SEO title="Admin Panel" noindex />
       {/* Sidebar Desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-[var(--color-primary-900)] text-white fixed h-full shrink-0">
+      <aside className="hidden md:flex flex-col w-64 bg-[var(--color-primary-900)] text-white fixed h-full shrink-0 overflow-y-auto border-r border-white/5 scrollbar-hide">
         <div className="p-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={settings?.branding?.logoUrl || "https://i.ibb.co/DDmJMDzP/1000107715.png"} alt={instituteName} className="h-8 w-auto brightness-0 invert" />
@@ -85,12 +85,27 @@ export default function AdminLayout() {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 flex flex-col min-h-screen">
-        {/* Mobile Header */}
-        <header className="md:hidden bg-white border-b border-[var(--color-border)] h-16 flex items-center justify-between px-4 sticky top-0 z-50">
-          <Link to="/admin" className="font-display font-bold">Admin Panel</Link>
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
+        {/* Universal Header (Mobile & Desktop) */}
+        <header className="bg-white border-b border-[var(--color-border)] h-16 flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden text-slate-600">
+              {isMobileMenuOpen ? <X /> : <Menu />}
+            </button>
+            <h1 className="font-display font-bold text-slate-800 hidden md:block uppercase tracking-wider text-sm opacity-50">Workspace</h1>
+            <Link to="/admin" className="font-display font-bold md:hidden text-slate-900">Admin</Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link 
+              to="/" 
+              target="_blank"
+              className="flex items-center gap-2 px-3 py-1.5 text-slate-500 hover:text-[var(--color-primary-600)] hover:bg-blue-50 rounded-lg transition-all font-medium text-sm border border-transparent hover:border-blue-100"
+              title="Go to Live Site"
+            >
+              <ExternalLink size={18} />
+              <span className="hidden sm:inline">Go to Site</span>
+            </Link>
+          </div>
         </header>
 
         {/* Mobile Menu */}

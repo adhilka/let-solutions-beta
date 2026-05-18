@@ -98,8 +98,8 @@ export default function AboutPage() {
              <div className="w-16 h-16 bg-white/20 text-white rounded-[var(--radius-xl)] flex items-center justify-center mb-6">
               <ShieldCheck size={32} />
             </div>
-            <h3 className="text-2xl font-bold mb-4">{about.mission.title}</h3>
-            <p className="text-[var(--color-primary-100)] leading-relaxed">
+            <h3 className="text-2xl font-bold mb-4 text-white">{about.mission.title}</h3>
+            <p className="text-white/90 leading-relaxed">
               {about.mission.content}
             </p>
           </div>

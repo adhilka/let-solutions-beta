@@ -244,9 +244,9 @@ export default function CourseDetailPage() {
                 </p>
               </div>
 
-              <div className="bg-blue-600 rounded-3xl p-8 text-white space-y-4">
-                <h3 className="text-xl font-bold">Have Questions?</h3>
-                <p className="text-blue-100 text-sm">
+              <div className="bg-[var(--color-primary-600)] rounded-3xl p-8 text-white space-y-4 shadow-xl shadow-blue-900/10">
+                <h3 className="text-xl font-display font-extrabold text-white">Have Questions?</h3>
+                <p className="text-white/80 text-sm leading-relaxed">
                   Our career counselors are ready to help you choose the right path.
                 </p>
                 <div className="pt-2">
