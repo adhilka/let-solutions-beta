@@ -47,6 +47,7 @@ export default function AdminSettingsPage() {
       email: "info@letsolutions.in",
       phone: "+91 95628 54444",
       whatsapp: "919562854444",
+      whatsappWelcomeMessage: "Hello, I would like to know more about the courses at Let Solutions.",
       address:
         "1st Floor, Bus Stand Building, Tirur, Malappuram (Dist), Kerala, India - 676101",
     },
@@ -451,6 +452,20 @@ export default function AdminSettingsPage() {
                     value={settings.contact?.whatsapp || ""}
                     onChange={(e) =>
                       updateSetting("contact", "whatsapp", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                    WhatsApp Welcome Message
+                  </label>
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="Message sent when user clicks WhatsApp button"
+                    value={settings.contact?.whatsappWelcomeMessage || ""}
+                    onChange={(e) =>
+                      updateSetting("contact", "whatsappWelcomeMessage", e.target.value)
                     }
                   />
                 </div>

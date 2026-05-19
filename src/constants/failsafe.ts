@@ -9,6 +9,7 @@ export const FAILSAFE_SETTINGS = {
     email: 'info@letsolutions.in',
     phone: '+91 95628 54444',
     whatsapp: '919562854444',
+    whatsappWelcomeMessage: 'Hello, I would like to know more about the courses at Let Solutions.',
     address: '1st Floor, Bus Stand Building, Tirur, Malappuram (Dist), Kerala, India - 676101'
   },
   stats: {
