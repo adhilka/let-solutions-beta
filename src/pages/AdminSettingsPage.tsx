@@ -60,6 +60,10 @@ export default function AdminSettingsPage() {
       mode: "auto",
       manualText: "Admission Open 2026-27",
     },
+    announcement: {
+      enabled: true,
+      text: "🎉 New Batches for Master Diploma in Chip-Level Engineering Starting Soon!",
+    },
   });
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import { useGlobalSettings } from '../../hooks/useGlobalSettings';
 
 export default function AnnouncementBar() {
   const [isDismissed, setIsDismissed] = useState(false);
-  const { settings } = useGlobalSettings();
+  const { settings, isLoading } = useGlobalSettings();
   
   const announcementEnabled = settings?.announcement?.enabled ?? true;
   const announcementText = settings?.announcement?.text || "🎉 New Batches for Master Diploma in Chip-Level Engineering Starting Soon!";
@@ -16,12 +16,17 @@ export default function AnnouncementBar() {
     }
   }, [hashKey]);
 
-  if (!announcementEnabled || isDismissed) return null;
+  if (isLoading || !announcementEnabled || isDismissed) return null;
 
   return (
-    <div className="bg-[var(--color-primary-600)] text-white text-xs font-medium py-2 px-4 relative flex items-center overflow-hidden h-9">
-      <div className="w-full flex items-center justify-center pointer-events-none">
-        <span className="animate-marquee">{announcementText}</span>
+    <div className="bg-[var(--color-primary-600)] text-white text-xs font-medium py-2 relative flex items-center overflow-hidden h-9">
+      <div className="relative w-full overflow-hidden whitespace-nowrap flex">
+        <div className="animate-marquee inline-flex whitespace-nowrap">
+          <span className="px-10">{announcementText}</span>
+          <span className="px-10">{announcementText}</span>
+          <span className="px-10">{announcementText}</span>
+          <span className="px-10">{announcementText}</span>
+        </div>
       </div>
       <button 
         onClick={() => {

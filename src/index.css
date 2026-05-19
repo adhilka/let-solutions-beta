@@ -144,14 +144,18 @@
 
 @layer utilities {
   .animate-marquee {
-    display: inline-block;
+    display: inline-flex;
     white-space: nowrap;
     animation: marquee 20s linear infinite;
   }
   
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+  
   @keyframes marquee {
-    0% { transform: translateX(100vw); }
-    100% { transform: translateX(-100%); }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
   .container-tight {
