@@ -154,46 +154,65 @@ export default function CourseDetailPage() {
         structuredData={detailSchemas}
       />
 
-      {/* Breadcrumbs */}
-      <div className="bg-slate-50 border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-2 text-sm text-slate-500">
-          <Link to="/" className="hover:text-blue-600">Home</Link>
-          <ChevronRight size={14} />
-          <Link to="/courses" className="hover:text-blue-600">Courses</Link>
-          <ChevronRight size={14} />
-          <span className="text-slate-900 font-medium truncate">{course.title}</span>
-        </div>
-      </div>
+      {/* Dark Hero Section */}
+      <div className="bg-[#0B1120] border-b border-slate-800 pt-6 pb-40">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-2 text-xs md:text-sm text-slate-400 mb-12">
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <ChevronRight size={14} className="text-slate-600" />
+            <Link to="/courses" className="hover:text-white transition-colors">Courses</Link>
+            <ChevronRight size={14} className="text-slate-600" />
+            <span className="text-slate-300 font-medium truncate">{course.title}</span>
+          </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main content */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="space-y-4">
-              <span className="badge badge-blue">
-                {course.category === 'software' ? <ShieldCheck size={12} className="inline mr-1"/> : 
-                 course.category === 'networking' ? <Server size={12} className="inline mr-1"/> : 
-                 <MonitorSmartphone size={12} className="inline mr-1"/>}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider rounded-full">
+                {course.category === 'software' ? <ShieldCheck size={14}/> : 
+                 course.category === 'networking' ? <Server size={14}/> : 
+                 <MonitorSmartphone size={14}/>}
                 {course.category?.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
               </span>
-              <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] drop-shadow-lg">
                 {course.title}
               </h1>
-              <p className="text-lg text-slate-600 leading-relaxed">
+              
+              <p className="text-lg md:text-xl text-slate-300 leading-relaxed font-medium max-w-xl">
                 {course.shortDescription}
               </p>
+              
               <div className="pt-2">
                 <button 
                   onClick={handleShare}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-sm font-semibold transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95"
                 >
-                  {copied ? <Check size={16} className="text-green-600" /> : <Share2 size={16} />}
+                  {copied ? <Check size={16} className="text-green-400" /> : <Share2 size={16} />}
                   {copied ? 'Link Copied!' : 'Share Course'}
                 </button>
               </div>
             </div>
 
-            <div className="aspect-video rounded-3xl overflow-hidden shadow-xl border relative group">
+            {/* Desktop Hero Image Container */}
+            <div className="hidden lg:block relative z-10 w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-500/10 border border-white/10 aspect-video transform translate-y-12">
+              <img 
+                src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'} 
+                alt={course.title} 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 -mt-24 relative z-20 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+          
+          {/* Main content */}
+          <div className="lg:col-span-2 space-y-10">
+            {/* Mobile Hero Image */}
+            <div className="lg:hidden rounded-[2rem] overflow-hidden shadow-2xl border-4 border-[#0B1120] aspect-video">
               <img 
                 src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'} 
                 alt={course.title} 
@@ -201,70 +220,96 @@ export default function CourseDetailPage() {
               />
             </div>
 
-            <div className="prose prose-slate max-w-none">
-              <h2 className="text-2xl font-bold">About the Course</h2>
-              <p className="text-slate-700 whitespace-pre-wrap">
+            <div className="bg-white rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                 <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 22h20L12 2zm0 3.8l7.1 14.2H4.9L12 5.8z"/></svg>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-6 tracking-tight">About the Course</h2>
+              <div className="prose prose-lg prose-slate text-slate-600 leading-relaxed whitespace-pre-wrap relative z-10 font-medium">
                 {course.description || 'Our specialized program is designed to provide you with practical, hands-on experience and a guaranteed path to your career. You will study from basics to advance with industrial level equipment and guidance.'}
-              </p>
-              
-              <h3 className="text-xl font-bold mt-8 mb-4">Key Highlights</h3>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              </div>
+            </div>
+            
+            <div className="w-full">
+              <h3 className="text-2xl font-extrabold text-slate-900 mb-6 px-2 tracking-tight">Key Highlights</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {highlights.map((item: string, i: number) => (
-                  <li key={i} className="flex items-start gap-3 text-slate-700">
-                    <CheckCircle className="text-green-500 shrink-0 mt-1" size={18} />
-                    <span>{item}</span>
-                  </li>
+                  <div key={i} className="flex items-start gap-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
+                    <div className="bg-blue-50 text-blue-600 p-2 rounded-xl group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                      <CheckCircle size={20} strokeWidth={2.5} />
+                    </div>
+                    <span className="font-semibold text-slate-700 leading-snug">{item}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-6">
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-6">
+              <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-100/50 p-8 relative overflow-hidden">
+                {/* Decorative blob */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full blur-2xl opacity-60"></div>
                 
                 {pinnedOffer && (
-                  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-2 relative overflow-hidden group">
-                    <div className="absolute -right-2 -top-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <Award size={64} className="text-blue-600" />
+                  <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 mb-8 relative overflow-hidden text-white shadow-lg shadow-blue-900/20 group transform transition-all hover:scale-[1.02]">
+                    <div className="absolute right-0 top-0 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Award size={100} className="transform translate-x-1/4 -translate-y-1/4" />
                     </div>
                     <div className="relative z-10">
-                      <span className="text-[10px] font-extrabold uppercase tracking-tighter text-blue-600 mb-1 block">{pinnedOffer.badgeLabel || 'Exclusive Offer'}</span>
-                      <h4 className="font-bold text-blue-900 mb-2">{pinnedOffer.headline}</h4>
-                      <p className="text-xs text-blue-700/80 mb-3 leading-relaxed">{pinnedOffer.subtext}</p>
-                      <Link to="/admissions" className="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:gap-2 transition-all">
-                        Claim This Offer <ArrowRight size={14} />
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-200 mb-2 block">{pinnedOffer.badgeLabel || 'Exclusive Offer'}</span>
+                      <h4 className="font-extrabold text-white text-lg mb-2">{pinnedOffer.headline}</h4>
+                      <p className="text-sm text-blue-100/90 mb-4 leading-relaxed">{pinnedOffer.subtext}</p>
+                      <Link to="/admissions" className="inline-flex items-center gap-1.5 text-sm font-bold text-white bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-all">
+                        Claim Offer <ArrowRight size={14} />
                       </Link>
                     </div>
                   </div>
                 )}
 
-                <div className="flex items-center justify-between border-b pb-4">
-                  {course.feeStructure?.totalFee ? (
+                <div className="mb-8">
+                  {pinnedOffer?.discountedFee ? (
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Course Fee</span>
-                      <span className="text-3xl font-extrabold text-blue-700">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Total Course Fee</span>
+                      <span className="text-lg text-slate-400 line-through tracking-tight mb-1">
+                        {course.feeStructure?.totalFee 
+                          ? (course.feeStructure.totalFee.startsWith('₹') ? course.feeStructure.totalFee : `₹${course.feeStructure.totalFee}`) 
+                          : `₹${course.price.toLocaleString('en-IN')}`}
+                      </span>
+                      <span className="text-4xl md:text-5xl font-extrabold text-blue-600 tracking-tight">
+                        {pinnedOffer.discountedFee.startsWith('₹') ? pinnedOffer.discountedFee : `₹${pinnedOffer.discountedFee}`}
+                      </span>
+                    </div>
+                  ) : course.feeStructure?.totalFee ? (
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Total Course Fee</span>
+                      <span className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
                         {course.feeStructure.totalFee.startsWith('₹') 
                           ? course.feeStructure.totalFee 
                           : `₹${course.feeStructure.totalFee}`}
                       </span>
                     </div>
                   ) : course.price > 0 ? (
-                    <span className="text-3xl font-extrabold text-blue-700">
-                      ₹{course.price.toLocaleString('en-IN')}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Total Course Fee</span>
+                      <span className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+                        ₹{course.price.toLocaleString('en-IN')}
+                      </span>
+                    </div>
                   ) : (
-                    <span className="text-sm font-bold text-slate-400">Course Fee: On Enquiry</span>
+                    <div className="py-4 border-b border-dashed border-slate-200 mb-6">
+                       <span className="text-lg font-bold text-slate-500">Course Fee: On Enquiry</span>
+                    </div>
                   )}
-                  {course.badge && <span className="badge badge-red">{course.badge}</span>}
+                  {course.badge && <span className="inline-block mt-4 badge bg-red-50 text-red-600 border-red-100">{course.badge}</span>}
                 </div>
 
                 {course.feeStructure && (course.feeStructure.registrationFee || course.feeStructure.description) && (
-                  <div className="space-y-4 py-2">
+                  <div className="space-y-4 mb-8">
                     {course.feeStructure.registrationFee && (
-                      <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
-                        <span className="text-sm font-medium text-slate-600">Registration Fee</span>
+                      <div className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <span className="text-sm font-semibold text-slate-600">Registration</span>
                         <span className="font-bold text-slate-900">
                           {course.feeStructure.registrationFee.startsWith('₹') 
                             ? course.feeStructure.registrationFee 
@@ -273,8 +318,8 @@ export default function CourseDetailPage() {
                       </div>
                     )}
                     {course.feeStructure.description && (
-                      <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
-                        <p className="text-xs text-slate-600 italic leading-relaxed">
+                      <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50">
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">
                           {course.feeStructure.description}
                         </p>
                       </div>
@@ -282,43 +327,33 @@ export default function CourseDetailPage() {
                   </div>
                 )}
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-sm py-1">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Clock size={16} />
+                <div className="space-y-4 mb-8 bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2.5 text-slate-500 font-semibold">
+                      <Clock size={16} className="text-blue-500" />
                       <span>Duration</span>
                     </div>
                     <span className="font-bold text-slate-900">{course.duration}</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm py-1">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Zap size={16} />
-                      <span>Level</span>
+                  <div className="w-full h-px bg-slate-200"></div>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2.5 text-slate-500 font-semibold">
+                      <Zap size={16} className="text-amber-500" />
+                      <span>Experience Level</span>
                     </div>
                     <span className="font-bold text-slate-900">{course.level}</span>
                   </div>
                 </div>
 
-                <Link to="/contact" className="block w-full btn-primary text-center py-4 px-6 text-lg font-bold shadow-lg shadow-blue-100">
+                <Link to="/contact" className="block w-full text-center py-4 px-6 text-base font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0">
                   Enquire for Details
                 </Link>
 
-                <p className="text-xs text-center text-slate-400">
-                  Locked for enrollment? <Link to="/contact" className="text-blue-600 underline">Contact Support</Link>
+                <p className="text-xs font-semibold text-center text-slate-400 mt-4">
+                  Questions? <Link to="/contact" className="text-blue-500 hover:text-blue-600 transition-colors">Contact Support</Link>
                 </p>
               </div>
 
-              <div className="bg-[var(--color-primary-600)] rounded-3xl p-8 text-white space-y-4 shadow-xl shadow-blue-900/10">
-                <h3 className="text-xl font-display font-extrabold text-white">Have Questions?</h3>
-                <p className="text-white/80 text-sm leading-relaxed">
-                  Our career counselors are ready to help you choose the right path.
-                </p>
-                <div className="pt-2">
-                  <Link to="/contact" className="inline-block bg-white text-blue-600 font-bold px-6 py-2 rounded-xl text-sm">
-                    Contact Us
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         </div>

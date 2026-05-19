@@ -60,7 +60,8 @@ export default function AdminOffersPage() {
     ctaHref: '/contact',
     showOnAdmissions: true,
     order: 0,
-    imageUrl: ''
+    imageUrl: '',
+    discountedFee: ''
   });
 
   const openEditModal = (offer: any) => {
@@ -73,7 +74,8 @@ export default function AdminOffersPage() {
       ctaHref: offer.ctaHref || '/contact',
       showOnAdmissions: offer.showOnAdmissions ?? true,
       order: offer.order || 0,
-      imageUrl: offer.imageUrl || ''
+      imageUrl: offer.imageUrl || '',
+      discountedFee: offer.discountedFee || ''
     });
     setIsModalOpen(true);
   };
@@ -88,7 +90,8 @@ export default function AdminOffersPage() {
       ctaHref: '/contact',
       showOnAdmissions: true,
       order: 0,
-      imageUrl: ''
+      imageUrl: '',
+      discountedFee: ''
     });
     setImageFile(null);
     setIsModalOpen(true);
@@ -162,7 +165,7 @@ export default function AdminOffersPage() {
       queryClient.invalidateQueries({ queryKey: ['active-offers'] });
       setIsModalOpen(false);
       setEditingId(null);
-      setFormData({ headline: '', subtext: '', badgeLabel: 'LIMITED', ctaLabel: 'Claim Now', ctaHref: '/contact', showOnAdmissions: true, order: 0, imageUrl: '' });
+      setFormData({ headline: '', subtext: '', badgeLabel: 'LIMITED', ctaLabel: 'Claim Now', ctaHref: '/contact', showOnAdmissions: true, order: 0, imageUrl: '', discountedFee: '' });
       setImageFile(null);
     } catch (error) {
       console.error('Error saving offer:', error);
@@ -267,6 +270,10 @@ export default function AdminOffersPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Badge Label</label>
                   <input type="text" value={formData.badgeLabel} onChange={e => setFormData({ ...formData, badgeLabel: e.target.value })} className="w-full border rounded-lg px-3 py-2" placeholder="e.g. EARLY BIRD" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Discounted Fee (Optional)</label>
+                  <input type="text" value={formData.discountedFee} onChange={e => setFormData({ ...formData, discountedFee: e.target.value })} className="w-full border rounded-lg px-3 py-2" placeholder="e.g. ₹15,000" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Offer Photo (Banner)</label>

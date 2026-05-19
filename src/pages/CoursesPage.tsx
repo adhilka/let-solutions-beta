@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MonitorSmartphone, ShieldCheck, Server, Filter, Clock, Zap, MessageSquare } from 'lucide-react';
-import { fetchActiveCourses } from '../lib/api';
+import { fetchActiveCourses, fetchActiveOffers } from '../lib/api';
 import { FAILSAFE_COURSES } from '../constants/courses';
 
 import SEO from '../components/SEO';
@@ -13,6 +13,11 @@ export default function CoursesPage() {
     queryKey: ['active-courses'],
     queryFn: fetchActiveCourses,
     initialData: FAILSAFE_COURSES
+  });
+
+  const { data: offers } = useQuery({
+    queryKey: ['active-offers-all'],
+    queryFn: fetchActiveOffers
   });
 
   const allCourses = useMemo(() => {
@@ -155,7 +160,18 @@ export default function CoursesPage() {
 
                   <div className="flex items-center justify-between">
                     <div className="font-bold text-lg text-[var(--color-primary-700)] line-clamp-1">
-                      {course.feeStructure?.totalFee ? (
+                      {course.pinnedOfferId && offers?.find((o: any) => o.id === course.pinnedOfferId)?.discountedFee ? (
+                        <div className="flex flex-col">
+                           <span className="text-xs text-[var(--color-text-tertiary)] line-through">
+                             {course.feeStructure?.totalFee ? (course.feeStructure.totalFee.startsWith('₹') ? course.feeStructure.totalFee : `₹${course.feeStructure.totalFee}`) : (course.price > 0 ? `₹${course.price.toLocaleString('en-IN')}` : '')}
+                           </span>
+                           <span>
+                             {offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee.startsWith('₹') 
+                               ? offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee 
+                               : `₹${offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee}`}
+                           </span>
+                        </div>
+                      ) : course.feeStructure?.totalFee ? (
                         course.feeStructure.totalFee.startsWith('₹') 
                           ? course.feeStructure.totalFee 
                           : `₹${course.feeStructure.totalFee}`
