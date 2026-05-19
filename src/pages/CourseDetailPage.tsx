@@ -261,9 +261,6 @@ export default function CourseDetailPage() {
                       <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-200 mb-2 block">{pinnedOffer.badgeLabel || 'Exclusive Offer'}</span>
                       <h4 className="font-extrabold text-white text-lg mb-2">{pinnedOffer.headline}</h4>
                       <p className="text-sm text-blue-100/90 mb-4 leading-relaxed">{pinnedOffer.subtext}</p>
-                      <Link to="/admissions" className="inline-flex items-center gap-1.5 text-sm font-bold text-white bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-all">
-                        Claim Offer <ArrowRight size={14} />
-                      </Link>
                     </div>
                   </div>
                 )}
