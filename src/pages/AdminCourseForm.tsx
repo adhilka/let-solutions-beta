@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { dualWrite } from '../lib/firebase/dualWrite';
+import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { fetchActiveOffers } from '../lib/api';
 
 export default function AdminCourseForm() {
   const { id } = useParams();
@@ -10,17 +12,15 @@ export default function AdminCourseForm() {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [availableOffers, setAvailableOffers] = useState<any[]>([]);
 
   useEffect(() => {
+    // Fetch offers for the pinned offer dropdown
+    fetchActiveOffers().then(data => {
+      setAvailableOffers(data || []);
+    });
+
     if (isEdit && id) {
-      import('../lib/api').then(({ fetchCourseBySlug }) => {
-        // Here we'd ideally fetch by ID, but based on current API let's assume we can find it
-        // Or better yet, we might need a fetchCourseById. 
-        // For now let's assume we use what we have or just wait for the user to select.
-        // Actually, let's implement a quick fetch from Firestore directly if needed or use api
-      });
-      
-      // Better implementation:
       const fetchCourse = async () => {
         try {
           const { doc, getDoc } = await import('firebase/firestore');
@@ -28,7 +28,11 @@ export default function AdminCourseForm() {
           const db = getReadDb();
           const d = await getDoc(doc(db, `artifacts/tech-institute/public/data/courses/${id}`));
           if (d.exists()) {
-            setFormData(prev => ({ ...prev, ...d.data() }));
+            setFormData(prev => ({ 
+              ...prev, 
+              ...d.data(),
+              highlights: d.data().highlights || [] 
+            }));
           }
         } catch (err) {
           console.error("Error fetching course for edit:", err);
@@ -51,8 +55,46 @@ export default function AdminCourseForm() {
     description: '',
     imageUrl: '',
     badge: '',
-    isPinned: false
+    isPinned: false,
+    highlights: [] as string[],
+    pinnedOfferId: '',
+    feeStructure: {
+      registrationFee: '',
+      totalFee: '',
+      duration: '',
+      description: ''
+    }
   });
+
+  const updateFeeStructure = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      feeStructure: {
+        ...prev.feeStructure,
+        [field]: value
+      }
+    }));
+  };
+
+  const addHighlight = () => {
+    setFormData(prev => ({
+      ...prev,
+      highlights: [...prev.highlights, '']
+    }));
+  };
+
+  const removeHighlight = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      highlights: prev.highlights.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateHighlight = (index: number, value: string) => {
+    const newHighlights = [...formData.highlights];
+    newHighlights[index] = value;
+    setFormData(prev => ({ ...prev, highlights: newHighlights }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +112,8 @@ export default function AdminCourseForm() {
       const docId = id || `course_${Date.now()}`;
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'courses', docId], {
         ...formData,
-        imageUrl: finalImageUrl
+        imageUrl: finalImageUrl,
+        id: docId, // Ensure ID is present
       });
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
       queryClient.invalidateQueries({ queryKey: ['active-courses'] });
@@ -154,14 +197,100 @@ export default function AdminCourseForm() {
               <textarea className="input text-sm" placeholder="A brief summary for cards..." rows={2} value={formData.shortDescription} onChange={e => setFormData({ ...formData, shortDescription: e.target.value })} />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Thumbnail Image</label>
-              <div className="flex items-center gap-4">
-                {formData.imageUrl && <img src={formData.imageUrl} className="w-20 h-20 object-cover rounded border" alt="Thumbnail" />}
-                <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} className="text-sm" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Thumbnail Image</label>
+                <div className="flex items-center gap-4">
+                  {formData.imageUrl && <img src={formData.imageUrl} className="w-20 h-20 object-cover rounded border" alt="Thumbnail" />}
+                  <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} className="text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Pinned Offer (Optional)</label>
+                <select 
+                  className="input" 
+                  value={formData.pinnedOfferId || ''} 
+                  onChange={e => setFormData({ ...formData, pinnedOfferId: e.target.value })}
+                >
+                  <option value="">No offer pinned</option>
+                  {availableOffers.map(offer => (
+                    <option key={offer.id} value={offer.id}>{offer.headline}</option>
+                  ))}
+                </select>
               </div>
             </div>
             
+            <div className="mt-8 border-t pt-8">
+              <label className="block text-sm font-bold text-[var(--color-text-primary)] uppercase tracking-wider mb-6">Fee Structure</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Registration Fee</label>
+                  <input 
+                    type="text" 
+                    className="input" 
+                    placeholder="e.g. ₹1,000" 
+                    value={formData.feeStructure?.registrationFee || ''} 
+                    onChange={e => updateFeeStructure('registrationFee', e.target.value)} 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Total Fee</label>
+                  <input 
+                    type="text" 
+                    className="input" 
+                    placeholder="e.g. ₹25,000" 
+                    value={formData.feeStructure?.totalFee || ''} 
+                    onChange={e => updateFeeStructure('totalFee', e.target.value)} 
+                  />
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Fee Description / Installment Details</label>
+                <textarea 
+                  className="input" 
+                  placeholder="Details about installments, periodic payments etc." 
+                  rows={2}
+                  value={formData.feeStructure?.description || ''} 
+                  onChange={e => updateFeeStructure('description', e.target.value)} 
+                />
+              </div>
+            </div>
+
+            <div className="mt-8 border-t pt-8">
+              <div className="flex items-center justify-between mb-4">
+                <label className="block text-sm font-bold text-[var(--color-text-primary)] uppercase tracking-wider">Key Highlights</label>
+                <button type="button" onClick={addHighlight} className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1">
+                  <Plus size={14} /> Add Highlight
+                </button>
+              </div>
+              <div className="space-y-3">
+                {formData.highlights.map((highlight, index) => (
+                  <div key={index} className="flex items-center gap-2 group">
+                    <div className="text-slate-300 cursor-grab px-1"><GripVertical size={16} /></div>
+                    <input 
+                      type="text" 
+                      className="input flex-grow" 
+                      placeholder={`Highlight #${index + 1}`} 
+                      value={highlight} 
+                      onChange={e => updateHighlight(index, e.target.value)} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => removeHighlight(index)} 
+                      className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                ))}
+                {formData.highlights.length === 0 && (
+                  <div className="text-center py-8 border-2 border-dashed border-slate-100 rounded-xl">
+                    <p className="text-slate-400 text-sm italic">No highlights added yet.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div className="mt-6">
               <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Full Description</label>
               <textarea 
@@ -179,7 +308,7 @@ export default function AdminCourseForm() {
              </div>
              <div className="flex items-center gap-2">
                <input type="checkbox" id="isPinned" checked={formData.isPinned} onChange={e => setFormData({ ...formData, isPinned: e.target.checked })} />
-               <label htmlFor="isPinned" className="text-sm font-medium text-[var(--color-text-secondary)]">Pin to Home Screen (Max 3)</label>
+               <label htmlFor="isPinned" className="text-sm font-medium text-[var(--color-text-secondary)]">Pin to Hero Carousel (Max 5)</label>
              </div>
            </div>
 
@@ -189,7 +318,7 @@ export default function AdminCourseForm() {
                {isSubmitting ? 'Saving...' : 'Save Course'}
              </button>
            </div>
-         </form>
+          </form>
       </div>
     </div>
   );

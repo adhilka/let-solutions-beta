@@ -154,11 +154,19 @@ export default function CoursesPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="font-bold text-lg text-[var(--color-primary-700)]">
-                      {course.price > 0 ? `₹${course.price}` : 'Fee Details →'}
+                    <div className="font-bold text-lg text-[var(--color-primary-700)] line-clamp-1">
+                      {course.feeStructure?.totalFee ? (
+                        course.feeStructure.totalFee.startsWith('₹') 
+                          ? course.feeStructure.totalFee 
+                          : `₹${course.feeStructure.totalFee}`
+                      ) : course.price > 0 ? (
+                        `₹${course.price.toLocaleString('en-IN')}`
+                      ) : (
+                        'Fee Details →'
+                      )}
                     </div>
                     <div className="btn-primary">
-                      {course.price > 0 ? 'View Details' : 'Enquire Now'}
+                      {course.price > 0 || course.feeStructure?.totalFee ? 'View Details' : 'Enquire Now'}
                     </div>
                   </div>
                 </div>

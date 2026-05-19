@@ -1,3 +1,28 @@
+export interface Course {
+  id: string;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  description: string;
+  duration: string;
+  level: string;
+  price: number;
+  category: CourseCategory;
+  badge?: string;
+  imageUrl: string;
+  isActive: boolean;
+  order: number;
+  isPinned?: boolean;
+  highlights?: string[];
+  pinnedOfferId?: string;
+  feeStructure?: {
+    registrationFee?: string;
+    totalFee?: string;
+    duration?: string;
+    description?: string;
+  };
+}
+
 export interface StoredImage {
   url:        string;
   thumbUrl:   string;

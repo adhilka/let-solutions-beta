@@ -1,9 +1,9 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
-import { fetchCourseBySlug } from '../lib/api';
+import { fetchCourseBySlug, fetchActiveOffers } from '../lib/api';
 import { FAILSAFE_COURSES } from '../constants/courses';
-import { CheckCircle, Clock, Zap, MessageSquare, ArrowLeft, ChevronRight, MonitorSmartphone, ShieldCheck, Server, Share2, Copy, Check } from 'lucide-react';
+import { CheckCircle, Clock, Zap, MessageSquare, ArrowLeft, ChevronRight, MonitorSmartphone, ShieldCheck, Server, Share2, Copy, Check, Award, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
 import SEO from '../components/SEO';
@@ -37,7 +37,17 @@ export default function CourseDetailPage() {
     enabled: !!slug
   });
 
+  const { data: offers } = useQuery({
+    queryKey: ['active-offers-all'],
+    queryFn: fetchActiveOffers,
+  });
+
   const course = serverCourse || FAILSAFE_COURSES.find(c => c.slug === slug);
+
+  // Find the pinned offer if available
+  const pinnedOffer = course?.pinnedOfferId && offers 
+    ? offers.find((o: any) => o.id === course.pinnedOfferId) 
+    : null;
 
   // Structured Data for Course & Breadcrumbs
   const detailSchemas = course ? [
@@ -121,6 +131,17 @@ export default function CourseDetailPage() {
     );
   }
 
+  const defaultHighlights = [
+    '100% Practical Training',
+    'Live Projects & Industry Cases',
+    'Internship Opportunities',
+    'Job Placement Assistance',
+    'Latest Tools & Equipment',
+    'Certification of Completion'
+  ];
+
+  const highlights = (course.highlights && course.highlights.length > 0) ? course.highlights : defaultHighlights;
+
   return (
     <>
       <SEO 
@@ -188,14 +209,7 @@ export default function CourseDetailPage() {
               
               <h3 className="text-xl font-bold mt-8 mb-4">Key Highlights</h3>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  '100% Practical Training',
-                  'Live Projects & Industry Cases',
-                  'Internship Opportunities',
-                  'Job Placement Assistance',
-                  'Latest Tools & Equipment',
-                  'Certification of Completion'
-                ].map((item, i) => (
+                {highlights.map((item: string, i: number) => (
                   <li key={i} className="flex items-start gap-3 text-slate-700">
                     <CheckCircle className="text-green-500 shrink-0 mt-1" size={18} />
                     <span>{item}</span>
@@ -209,14 +223,64 @@ export default function CourseDetailPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-6">
               <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-6">
+                
+                {pinnedOffer && (
+                  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-2 relative overflow-hidden group">
+                    <div className="absolute -right-2 -top-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Award size={64} className="text-blue-600" />
+                    </div>
+                    <div className="relative z-10">
+                      <span className="text-[10px] font-extrabold uppercase tracking-tighter text-blue-600 mb-1 block">{pinnedOffer.badgeLabel || 'Exclusive Offer'}</span>
+                      <h4 className="font-bold text-blue-900 mb-2">{pinnedOffer.headline}</h4>
+                      <p className="text-xs text-blue-700/80 mb-3 leading-relaxed">{pinnedOffer.subtext}</p>
+                      <Link to="/admissions" className="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:gap-2 transition-all">
+                        Claim This Offer <ArrowRight size={14} />
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between border-b pb-4">
-                  {course.price > 0 ? (
+                  {course.feeStructure?.totalFee ? (
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Course Fee</span>
+                      <span className="text-3xl font-extrabold text-blue-700">
+                        {course.feeStructure.totalFee.startsWith('₹') 
+                          ? course.feeStructure.totalFee 
+                          : `₹${course.feeStructure.totalFee}`}
+                      </span>
+                    </div>
+                  ) : course.price > 0 ? (
                     <span className="text-3xl font-extrabold text-blue-700">
-                      ₹{course.price}
+                      ₹{course.price.toLocaleString('en-IN')}
                     </span>
-                  ) : <div></div>}
+                  ) : (
+                    <span className="text-sm font-bold text-slate-400">Course Fee: On Enquiry</span>
+                  )}
                   {course.badge && <span className="badge badge-red">{course.badge}</span>}
                 </div>
+
+                {course.feeStructure && (course.feeStructure.registrationFee || course.feeStructure.description) && (
+                  <div className="space-y-4 py-2">
+                    {course.feeStructure.registrationFee && (
+                      <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span className="text-sm font-medium text-slate-600">Registration Fee</span>
+                        <span className="font-bold text-slate-900">
+                          {course.feeStructure.registrationFee.startsWith('₹') 
+                            ? course.feeStructure.registrationFee 
+                            : `₹${course.feeStructure.registrationFee}`}
+                        </span>
+                      </div>
+                    )}
+                    {course.feeStructure.description && (
+                      <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+                        <p className="text-xs text-slate-600 italic leading-relaxed">
+                          {course.feeStructure.description}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between text-sm py-1">

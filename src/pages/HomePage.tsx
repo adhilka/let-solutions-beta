@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'motion/react';
 
 import SEO from '../components/SEO';
 import InitialLoader from '../components/layout/InitialLoader';
+import HeroCarousel from '../components/layout/HeroCarousel';
 
 export default function HomePage() {
   const { settings } = useGlobalSettings();
@@ -156,62 +157,14 @@ export default function HomePage() {
         structuredData={homeSchemas}
       />
 
-      {/* Hero Section */}
-      <section className={`relative overflow-hidden -mt-16 ${isPhotoBg ? 'pt-[9.5rem] pb-20 md:pt-[11.5rem] md:pb-32' : 'bg-[var(--color-surface)] pt-28 pb-16 md:pt-36 md:pb-24 2xl:pt-44 2xl:pb-32'}`}>
-        {isPhotoBg && (
-          <div className="absolute inset-0 z-0">
-             <img src={heroImage} alt="Hero Background" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
-             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30"></div>
-          </div>
-        )}
-        <div className={`relative z-10 container-wide px-4 sm:px-6 lg:px-8 ${isPhotoBg ? 'flex flex-col items-center text-center max-w-4xl mx-auto' : 'grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 2xl:gap-24 items-center'}`}>
-          <div className={`space-y-8 animate-fade-up ${isPhotoBg ? 'flex flex-col items-center' : ''}`}>
-            <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-xs uppercase tracking-wide ${isPhotoBg ? 'bg-white/20 text-white backdrop-blur-md border border-white/20 shadow-sm' : 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)]'}`}>
-              <span className={`w-2 h-2 rounded-full animate-pulse ${isPhotoBg ? 'bg-white' : 'bg-[var(--color-primary-500)]'}`}></span>
-              {admissionStatus}
-            </span>
-            
-            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] ${isPhotoBg ? 'text-white drop-shadow-xl' : 'text-[var(--color-text-primary)]'}`}>
-              {heroTitle}
-            </h1>
-            
-            <p className={`text-lg leading-relaxed max-w-xl ${isPhotoBg ? 'text-slate-100 drop-shadow-lg font-medium' : 'text-[var(--color-text-secondary)]'}`}>
-              {heroDescription} {heroSubtitle}
-            </p>
-            
-            <div className={`flex flex-col sm:flex-row gap-4 ${isPhotoBg ? 'justify-center w-full' : ''}`}>
-              <Link to="/admissions" className={`text-center ${isPhotoBg ? 'bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl shadow-blue-900/50' : 'btn-primary px-8 py-4 text-base'}`}>
-                Enroll Now
-              </Link>
-              <Link to="/courses" className={`text-center ${isPhotoBg ? `bg-blue-900/40 backdrop-blur-md border border-blue-200/30 hover:bg-blue-800/60 text-white rounded-xl font-bold px-8 py-4 transition-all shadow-xl` : 'btn-secondary px-8 py-4 text-base'}`}>
-                Browse Courses
-              </Link>
-            </div>
-            
-            <div className={`flex flex-wrap gap-x-6 gap-y-3 pt-4 border-t ${isPhotoBg ? 'border-white/20 justify-center' : 'border-[var(--color-border)]'}`}>
-              {heroFeatures.map((feature: string, idx: number) => (
-                <div key={idx} className={`flex items-center gap-2 ${isPhotoBg ? 'text-white' : ''}`}>
-                  <CheckCircle size={18} className={isPhotoBg ? 'text-blue-400' : 'text-[var(--color-success)]'} />
-                  <span className="text-sm font-medium drop-shadow-md">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {!isPhotoBg && (
-            <div className="relative">
-              {/* Visual placeholder for hero */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary-200)] to-[var(--color-primary-50)] rounded-[var(--radius-2xl)] blur-3xl opacity-50 -z-10 transform translate-x-4 translate-y-4"></div>
-              <img 
-                src={heroImage} 
-                alt="Students in a technical repair lab working on circuit boards" 
-                className="w-full h-auto rounded-[var(--radius-2xl)] shadow-[var(--shadow-lg)] object-cover aspect-[4/3]"
-              />
-            </div>
-          )}
-        </div>
-      </section>
+      {/* Hero Section Carousel */}
+      <HeroCarousel 
+        courses={coursesData.filter((c: any) => c.isPinned).length > 0 
+          ? coursesData.filter((c: any) => c.isPinned) 
+          : coursesData.slice(0, 3)
+        }
+        admissionStatus={admissionStatus} 
+      />
 
 
       {/* Stats Bar */}
@@ -294,11 +247,19 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="font-bold text-lg text-[var(--color-primary-700)]">
-                      {course.price > 0 ? `₹${course.price}` : 'Fee Details →'}
+                    <div className="font-bold text-lg text-[var(--color-primary-700)] line-clamp-1">
+                      {course.feeStructure?.totalFee ? (
+                        course.feeStructure.totalFee.startsWith('₹') 
+                          ? course.feeStructure.totalFee 
+                          : `₹${course.feeStructure.totalFee}`
+                      ) : course.price > 0 ? (
+                        `₹${course.price.toLocaleString('en-IN')}`
+                      ) : (
+                        'Fee Details →'
+                      )}
                     </div>
                     <div className="btn-primary">
-                      {course.price > 0 ? 'View Details' : 'Enquire Now'}
+                      {course.price > 0 || course.feeStructure?.totalFee ? 'View Details' : 'Enquire Now'}
                     </div>
                   </div>
                 </div>
