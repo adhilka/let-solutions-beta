@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { Plus, Trash2, Image as ImageIcon, Loader2, X, Search } from 'lucide-react';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 export default function AdminGalleryPage() {
   const [images, setImages] = useState<any[]>([]);
@@ -11,6 +12,24 @@ export default function AdminGalleryPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   
+  const [modalConfig, setModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    confirmVariant: "danger" | "primary" | "success";
+    confirmText: string;
+    mode: "confirm" | "status";
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    confirmVariant: "primary",
+    confirmText: "Confirm",
+    mode: "confirm",
+    onConfirm: () => {},
+  });
+
   const [formData, setFormData] = useState({
     title: '',
     category: 'labs',
@@ -80,15 +99,27 @@ export default function AdminGalleryPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this image?")) return;
+  const performDelete = async (id: string) => {
     try {
       await dualDelete(['artifacts', 'tech-institute', 'public', 'data', 'gallery', id]);
       fetchImages();
+      setModalConfig(prev => ({ ...prev, isOpen: false }));
     } catch (err) {
       console.error("Error deleting image:", err);
       alert("Failed to delete image.");
     }
+  };
+
+  const handleDelete = (id: string) => {
+    setModalConfig({
+      isOpen: true,
+      title: "Delete Photo?",
+      message: "This action cannot be undone. This photo will be removed from the public gallery.",
+      confirmVariant: "danger",
+      confirmText: "Delete Photo",
+      mode: "confirm",
+      onConfirm: () => performDelete(id),
+    });
   };
 
   return (
@@ -130,12 +161,13 @@ export default function AdminGalleryPage() {
             <div key={img.id} className="bg-white rounded-xl md:rounded-2xl border border-slate-200 overflow-hidden group shadow-sm hover:shadow-md transition-all">
               <div className="relative aspect-square">
                 <img src={img.imageUrl} alt={img.title} className="w-full h-full object-cover" />
-                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 flex gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
                     onClick={() => handleDelete(img.id)}
                     className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-lg"
+                    title="Delete Photo"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={16} />
                   </button>
                 </div>
                 <div className="absolute bottom-2 left-2">
@@ -242,6 +274,18 @@ export default function AdminGalleryPage() {
           </div>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        confirmText={modalConfig.confirmText}
+        confirmVariant={modalConfig.confirmVariant}
+        mode={modalConfig.mode}
+        onConfirm={modalConfig.onConfirm}
+        onClose={() => setModalConfig((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }
+
