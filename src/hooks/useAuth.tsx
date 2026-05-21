@@ -22,7 +22,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ALLOWED_EMAIL = 'muhammedadhil856@gmail.com';
+const ALLOWED_EMAILS = ['muhammedadhil856@gmail.com', 'sp.sanal3@gmail.com'];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signOut(authA);
   };
 
-  const isAdmin = (user?.email === ALLOWED_EMAIL && user?.emailVerified) || isSharedAdmin;
+  const isAdmin = (user?.email && ALLOWED_EMAILS.includes(user.email) && user?.emailVerified) || isSharedAdmin;
 
   return (
     <AuthContext.Provider value={{ user, isAdmin, loading, login, logout }}>
