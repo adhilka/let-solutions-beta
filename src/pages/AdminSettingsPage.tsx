@@ -314,18 +314,18 @@ export default function AdminSettingsPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] flex flex-col md:flex-row overflow-hidden min-h-[600px]">
+      <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] shadow-lg border border-[var(--color-border)] flex flex-col md:flex-row overflow-hidden min-h-[600px]">
         {/* Settings Sidebar */}
-        <div className="w-full md:w-48 lg:w-64 bg-[var(--color-surface-alt)] border-r border-[var(--color-border)] shrink-0">
+        <div className="w-full md:w-48 lg:w-64 bg-[#1a1a1a] border-r border-[var(--color-border)] shrink-0">
           <nav className="flex flex-col py-4">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`text-left px-6 py-3 text-sm font-medium transition-colors ${
+                className={`text-left px-6 py-3 text-sm font-bold uppercase tracking-wider transition-all duration-200 ${
                   activeTab === tab.id
-                    ? "bg-white border-l-4 border-[var(--color-primary-600)] text-[var(--color-primary-700)]"
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-50)] border-l-4 border-transparent"
+                    ? "bg-white/5 border-l-4 border-[var(--color-primary-500)] text-white"
+                    : "text-[var(--color-text-tertiary)] hover:bg-white/[0.02] border-l-4 border-transparent"
                 }`}
               >
                 {tab.label}
@@ -337,14 +337,14 @@ export default function AdminSettingsPage() {
         {/* Settings Content */}
         <div className="flex-1 p-6 md:p-8">
           <div className="max-w-2xl">
-            <h2 className="text-xl font-bold mb-6 capitalize">
-              {activeTab} Settings
+            <h2 className="text-xl font-bold mb-8 capitalize text-white italic">
+              {activeTab} Configuration
             </h2>
 
             {activeTab === "branding" && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
                     Institute Name
                   </label>
                   <input
@@ -357,7 +357,7 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
                     Tagline
                   </label>
                   <input
@@ -370,14 +370,14 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    Logo
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Brand Logo
                   </label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 bg-[var(--color-surface)] p-4 rounded-xl border border-[var(--color-border)]">
                     {settings.branding?.logoUrl && (
                       <img
                         src={settings.branding.logoUrl}
-                        className="h-10 w-auto rounded border"
+                        className="h-10 w-auto rounded border border-[var(--color-border)] bg-black/20"
                         alt="Logo"
                       />
                     )}
@@ -385,19 +385,19 @@ export default function AdminSettingsPage() {
                       type="file"
                       accept="image/*"
                       onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
-                      className="text-xs"
+                      className="text-xs text-[var(--color-text-tertiary)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary-900)] file:text-[var(--color-primary-400)]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    Favicon
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Favicon (Safari/Chrome Icon)
                   </label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 bg-[var(--color-surface)] p-4 rounded-xl border border-[var(--color-border)]">
                     {settings.branding?.faviconUrl && (
                       <img
                         src={settings.branding.faviconUrl}
-                        className="h-8 w-8 rounded border"
+                        className="h-8 w-8 rounded border border-[var(--color-border)]"
                         alt="Favicon"
                       />
                     )}
@@ -407,7 +407,7 @@ export default function AdminSettingsPage() {
                       onChange={(e) =>
                         setFaviconFile(e.target.files?.[0] || null)
                       }
-                      className="text-xs"
+                      className="text-xs text-[var(--color-text-tertiary)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary-900)] file:text-[var(--color-primary-400)]"
                     />
                   </div>
                 </div>
@@ -417,8 +417,8 @@ export default function AdminSettingsPage() {
             {activeTab === "contact" && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    Primary Email
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Official Email
                   </label>
                   <input
                     type="email"
@@ -430,12 +430,12 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    Phone
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Hotline Number
                   </label>
                   <input
                     type="text"
-                    className="input"
+                    className="input font-mono"
                     value={settings.contact?.phone || ""}
                     onChange={(e) =>
                       updateSetting("contact", "phone", e.target.value)
@@ -443,12 +443,12 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    WhatsApp Number
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    WhatsApp Connectivity
                   </label>
                   <input
                     type="text"
-                    className="input"
+                    className="input font-mono"
                     value={settings.contact?.whatsapp || ""}
                     onChange={(e) =>
                       updateSetting("contact", "whatsapp", e.target.value)
@@ -456,8 +456,8 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    WhatsApp Welcome Message
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Auto-Welcome Script
                   </label>
                   <input
                     type="text"
@@ -470,11 +470,11 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    Address
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Physical Address
                   </label>
                   <textarea
-                    className="input"
+                    className="input min-h-[100px]"
                     rows={3}
                     value={settings.contact?.address || ""}
                     onChange={(e) =>
@@ -489,12 +489,12 @@ export default function AdminSettingsPage() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                      Years Excellence
+                    <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                      Experience (Years)
                     </label>
                     <input
                       type="text"
-                      className="input"
+                      className="input font-mono"
                       value={settings.stats?.yearsExcellence || ""}
                       onChange={(e) =>
                         updateSetting(
@@ -506,12 +506,12 @@ export default function AdminSettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                      Students Trained
+                    <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                      Student Alumni Count
                     </label>
                     <input
                       type="text"
-                      className="input"
+                      className="input font-mono"
                       value={settings.stats?.studentsTrained || ""}
                       onChange={(e) =>
                         updateSetting(
@@ -523,12 +523,12 @@ export default function AdminSettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                      Placement Rate
+                    <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                      Placement Metric
                     </label>
                     <input
                       type="text"
-                      className="input"
+                      className="input font-mono"
                       value={settings.stats?.placementRate || ""}
                       onChange={(e) =>
                         updateSetting("stats", "placementRate", e.target.value)
@@ -536,12 +536,12 @@ export default function AdminSettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                      Course Modules
+                    <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                      Curriculum Modules
                     </label>
                     <input
                       type="text"
-                      className="input"
+                      className="input font-mono"
                       value={settings.stats?.courseModules || ""}
                       onChange={(e) =>
                         updateSetting("stats", "courseModules", e.target.value)
@@ -555,8 +555,8 @@ export default function AdminSettingsPage() {
             {activeTab === "admissions" && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                    Year Display Mode
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Academic Cycle Sync
                   </label>
                   <select
                     className="input"
@@ -566,22 +566,21 @@ export default function AdminSettingsPage() {
                     }
                   >
                     <option value="auto">
-                      Auto (Calculates Current Academic Year)
+                      Auto (Dynamic Academic Year)
                     </option>
                     <option value="manual">Manual Override</option>
                   </select>
-                  <p className="mt-2 text-xs text-gray-500">
-                    Auto mode will show "
+                  <p className="mt-2 text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-tertiary)]">
+                    Preview:{" "}
                     {new Date().getMonth() > 4
                       ? `${new Date().getFullYear()}-${(new Date().getFullYear() + 1).toString().slice(-2)}`
                       : `${new Date().getFullYear() - 1}-${new Date().getFullYear().toString().slice(-2)}`}
-                    "
                   </p>
                 </div>
                 {settings.admissions?.mode === "manual" && (
                   <div>
-                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                      Manual Admission Text
+                    <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                      Manual Text Input
                     </label>
                     <input
                       type="text"
@@ -603,11 +602,11 @@ export default function AdminSettingsPage() {
 
             {activeTab === "announcement" && (
               <div className="space-y-6">
-                <div>
-                  <label className="flex items-center gap-2 cursor-pointer mb-6">
+                <div className="bg-[var(--color-surface)] p-6 rounded-2xl border border-[var(--color-border)]">
+                  <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
-                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="w-5 h-5 rounded border-[var(--color-border)] text-[var(--color-primary-600)] focus:ring-[var(--color-primary-500)]"
                       checked={settings.announcement?.enabled ?? true}
                       onChange={(e) =>
                         updateSetting(
@@ -617,16 +616,16 @@ export default function AdminSettingsPage() {
                         )
                       }
                     />
-                    <span className="text-sm font-medium text-slate-700">
-                      Enable Top Announcement Bar
+                    <span className="text-sm font-bold text-white uppercase tracking-wider">
+                      Enable Emergency Announcement Bar
                     </span>
                   </label>
                 </div>
 
                 {settings.announcement?.enabled !== false && (
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                      Announcement Text
+                  <div className="animate-fade-in">
+                    <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                      Marquee Status Text
                     </label>
                     <input
                       type="text"
@@ -637,9 +636,8 @@ export default function AdminSettingsPage() {
                         updateSetting("announcement", "text", e.target.value)
                       }
                     />
-                    <p className="mt-2 text-xs text-gray-500">
-                      This text will scroll horizontally at the very top of the
-                      website (marquee style).
+                    <p className="mt-2 text-[10px] text-[var(--color-text-tertiary)] font-bold uppercase tracking-widest">
+                      Scrolls horizontally at the vertex of the interface.
                     </p>
                   </div>
                 )}
@@ -648,14 +646,14 @@ export default function AdminSettingsPage() {
 
             {activeTab === "access" && (
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-bold mb-2">
-                    Temporary Admin Links
+                <div className="bg-[var(--color-surface)] p-8 rounded-3xl border border-[var(--color-border)]">
+                  <h3 className="text-lg font-bold mb-4 text-white uppercase tracking-tight">
+                    Temporal Access Keys
                   </h3>
-                  <p className="text-sm text-slate-500 mb-6">
-                    Generate a 24-hour secure link to grant temporary admin
-                    access to another user. They will not need a username or
-                    password, but their access will expire automatically.
+                  <p className="text-sm text-[var(--color-text-secondary)] mb-8 leading-relaxed">
+                    Generate an encrypted, one-time link valid for 24 hours to grant administrative 
+                    oversight without credentials. Key will expire automatically upon completion 
+                    of the cycle.
                   </p>
 
                   <button
@@ -681,15 +679,14 @@ export default function AdminSettingsPage() {
                             expiresAt: Timestamp.fromDate(expiresAt),
                           },
                         );
-                        // Since I don't want to hassle with dualWrite parsing, I will write the URL to the screen
                         const url = `${window.location.origin}/admin?adminToken=${linkId}`;
 
                         setModalConfig({
                           isOpen: true,
-                          title: "Link Generated successfully",
-                          message: `Share this link securely:\n\n${url}\n\nThis link will expire in 24 hours.`,
+                          title: "Key Generated",
+                          message: `Deployment Link Created:\n\n${url}\n\nTerminates in 24 standard hours.`,
                           confirmVariant: "success",
-                          confirmText: "Done",
+                          confirmText: "Acknowledge",
                           mode: "status",
                           onConfirm: () => {},
                         });
@@ -697,19 +694,19 @@ export default function AdminSettingsPage() {
                         console.error("Error generating link:", err);
                         setModalConfig({
                           isOpen: true,
-                          title: "Error generating link",
+                          title: "Encryption Failure",
                           message:
-                            "We encountered an error generating the link. Please try again.",
+                            "The system encountered an error generating the temporal key.",
                           confirmVariant: "danger",
-                          confirmText: "Acknowledge",
+                          confirmText: "Retry",
                           mode: "status",
                           onConfirm: () => {},
                         });
                       }
                     }}
-                    className="btn-primary"
+                    className="btn-primary w-full md:w-auto shadow-xl shadow-blue-900/20"
                   >
-                    Generate New Link (24 Hours)
+                    Generate Temporal Key
                   </button>
                 </div>
               </div>
@@ -717,56 +714,54 @@ export default function AdminSettingsPage() {
 
             {activeTab === "maintenance" && (
               <div className="space-y-10">
-                <div className="bg-amber-50 border border-amber-200 rounded-3xl p-6 flex flex-col md:flex-row gap-6 items-start">
-                  <div className="p-4 bg-amber-100 text-amber-600 rounded-2xl shrink-0">
+                <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-6 flex flex-col md:flex-row gap-6 items-center">
+                  <div className="p-4 bg-red-500/20 text-red-500 rounded-2xl shrink-0">
                     <ShieldAlert size={32} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-amber-900 mb-2">
-                      Danger Zone
+                    <h3 className="text-xl font-bold text-white mb-1 uppercase tracking-tight">
+                      Privileged Operations
                     </h3>
-                    <p className="text-amber-800 text-sm leading-relaxed mb-4">
-                      The following actions are irreversible. They will
-                      permanently remove data from your server. Use with extreme
-                      caution.
+                    <p className="text-red-400 text-sm font-medium leading-relaxed">
+                      Wipe operations are structural and irreversible. Permanent data removal 
+                      from the primary cluster will occur immediately.
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-6 rounded-3xl border border-slate-200 hover:border-red-200 hover:bg-red-50/30 transition-all group">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
+                  <div className="p-8 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-red-500/50 transition-all group shadow-lg">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-red-100 text-red-600 rounded-xl">
+                      <div className="p-2 bg-red-500/10 text-red-400 rounded-xl">
                         <Trash2 size={20} />
                       </div>
-                      <h4 className="font-bold text-slate-900">
-                        Clear Leads & Enquiries
+                      <h4 className="font-bold text-white uppercase tracking-tight">
+                        Wipe Leads
                       </h4>
                     </div>
-                    <p className="text-slate-500 text-xs mb-6">
-                      Deletes all student enquiries and contact form
-                      submissions.
+                    <p className="text-[var(--color-text-secondary)] text-xs mb-8 leading-relaxed">
+                      Purge all student enquiry records and contact metrics from the archive.
                     </p>
                     <button
                       onClick={() =>
                         setModalConfig({
                           isOpen: true,
-                          title: "Clear Enquiries?",
+                          title: "Execute Wipe?",
                           message:
-                            "This will permanently delete all student enquiries and messages. You cannot undo this action.",
+                            "This will permanently terminate all enquiry records from the database. This sector cannot be recovered.",
                           confirmVariant: "danger",
-                          confirmText: "Yes, Wipe Enquiries",
+                          confirmText: "Execute Wipe",
                           mode: "confirm",
                           onConfirm: async () => {
                             const res = await clearCollection("enquiries");
                             if (res) {
                               setModalConfig({
                                 isOpen: true,
-                                title: "Enquiries Cleared",
+                                title: "Archive Cleared",
                                 message:
-                                  "All student leads and enquiry records have been removed.",
+                                  "Sector purged. Enquiries have been removed.",
                                 confirmVariant: "success",
-                                confirmText: "Done",
+                                confirmText: "Acknowledged",
                                 mode: "status",
                                 onConfirm: () => {},
                               });
@@ -774,69 +769,69 @@ export default function AdminSettingsPage() {
                           },
                         })
                       }
-                      className="w-full py-2 bg-red-100 text-red-700 font-bold rounded-xl text-sm hover:bg-red-200 transition-colors"
+                      className="w-full py-3 bg-red-500/10 text-red-400 font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-red-500/20 transition-all border border-red-500/20"
                     >
-                      Wipe Enquiries
+                      Purge Archive
                     </button>
                   </div>
 
-                  <div className="p-6 rounded-3xl border border-slate-200 hover:border-blue-200 hover:bg-blue-50/30 transition-all group">
+                  <div className="p-8 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-blue-500/50 transition-all group shadow-lg">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-blue-100 text-blue-600 rounded-xl">
+                      <div className="p-2 bg-blue-500/10 text-blue-400 rounded-xl">
                         <Image size={20} />
                       </div>
-                      <h4 className="font-bold text-slate-900">
-                        Restore Default Assets
+                      <h4 className="font-bold text-white uppercase tracking-tight">
+                        Restore Logic
                       </h4>
                     </div>
-                    <p className="text-slate-500 text-xs mb-6">
-                      Resets Logo, Favicon, and Home Hero links to the original official defaults.
+                    <p className="text-[var(--color-text-secondary)] text-xs mb-8 leading-relaxed">
+                      Re-synchronize branding assets and UI placeholders with official Tirur defaults.
                     </p>
                     <button
                       onClick={() =>
                         setModalConfig({
                           isOpen: true,
-                          title: "Restore Default Links?",
-                          message: "This will replace your current logo and favicon URLs with the default institute links. Your text content will remain unchanged.",
+                          title: "Restore Defaults?",
+                          message: "Reverting UI anchors to factory settings. Primary text layers remain archived.",
                           confirmVariant: "primary",
-                          confirmText: "Yes, Restore Defaults",
+                          confirmText: "Sync Defaults",
                           mode: "confirm",
                           onConfirm: handleRestoreDefaultImages,
                         })
                       }
-                      className="w-full py-2 bg-blue-100 text-blue-700 font-bold rounded-xl text-sm hover:bg-blue-200 transition-colors"
+                      className="w-full py-3 bg-blue-500/10 text-blue-400 font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-blue-500/20 transition-all border border-blue-500/20"
                     >
-                      Restore Image Links
+                      Sync Defaults
                     </button>
                   </div>
 
-                  <div className="p-6 rounded-3xl border border-slate-200 hover:border-red-200 hover:bg-red-50/30 transition-all group">
+                  <div className="p-8 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-red-600 transition-all group shadow-2xl col-span-full">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-red-100 text-red-600 rounded-xl">
+                      <div className="p-2 bg-red-600/10 text-red-500 rounded-xl">
                         <Database size={20} />
                       </div>
-                      <h4 className="font-bold text-slate-900">
-                        Universal Server Wipe
+                      <h4 className="font-bold text-white uppercase tracking-tight">
+                        Universal System Reset
                       </h4>
                     </div>
-                    <p className="text-slate-500 text-xs mb-6">
-                      Deletes EVERYTHING: Courses, Blog Posts, Batches,
-                      Feedbacks, and your Branding/Stats settings.
+                    <p className="text-[var(--color-text-secondary)] text-sm mb-8 leading-relaxed">
+                      Structural termination of all distributed modules. This includes courses, blog infrastructure, 
+                      testimonials, and global configuration. No recovery path exists.
                     </p>
                     <button
                       onClick={() =>
                         setModalConfig({
                           isOpen: true,
-                          title: "DELETE EVERYTHING?",
+                          title: "SYSTEM RESET?",
                           message:
-                            "WARNING: This will wipe all dynamic content AND your custom settings (Branding, Stats, etc.) from the server. The site will return to factory defaults.",
+                            "FINAL WARNING: Initiating global termination. All content structures will be destroyed.",
                           confirmVariant: "danger",
                           onConfirm: handleClearAllData,
                         })
                       }
-                      className="w-full py-2 bg-red-600 text-white font-bold rounded-xl text-sm hover:bg-red-700 transition-colors shadow-lg shadow-red-100"
+                      className="w-full py-4 bg-red-600 text-white font-extrabold rounded-2xl text-sm uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-900/20"
                     >
-                      Reset All Data
+                      Initialize System Reset
                     </button>
                   </div>
                 </div>

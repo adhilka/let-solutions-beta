@@ -110,16 +110,16 @@ export default function TestimonialsPage() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 pb-8 border-b border-[var(--color-border)]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl">
-            <h1 className="text-4xl font-extrabold text-[var(--color-text-primary)] mb-4 tracking-tight drop-shadow-[0_0_15px_rgba(0,255,156,0.3)]">Student Feedbacks</h1>
+            <h1 className="text-4xl font-extrabold text-[var(--color-text-primary)] mb-4 tracking-tight">Student Feedbacks</h1>
             <p className="text-xl text-[var(--color-text-secondary)]">
               Hear directly from our alumni who have transformed their careers through our practical training programs.
             </p>
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="btn-primary flex items-center gap-2"
+            className="flex items-center gap-2 btn-primary px-6 py-3 shrink-0"
           >
             <PlusCircle className="w-5 h-5" />
             Share Your Experience
@@ -128,38 +128,35 @@ export default function TestimonialsPage() {
 
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin w-12 h-12 border-4 border-[var(--color-text-primary)] border-t-transparent rounded-full shadow-[0_0_15px_rgba(0,255,156,0.2)]" />
+            <div className="animate-spin w-12 h-12 border-4 border-[var(--color-primary-600)] border-t-transparent rounded-full" />
           </div>
         ) : (
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
             {testimonials.map(t => (
-              <div key={t.id} className="break-inside-avoid glass-dark p-6 md:p-8 rounded-[2rem] shadow-2xl border border-[var(--color-border)] hover:border-[var(--color-text-primary)]/40 hover:shadow-[0_0_30px_rgba(0,255,156,0.1)] transition-all group relative overflow-hidden">
-                {/* Subtle Pattern overlay */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_100%,var(--color-text-primary),transparent_50%)] opacity-[0.02] pointer-events-none group-hover:opacity-[0.05] transition-opacity"></div>
-                
-                <Quote className="w-8 h-8 text-[var(--color-text-primary)]/10 mb-4 group-hover:text-[var(--color-text-primary)]/20 transition-colors" />
-                <p className="text-[var(--color-text-secondary)] italic mb-6 leading-relaxed">"{t.content}"</p>
+              <div key={t.id} className="break-inside-avoid bg-[var(--color-surface-alt)] p-6 rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary-600)] transition">
+                <Quote className="w-8 h-8 text-[var(--color-primary-900)] mb-4" />
+                <p className="text-[var(--color-text-primary)] italic mb-6 leading-relaxed">"{t.content}"</p>
                 <div className="flex items-center">
                   {t.imageUrl ? (
-                    <img src={t.imageUrl} alt={t.name} className="w-12 h-12 rounded-full object-cover mr-4 border border-[var(--color-border)] opacity-80" />
+                    <img src={t.imageUrl} alt={t.name} className="w-12 h-12 rounded-full object-cover mr-4" />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-text-primary)]/10 flex items-center justify-center text-[var(--color-text-primary)] font-bold mr-4 shrink-0 border border-[var(--color-text-primary)]/20">
+                    <div className="w-12 h-12 rounded-full bg-[var(--color-primary-900)] flex items-center justify-center text-[var(--color-primary-400)] font-bold mr-4 flex shrink-0">
                       <span className="mx-auto">{t.name.charAt(0)}</span>
                     </div>
                   )}
                   <div>
                     <h4 className="font-bold text-[var(--color-text-primary)]">{t.name}</h4>
-                    <p className="text-sm text-[var(--color-text-secondary)] font-medium">{t.course} {t.batch && <span className="text-[var(--color-text-tertiary)] font-normal">- Batch {t.batch}</span>}</p>
+                    <p className="text-sm text-[var(--color-primary-400)]">{t.course} {t.batch && <span className="text-[var(--color-text-tertiary)]">- Batch {t.batch}</span>}</p>
                     <div className="flex mt-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-3.5 h-3.5 ${i < t.rating ? 'text-[var(--color-text-primary)] fill-current drop-shadow-[0_0_5px_rgba(0,255,156,0.3)]' : 'text-[var(--color-text-tertiary)]'}`} />
+                        <Star key={i} className={`w-3.5 h-3.5 ${i < t.rating ? 'text-amber-400 fill-current' : 'text-slate-700'}`} />
                       ))}
                     </div>
                   </div>
                 </div>
                 {t.videoUrl && (
                   <div className="mt-4 pt-4 border-t border-[var(--color-border)]">
-                     <a href={t.videoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center text-[var(--color-text-primary)] text-sm font-bold hover:underline">
+                     <a href={t.videoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center text-red-400 text-sm font-medium hover:text-red-300">
                        <PlayCircle className="w-4 h-4 mr-2" />
                        Watch Video Testimonial
                      </a>
@@ -171,21 +168,21 @@ export default function TestimonialsPage() {
         )}
 
         {!isLoading && testimonials.length === 0 && (
-          <div className="text-center py-20 bg-[var(--color-surface-alt)] rounded-2xl border border-[var(--color-border)] shadow-xl">
-            <Star className="w-16 h-16 text-[var(--color-text-tertiary)] mx-auto mb-4 opacity-20" />
-            <h3 className="text-lg font-medium text-[var(--color-text-primary)]">No feedbacks yet</h3>
-            <p className="text-[var(--color-text-secondary)]">Student feedbacks will appear here once approved.</p>
+          <div className="text-center py-20 bg-[var(--color-surface-alt)] rounded-2xl border border-[var(--color-border)] shadow-sm">
+            <Star className="w-16 h-16 text-slate-700 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-white">No feedbacks yet</h3>
+            <p className="text-slate-500">Student feedbacks will appear here once approved.</p>
           </div>
         )}
       </div>
 
       {/* Submission Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[100] backdrop-blur-md">
-          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
-            <div className="p-6 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--color-surface-alt)]">
-              <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Share Your Experience</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
+          <div className="bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+            <div className="p-6 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--color-surface)]">
+              <h2 className="text-xl font-bold text-white">Share Your Experience</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white transition-colors">
                 <XCircle className="w-6 h-6" />
               </button>
             </div>
@@ -197,7 +194,7 @@ export default function TestimonialsPage() {
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="input"
+                  className="input w-full"
                   placeholder="e.g. Rahul Kumar"
                 />
               </div>
@@ -208,7 +205,7 @@ export default function TestimonialsPage() {
                   type="text"
                   value={formData.course}
                   onChange={e => setFormData({ ...formData, course: e.target.value })}
-                  className="input"
+                  className="input w-full"
                   placeholder="e.g. Laptop Chip-Level Repair"
                 />
               </div>
@@ -222,7 +219,7 @@ export default function TestimonialsPage() {
                       onClick={() => setFormData({ ...formData, rating: star })}
                       className="p-1 transition-transform active:scale-95"
                     >
-                      <Star className={`w-8 h-8 ${star <= formData.rating ? 'text-[var(--color-text-primary)] fill-current drop-shadow-[0_0_8px_rgba(0,255,156,0.4)]' : 'text-[var(--color-text-tertiary)]'}`} />
+                      <Star className={`w-8 h-8 ${star <= formData.rating ? 'text-amber-400 fill-current' : 'text-slate-700'}`} />
                     </button>
                   ))}
                 </div>
@@ -233,9 +230,9 @@ export default function TestimonialsPage() {
                   type="file"
                   accept="image/*"
                   onChange={e => setImageFile(e.target.files?.[0] || null)}
-                  className="w-full text-sm text-[var(--color-text-tertiary)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[var(--color-text-primary)]/10 file:text-[var(--color-text-primary)] hover:file:bg-[var(--color-text-primary)]/20 transition cursor-pointer"
+                  className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary-900)] file:text-[var(--color-primary-400)] hover:file:bg-[var(--color-primary-800)] transition"
                 />
-                {imageFile && <p className="text-[10px] text-[var(--color-text-primary)] mt-1 font-bold">Selected: {imageFile.name}</p>}
+                {imageFile && <p className="text-[10px] text-blue-400 mt-1">Selected: {imageFile.name}</p>}
               </div>
               <div>
                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-1.5">Your Feedback</label>
@@ -244,18 +241,18 @@ export default function TestimonialsPage() {
                   rows={4}
                   value={formData.content}
                   onChange={e => setFormData({ ...formData, content: e.target.value })}
-                  className="input min-h-[100px]"
+                  className="input w-full"
                   placeholder="Tell us about your learning journey..."
                 ></textarea>
               </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary w-full py-4 text-base"
+                className="w-full btn-primary py-4"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
               </button>
-              <p className="text-center text-xs text-[var(--color-text-tertiary)]">
+              <p className="text-center text-xs text-slate-500">
                 Your feedback will be visible on the site after a quick review.
               </p>
             </form>

@@ -111,12 +111,12 @@ export default function ContactPage() {
         structuredData={[contactSchema, breadcrumbSchema]}
       />
 
-      <div className="bg-[var(--color-surface)] py-16 border-b border-[var(--color-border)]">
+      <div className="bg-[var(--color-primary-900)] py-16">
         <div className="container-wide px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)] drop-shadow-[0_0_15px_rgba(0,255,156,0.3)]">
-            Get in <span className="text-[var(--color-text-primary)]">Touch</span>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">
+            Get in <span className="text-[var(--color-primary-400)]">Touch</span>
           </h1>
-          <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto">
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
             We are always here to help you. Reach out to us for any queries regarding courses or admissions.
           </p>
         </div>
@@ -126,48 +126,48 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form and Map */}
           <div className="lg:col-span-2 space-y-8 order-1">
-            <div className="bg-[var(--color-surface-alt)] p-8 rounded-[var(--radius-2xl)] shadow-xl border border-[var(--color-border)]">
-              <h2 className="text-2xl font-bold mb-6 text-[var(--color-text-primary)]">Send us a message</h2>
+            <div className="bg-[var(--color-surface-alt)] p-8 rounded-[var(--radius-2xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)]">
+              <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block font-medium text-sm text-[var(--color-text-secondary)] mb-2">Full Name *</label>
+                    <label className="block font-semibold text-sm text-[var(--color-text-primary)] mb-2">Full Name *</label>
                     <input type="text" className="input" placeholder="Enter your name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
                   </div>
                   <div>
-                    <label className="block font-medium text-sm text-[var(--color-text-secondary)] mb-2">Phone Number *</label>
+                    <label className="block font-semibold text-sm text-[var(--color-text-primary)] mb-2">Phone Number *</label>
                     <input type="tel" className="input" placeholder="10-digit mobile number" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} required pattern="[6-9][0-9]{9}" />
                   </div>
                 </div>
                 <div>
-                   <label className="block font-medium text-sm text-[var(--color-text-secondary)] mb-2">Email Address</label>
+                   <label className="block font-semibold text-sm text-[var(--color-text-primary)] mb-2">Email Address</label>
                    <input type="email" className="input" placeholder="Enter your email (optional)" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block font-medium text-sm text-[var(--color-text-secondary)] mb-2">Course Interested In</label>
+                   <label className="block font-semibold text-sm text-[var(--color-text-primary)] mb-2">Course Interested In</label>
                   <div className="relative">
                     <select 
-                      className="input appearance-none pr-10" 
+                      className="input bg-[var(--color-surface-alt)] appearance-none pr-10" 
                       value={formData.courseInterested} 
                       onChange={e => setFormData({ ...formData, courseInterested: e.target.value })}
                       required
                     >
-                      <option value="" className="bg-[var(--color-surface)]">Select a course...</option>
+                      <option value="" className="bg-black text-white">Select a course...</option>
                       {courses.map((course: any) => (
-                        <option key={course.id} value={course.title} className="bg-[var(--color-surface)]">
+                        <option key={course.id} value={course.title} className="bg-black text-white">
                           {course.title}
                         </option>
                       ))}
                     </select>
                     {isCoursesLoading && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <Loader2 size={16} className="animate-spin text-[var(--color-text-primary)]" />
+                        <Loader2 size={16} className="animate-spin text-slate-400" />
                       </div>
                     )}
                   </div>
                 </div>
                 <div>
-                  <label className="block font-medium text-sm text-[var(--color-text-secondary)] mb-2">Message</label>
+                  <label className="block font-semibold text-sm text-[var(--color-text-primary)] mb-2">Message</label>
                   <textarea className="input min-h-[120px] resize-y" placeholder="How can we help you?" value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })}></textarea>
                 </div>
                 <button type="submit" disabled={isSubmitting} className="btn-primary w-full md:w-auto">
@@ -177,10 +177,10 @@ export default function ContactPage() {
             </div>
             
             {/* Map */}
-            <div className="h-[400px] w-full bg-[var(--color-surface-alt)] rounded-[var(--radius-2xl)] overflow-hidden shadow-xl border border-[var(--color-border)] flex items-center justify-center">
+            <div className="h-[400px] w-full bg-gray-200 rounded-[var(--radius-2xl)] overflow-hidden shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-center justify-center">
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.63!2d75.922!3d10.990!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b16555555555%3A0xc000000000000000!2sLet%20Solutions!5e0!3m2!1sen!2sin!4v1625555555555!5m2!1sen!2sin" 
-                className="w-full h-full border-0 grayscale invert opacity-80"
+                className="w-full h-full border-0"
                 allowFullScreen={true} 
                 loading="lazy"
                 title="Let Solutions Tirur Map"
@@ -190,63 +190,63 @@ export default function ContactPage() {
 
           {/* Contact Details Cards */}
           <div className="lg:col-span-1 space-y-6 order-2">
-            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-lg border border-[var(--color-border)] flex items-start gap-4 hover:border-[var(--color-text-primary)]/30 transition-all">
-              <div className="w-12 h-12 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+              <div className="w-12 h-12 bg-[var(--color-primary-900)] text-[var(--color-primary-400)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
                 <MapPin size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-lg mb-2 text-[var(--color-text-primary)]">Visit Us</h3>
+                <h3 className="font-bold text-lg mb-2">Visit Us</h3>
                 <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed">
                   1st Floor, Bus Stand Building,<br />
                   Tirur, Malappuram (Dist),<br />
                   Kerala, India - 676101
                 </p>
                 <div className="mt-4">
-                    <a href="https://maps.app.goo.gl/ea72pp63CzXkSybo8" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--color-text-primary)] hover:underline flex items-center gap-1">
+                    <a href="https://maps.app.goo.gl/ea72pp63CzXkSybo8" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--color-primary-400)] hover:underline flex items-center gap-1">
                         View on Google Maps
                     </a>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-lg border border-[var(--color-border)] flex items-start gap-4 hover:border-[var(--color-text-primary)]/30 transition-all">
-              <div className="w-12 h-12 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+              <div className="w-12 h-12 bg-[var(--color-primary-900)] text-[var(--color-primary-400)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
                 <Phone size={24} />
               </div>
               <div>
-                 <h3 className="font-bold text-lg mb-2 text-[var(--color-text-primary)]">Call Us</h3>
+                 <h3 className="font-bold text-lg mb-2">Call Us</h3>
                  <p className="text-[var(--color-text-secondary)] text-sm mb-1">
-                   Primary: <a href="tel:+919562854444" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all font-bold">+91 95628 54444</a>
+                   Primary: <a href="tel:+919562854444" className="text-[var(--color-primary-400)] hover:underline">+91 95628 54444</a>
                  </p>
                  <p className="text-[var(--color-text-secondary)] text-sm">
-                   WhatsApp: <a href="https://wa.me/919562854444" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all font-bold">+91 95628 54444</a>
+                   WhatsApp: <a href="https://wa.me/919562854444" className="text-[var(--color-primary-400)] hover:underline">+91 95628 54444</a>
                  </p>
               </div>
             </div>
 
-            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-lg border border-[var(--color-border)] flex items-start gap-4 hover:border-[var(--color-text-primary)]/30 transition-all">
-               <div className="w-12 h-12 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+               <div className="w-12 h-12 bg-[var(--color-primary-900)] text-[var(--color-primary-400)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
                 <Mail size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-lg mb-2 text-[var(--color-text-primary)]">Email</h3>
+                <h3 className="font-bold text-lg mb-2">Email</h3>
                 <p className="text-[var(--color-text-secondary)] text-sm mb-1">
-                   <a href="mailto:info@letsolutions.in" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all font-bold">info@letsolutions.in</a>
+                   <a href="mailto:info@letsolutions.in" className="text-[var(--color-primary-400)] hover:underline">info@letsolutions.in</a>
                 </p>
                 <p className="text-[var(--color-text-secondary)] text-sm">
-                   <a href="mailto:letsolutionstirur@gmail.com" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all font-bold">letsolutionstirur@gmail.com</a>
+                   <a href="mailto:letsolutionstirur@gmail.com" className="text-[var(--color-primary-400)] hover:underline">letsolutionstirur@gmail.com</a>
                 </p>
               </div>
             </div>
 
-            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-lg border border-[var(--color-border)] flex items-start gap-4 hover:border-[var(--color-text-primary)]/30 transition-all">
-              <div className="w-12 h-12 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
+            <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-start gap-4">
+              <div className="w-12 h-12 bg-[var(--color-primary-900)] text-[var(--color-primary-400)] rounded-[var(--radius-md)] flex items-center justify-center shrink-0">
                 <Clock size={24} />
               </div>
                <div>
-                <h3 className="font-bold text-lg mb-2 text-[var(--color-text-primary)]">Working Hours</h3>
-                <p className="text-[var(--color-text-secondary)] text-sm mb-1 font-medium">Monday – Saturday</p>
-                <p className="text-[var(--color-text-primary)] font-bold text-sm border border-[var(--color-text-primary)]/20 bg-[var(--color-text-primary)]/5 mt-2 inline-block px-3 py-1 rounded-full uppercase tracking-wider">09:30 AM – 05:30 PM</p>
+                <h3 className="font-bold text-lg mb-2">Working Hours</h3>
+                <p className="text-[var(--color-text-secondary)] text-sm mb-1">Monday – Saturday</p>
+                <p className="text-[var(--color-primary-400)] font-medium text-sm border bg-[var(--color-primary-900)] border-[var(--color-primary-800)] mt-2 inline-block px-2 py-1 rounded">09:30 AM – 05:30 PM</p>
               </div>
             </div>
           </div>

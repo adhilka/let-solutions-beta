@@ -112,7 +112,7 @@ export default function AdminPostEditor() {
     <div className="max-w-6xl mx-auto pb-20">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link to="/admin/posts" className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+          <Link to="/admin/posts" className="p-2 hover:bg-white/10 text-white rounded-full transition-colors">
             <ChevronLeft size={20} />
           </Link>
           <div>
@@ -139,17 +139,17 @@ export default function AdminPostEditor() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 space-y-6">
           {/* Main Content Card */}
-          <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] overflow-hidden">
-             <div className="p-1 bg-slate-50 border-b border-[var(--color-border)] flex items-center px-6 py-3">
-               <Type size={16} className="text-slate-400 mr-2" />
-               <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Main Content</span>
+          <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] border border-[var(--color-border)] overflow-hidden">
+             <div className="p-1 bg-[var(--color-surface)] border-b border-[var(--color-border)] flex items-center px-6 py-3">
+               <Type size={16} className="text-[var(--color-text-tertiary)] mr-2" />
+               <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">Main Content</span>
              </div>
              <form id="post-form" onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
                <div>
                  <label className="block text-sm font-bold text-[var(--color-text-primary)] mb-2">Title</label>
                  <input 
                     type="text" 
-                    className="w-full text-2xl md:text-3xl font-bold bg-transparent border-none p-0 focus:ring-0 placeholder:text-slate-300" 
+                    className="w-full text-2xl md:text-3xl font-bold bg-transparent border-none p-0 focus:ring-0 placeholder:text-slate-500 text-white" 
                     placeholder="Enter post title..." 
                     value={formData.title} 
                     onChange={e => {
@@ -161,14 +161,14 @@ export default function AdminPostEditor() {
                     }} 
                     required 
                  />
-                 <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+                 <div className="flex items-center gap-1 mt-2 text-xs text-[var(--color-text-tertiary)]">
                     <LinkIcon size={12} />
                     <span>Slug: </span>
-                    <span className="font-mono text-slate-600">/blog/{formData.slug || 'your-post-url'}</span>
+                    <span className="font-mono text-[var(--color-text-secondary)]">/blog/{formData.slug || 'your-post-url'}</span>
                  </div>
                </div>
                
-               <div className="pt-6 border-t">
+               <div className="pt-6 border-t border-[var(--color-border)]">
                  <label className="block text-sm font-bold text-[var(--color-text-primary)] mb-4">Post Content</label>
                  <TipTapEditor 
                    content={formData.content} 
@@ -179,10 +179,10 @@ export default function AdminPostEditor() {
           </div>
 
           {/* Excerpt/Summary */}
-          <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-6 md:p-8">
+          <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] border border-[var(--color-border)] p-6 md:p-8">
             <div className="flex items-center gap-2 mb-4">
               <FileText size={18} className="text-blue-500" />
-              <h3 className="font-bold">Short Excerpt</h3>
+              <h3 className="font-bold text-[var(--color-text-primary)]">Short Excerpt</h3>
             </div>
             <p className="text-sm text-[var(--color-text-secondary)] mb-4">
               This summary will appear on the blog listing page and in search results. Keep it catchy!
@@ -198,14 +198,14 @@ export default function AdminPostEditor() {
         
         <div className="lg:col-span-4 space-y-6">
            {/* Publishing Status Card */}
-           <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-6">
+           <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] border border-[var(--color-border)] p-6">
                <div className="flex items-center justify-between mb-4">
-                 <h3 className="font-bold flex items-center gap-2">
+                 <h3 className="font-bold flex items-center gap-2 text-[var(--color-text-primary)]">
                    <Globe size={18} className="text-green-500" />
                    Publishing
                  </h3>
-                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                   formData.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                 <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${
+                   formData.status === 'published' ? 'bg-green-500/10 text-green-400' : 'bg-amber-500/10 text-amber-400'
                  }`}>
                    {formData.status}
                  </span>
@@ -213,7 +213,7 @@ export default function AdminPostEditor() {
                
                <div className="space-y-4">
                  <div>
-                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Change Status</label>
+                   <label className="block text-xs font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Change Status</label>
                    <select 
                       className="input w-full" 
                       value={formData.status} 
@@ -225,10 +225,10 @@ export default function AdminPostEditor() {
                    </select>
                  </div>
                  
-                 <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                 <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
                     <div className="flex gap-3">
-                      <AlertCircle size={16} className="text-blue-600 shrink-0 mt-0.5" />
-                      <p className="text-xs text-blue-700">
+                      <AlertCircle size={16} className="text-blue-400 shrink-0 mt-0.5" />
+                      <p className="text-xs text-blue-300">
                         {formData.status === 'published' 
                           ? 'This post will be visible to everyone on your website.' 
                           : 'This post is currently hidden from the public site.'}
@@ -239,31 +239,31 @@ export default function AdminPostEditor() {
            </div>
            
             {/* Cover Image & Type Card */}
-            <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-6">
+            <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] border border-[var(--color-border)] p-6">
                 <div className="flex items-center gap-2 mb-6">
                   <Layout size={18} className="text-purple-500" />
-                  <h3 className="font-bold">Visuals & Meta</h3>
+                  <h3 className="font-bold text-[var(--color-text-primary)]">Visuals & Meta</h3>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <label className="block text-xs font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-3 flex items-center gap-2">
                       <ImageIcon size={14} /> Cover Image
                     </label>
-                    <div className="group relative aspect-video bg-slate-100 rounded-lg border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-all hover:border-blue-400">
+                    <div className="group relative aspect-video bg-[var(--color-surface)] rounded-lg border-2 border-dashed border-[var(--color-border)] overflow-hidden flex flex-col items-center justify-center transition-all hover:border-[var(--color-primary-600)]">
                       {formData.coverImage ? (
                         <>
                           <img src={formData.coverImage} className="w-full h-full object-cover" alt="Cover" />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <label className="cursor-pointer bg-white text-slate-900 px-4 py-2 rounded-full text-xs font-bold shadow-lg">Change Image</label>
+                            <label className="cursor-pointer bg-white text-black px-4 py-2 rounded-full text-xs font-bold shadow-lg hover:scale-105 transition-transform">Change Image</label>
                           </div>
                         </>
                       ) : (
                         <div className="text-center p-4">
-                          <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-2">
-                             <Plus size={20} className="text-slate-400" />
+                          <div className="w-10 h-10 bg-[var(--color-surface-alt)] rounded-full flex items-center justify-center mx-auto mb-2 border border-[var(--color-border)]">
+                             <Plus size={20} className="text-[var(--color-text-tertiary)]" />
                           </div>
-                          <p className="text-xs text-slate-400">Click to upload photo</p>
+                          <p className="text-xs text-[var(--color-text-tertiary)]">Click to upload photo</p>
                         </div>
                       )}
                       <input 
@@ -276,7 +276,7 @@ export default function AdminPostEditor() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Author Name</label>
+                    <label className="block text-xs font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Author Name</label>
                     <input 
                        type="text" 
                        className="input w-full text-sm" 

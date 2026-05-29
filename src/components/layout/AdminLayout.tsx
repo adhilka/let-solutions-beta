@@ -86,24 +86,24 @@ export default function AdminLayout() {
       {/* Main Content */}
       <main className="flex-1 md:ml-64 flex flex-col min-h-screen">
         {/* Universal Header (Mobile & Desktop) */}
-        <header className="bg-white border-b border-[var(--color-border)] h-16 flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
+        <header className="bg-[var(--color-surface-alt)] border-b border-[var(--color-border)] h-16 flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
           <div className="flex items-center gap-4">
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden text-slate-600">
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden text-[var(--color-text-secondary)]">
               {isMobileMenuOpen ? <X /> : <Menu />}
             </button>
-            <h1 className="font-display font-bold text-slate-800 hidden md:block uppercase tracking-wider text-sm opacity-50">Workspace</h1>
-            <Link to="/admin" className="font-display font-bold md:hidden text-slate-900">Admin</Link>
+            <h1 className="font-display font-medium text-white hidden md:block uppercase tracking-wider text-xs opacity-50 underline decoration-[var(--color-primary-500)] underline-offset-4">Workspace Control</h1>
+            <Link to="/admin" className="font-display font-bold md:hidden text-white">Admin Hub</Link>
           </div>
 
           <div className="flex items-center gap-2">
             <Link 
               to="/" 
               target="_blank"
-              className="flex items-center gap-2 px-3 py-1.5 text-slate-500 hover:text-[var(--color-primary-600)] hover:bg-blue-50 rounded-lg transition-all font-medium text-sm border border-transparent hover:border-blue-100"
+              className="flex items-center gap-2 px-3 py-1.5 text-[var(--color-text-secondary)] hover:text-white hover:bg-[var(--color-primary-900)] rounded-lg transition-all font-medium text-sm border border-transparent hover:border-[var(--color-primary-800)]"
               title="Go to Live Site"
             >
               <ExternalLink size={18} />
-              <span className="hidden sm:inline">Go to Site</span>
+              <span className="hidden sm:inline">View Site</span>
             </Link>
           </div>
         </header>

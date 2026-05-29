@@ -43,27 +43,30 @@ export default function BlogListPage() {
         structuredData={breadcrumbSchema}
       />
 
-      <div className="bg-[var(--color-surface)] py-12 md:py-16 border-b border-[var(--color-border)]">
-        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
-          <span className="inline-block px-3 py-1 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-[var(--color-text-primary)]/20">
-            Tech Blog
+      <div className="bg-[var(--color-surface)] py-12 md:py-20 border-b border-[var(--color-border)] relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none transform translate-x-1/4 -translate-y-1/4 text-white">
+           <FileText size={300} />
+        </div>
+        <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left relative z-10">
+          <span className="inline-block px-4 py-1.5 bg-[var(--color-primary-900)] text-[var(--color-primary-400)] border border-[var(--color-primary-800)] rounded-full text-[10px] font-extrabold uppercase tracking-[0.2em] mb-6">
+            Tech Journal
           </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)]">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-white uppercase italic">
             Institute News &{" "}
-            <span className="text-[var(--color-text-primary)] drop-shadow-[0_0_10px_rgba(0,255,156,0.5)]">
+            <span className="text-[var(--color-neon-green)] not-italic">
               Tech Updates
             </span>
           </h1>
-          <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto md:mx-0">
-            Read up on the latest trends in hardware networking, cybersecurity,
-            chip-level logic, and student achievements.
+          <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto md:mx-0 font-medium leading-relaxed">
+            Stay updated with the latest trends in hardware networking, cybersecurity,
+            chip-level logic tutorials, and student achievements from Tirur's leading tech hub.
           </p>
         </div>
       </div>
 
       <div className="container-wide px-4 sm:px-6 lg:px-8 py-16">
         {isLoading ? (
-          <div className="text-center py-12 font-medium text-[var(--color-text-tertiary)]">
+          <div className="text-center py-12 font-medium text-slate-500">
             Loading posts...
           </div>
         ) : posts && posts.length > 0 ? (
@@ -72,31 +75,31 @@ export default function BlogListPage() {
               <Link
                 to={`/blog/${post.slug}`}
                 key={post.id}
-                className="group bg-[var(--color-surface-alt)] border flex flex-col border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-xl overflow-hidden hover:scale-[1.02] hover:border-[var(--color-text-primary)]/40 transition-all duration-300"
+                className="group bg-[var(--color-surface-alt)] border flex flex-col border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden hover:shadow-lg transition-all duration-300"
               >
-                <div className="relative aspect-video bg-gray-900 overflow-hidden">
+                <div className="relative aspect-video bg-black overflow-hidden">
                   {post.coverImage && (
                     <img
                       src={post.coverImage}
                       alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   )}
                 </div>
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex gap-2 mb-3">
                     {post.isFile ? (
-                      <span className={`flex items-center gap-1.5 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider ${isGitHubLink(post.downloadUrl) ? 'text-[var(--color-surface)] bg-[var(--color-text-primary)]' : 'text-[var(--color-text-primary)] bg-[var(--color-text-primary)]/10 border border-[var(--color-text-primary)]/20'}`}>
+                      <span className={`flex items-center gap-1.5 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider ${isGitHubLink(post.downloadUrl) ? 'text-white bg-slate-800' : 'text-[var(--color-primary-400)] bg-[var(--color-primary-900)]'}`}>
                         {isGitHubLink(post.downloadUrl) ? <Github size={12} /> : <FileIcon size={12} />}
                         {isGitHubLink(post.downloadUrl) ? 'GitHub Project' : 'Resource File'}
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1.5 text-[var(--color-text-secondary)] font-bold bg-[var(--color-surface)] border border-[var(--color-border)] px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                      <span className="flex items-center gap-1.5 text-slate-400 font-bold bg-[var(--color-surface)] px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
                         <FileText size={12} /> Article
                       </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold mb-2 line-clamp-2 text-[var(--color-text-primary)] group-hover:underline transition-colors uppercase tracking-tight">
+                  <h3 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-[var(--color-primary-400)] transition-colors uppercase tracking-tight text-white">
                     {post.title}
                   </h3>
                   <p className="text-[var(--color-text-secondary)] text-sm mb-4 line-clamp-2 flex-grow">
@@ -107,15 +110,15 @@ export default function BlogListPage() {
                       <img
                         src={post.author.avatarUrl}
                         alt={post.author.name}
-                        className="w-8 h-8 rounded-full border border-[var(--color-border)]"
+                        className="w-8 h-8 rounded-full"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-[var(--color-text-primary)]/10 flex items-center justify-center text-[10px] font-bold text-[var(--color-text-primary)]">
+                      <div className="w-8 h-8 rounded-full bg-[var(--color-primary-900)] flex items-center justify-center text-[10px] font-bold text-[var(--color-primary-400)] border border-[var(--color-primary-800)]">
                         LS
                       </div>
                     )}
                     <div className="text-xs">
-                      <div className="font-semibold text-[var(--color-text-primary)]">
+                      <div className="font-semibold text-white">
                         {post.author?.name || "Admin"}
                       </div>
                       <div className="text-[var(--color-text-tertiary)]">

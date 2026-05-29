@@ -10,7 +10,7 @@ export default function AdminHomeSettings() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [homeData, setHomeData] = useState<any>({
+  const DEFAULT_HOME_DATA = {
     hero: {
       title: 'Master Chip-Level Engineering & Secure Your Future',
       subtitle: 'Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.',
@@ -19,7 +19,9 @@ export default function AdminHomeSettings() {
       imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       features: ['100% Job Assistance', 'Industry Experts', 'Hands-on Labs']
     }
-  });
+  };
+
+  const [homeData, setHomeData] = useState<any>(DEFAULT_HOME_DATA);
 
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -28,7 +30,15 @@ export default function AdminHomeSettings() {
       try {
         const data = await fetchHomeContent();
         if (data) {
-          setHomeData(data);
+          setHomeData({
+            ...DEFAULT_HOME_DATA,
+            ...data,
+            hero: {
+              ...DEFAULT_HOME_DATA.hero,
+              ...(data.hero || {}),
+              features: Array.isArray(data.hero?.features) ? data.hero.features : DEFAULT_HOME_DATA.hero.features
+            }
+          });
         }
       } catch (error) {
         console.error("Error loading home content:", error);
@@ -111,17 +121,17 @@ export default function AdminHomeSettings() {
         <h1 className="text-3xl font-bold">Home Page Settings</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8 pb-20">
         {/* Hero Section */}
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold">1</span>
+        <div className="bg-[var(--color-surface-alt)] p-8 rounded-3xl shadow-lg border border-[var(--color-border)]">
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
+            <span className="w-8 h-8 rounded-lg bg-[var(--color-primary-900)] text-[var(--color-primary-400)] flex items-center justify-center text-sm font-bold border border-[var(--color-primary-800)]">1</span>
             Hero Section
           </h2>
           
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Headline</label>
+              <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Headline</label>
               <input 
                 type="text" 
                 className="input"
@@ -129,12 +139,12 @@ export default function AdminHomeSettings() {
                 onChange={e => setHomeData({ ...homeData, hero: { ...homeData.hero, title: e.target.value } })}
                 placeholder="Master Chip-Level Engineering..."
               />
-              <p className="mt-1 text-xs text-slate-500">Supports HTML tags for styling (e.g., &lt;span className="text-blue-600"&gt;...&lt;/span&gt;)</p>
+              <p className="mt-1 text-xs text-[var(--color-text-tertiary)]">Supports HTML tags for styling (e.g., &lt;span className="text-blue-600"&gt;...&lt;/span&gt;)</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Pre-headline Tagline (Branding)</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Pre-headline Tagline (Branding)</label>
                 <input 
                   type="text" 
                   className="input"
@@ -144,7 +154,7 @@ export default function AdminHomeSettings() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Sub-headline Content</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Sub-headline Content</label>
                 <textarea 
                   className="input min-h-[100px]"
                   value={homeData.hero.subtitle}
@@ -155,38 +165,38 @@ export default function AdminHomeSettings() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Hero Layout Background</label>
+              <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Hero Layout Background</label>
               <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex items-center gap-2 cursor-pointer text-[var(--color-text-secondary)]">
                   <input
                     type="radio"
                     name="heroBgType"
                     value="solid"
                     checked={homeData.hero.bgType === 'solid'}
                     onChange={e => setHomeData({ ...homeData, hero: { ...homeData.hero, bgType: e.target.value } })}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    className="w-4 h-4 text-[var(--color-primary-600)] border-[var(--color-border)] focus:ring-[var(--color-primary-500)]"
                   />
                   <span>Solid Background</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex items-center gap-2 cursor-pointer text-[var(--color-text-secondary)]">
                   <input
                     type="radio"
                     name="heroBgType"
                     value="photo"
                     checked={homeData.hero.bgType === 'photo'}
                     onChange={e => setHomeData({ ...homeData, hero: { ...homeData.hero, bgType: e.target.value } })}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    className="w-4 h-4 text-[var(--color-primary-600)] border-[var(--color-border)] focus:ring-[var(--color-primary-500)]"
                   />
                   <span>Photo Background</span>
                 </label>
               </div>
-              <p className="mt-1 text-xs text-slate-500">Choose whether the hero section has a solid color or a large photo background.</p>
+              <p className="mt-1 text-xs text-[var(--color-text-tertiary)]">Choose whether the hero section has a solid color or a large photo background.</p>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Hero Image</label>
+              <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Hero Image</label>
               <div className="flex items-start gap-4">
-                <div className="w-48 aspect-video rounded-xl overflow-hidden border bg-slate-50 flex-shrink-0">
+                <div className="w-48 aspect-video rounded-xl overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)] flex-shrink-0">
                   <img 
                     src={imageFile ? URL.createObjectURL(imageFile) : homeData.hero.imageUrl} 
                     alt="Hero Preview" 
@@ -208,13 +218,13 @@ export default function AdminHomeSettings() {
                     <ImageIcon size={16} />
                     Change Image
                   </label>
-                  <p className="text-xs text-slate-500">Recommended size: 1200x900px. High quality JPEG or WebP.</p>
+                  <p className="text-xs text-[var(--color-text-tertiary)]">Recommended size: 1200x900px. High quality JPEG or WebP.</p>
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-4">Feature Highlights (Bottom checklist)</label>
+              <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-4 uppercase tracking-wider">Feature Highlights (Bottom checklist)</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {homeData.hero.features.map((feature: string, idx: number) => (
                   <div key={idx} className="flex items-center gap-2">
@@ -227,7 +237,7 @@ export default function AdminHomeSettings() {
                     <button 
                       type="button" 
                       onClick={() => removeFeature(idx)}
-                      className="p-2 text-slate-400 hover:text-red-500 transition"
+                      className="p-2 text-[var(--color-text-tertiary)] hover:text-red-500 transition"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -236,7 +246,7 @@ export default function AdminHomeSettings() {
                 <button 
                   type="button" 
                   onClick={addFeature}
-                  className="p-4 border-2 border-dashed border-slate-200 rounded-xl text-slate-500 hover:border-blue-400 hover:text-blue-600 transition flex items-center justify-center gap-2"
+                  className="p-4 border-2 border-dashed border-[var(--color-border)] rounded-xl text-[var(--color-text-tertiary)] hover:border-[var(--color-primary-600)] hover:text-white transition flex items-center justify-center gap-2"
                 >
                   <Plus size={18} />
                   Add Feature

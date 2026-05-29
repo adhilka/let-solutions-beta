@@ -136,37 +136,37 @@ export default function AdminCourseForm() {
         </div>
       </div>
       
-      <div className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-8">
+      <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] shadow-lg border border-[var(--color-border)] p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Course Title</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Course Title</label>
                 <input type="text" className="input" placeholder="e.g. Master Diploma In Chip-Level Engineering" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') })} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Slug</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Slug (URL friendly)</label>
                 <input type="text" className="input" placeholder="e.g. master-diploma-in-chip-level-engineering" value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value })} required />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Price (₹)</label>
-                <input type="number" className="input" placeholder="e.g. 15000" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required />
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Price (₹)</label>
+                <input type="number" className="input font-mono" placeholder="e.g. 15000" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Sort Order</label>
-                <input type="number" className="input" placeholder="e.g. 1" value={formData.order} onChange={e => setFormData({ ...formData, order: Number(e.target.value) })} required />
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Sort Order</label>
+                <input type="number" className="input font-mono" placeholder="e.g. 1" value={formData.order} onChange={e => setFormData({ ...formData, order: Number(e.target.value) })} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Badge (Optional)</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Badge (Optional)</label>
                 <input type="text" className="input" placeholder="e.g. Bestseller" value={formData.badge} onChange={e => setFormData({ ...formData, badge: e.target.value })} />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Category</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Category</label>
                 <select className="input" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
                   <option value="chip-level">Chip level</option>
                   <option value="laptop-chip-level">Laptop Chip-Level</option>
@@ -178,11 +178,11 @@ export default function AdminCourseForm() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Duration</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Duration</label>
                 <input type="text" className="input" placeholder="e.g. 6 Months" value={formData.duration} onChange={e => setFormData({ ...formData, duration: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Level</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Level</label>
                 <select className="input" value={formData.level} onChange={e => setFormData({ ...formData, level: e.target.value })}>
                   <option value="Beginner">Beginner</option>
                   <option value="Intermediate">Intermediate</option>
@@ -193,20 +193,20 @@ export default function AdminCourseForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Short Description</label>
-              <textarea className="input text-sm" placeholder="A brief summary for cards..." rows={2} value={formData.shortDescription} onChange={e => setFormData({ ...formData, shortDescription: e.target.value })} />
+              <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Short Description (for index cards)</label>
+              <textarea className="input text-sm min-h-[80px]" placeholder="A brief summary for cards..." rows={2} value={formData.shortDescription} onChange={e => setFormData({ ...formData, shortDescription: e.target.value })} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Thumbnail Image</label>
-                <div className="flex items-center gap-4">
-                  {formData.imageUrl && <img src={formData.imageUrl} className="w-20 h-20 object-cover rounded border" alt="Thumbnail" />}
-                  <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} className="text-sm" />
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Thumbnail Image</label>
+                <div className="flex items-center gap-4 bg-[var(--color-surface)] p-4 rounded-xl border border-[var(--color-border)]">
+                  {formData.imageUrl && <img src={formData.imageUrl} className="w-16 h-16 object-cover rounded-lg border border-[var(--color-border)] shadow-sm" alt="Thumbnail" />}
+                  <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} className="text-sm text-[var(--color-text-tertiary)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary-900)] file:text-[var(--color-primary-400)]" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Pinned Offer (Optional)</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Pinned Offer (Optional)</label>
                 <select 
                   className="input" 
                   value={formData.pinnedOfferId || ''} 
@@ -220,24 +220,24 @@ export default function AdminCourseForm() {
               </div>
             </div>
             
-            <div className="mt-8 border-t pt-8">
-              <label className="block text-sm font-bold text-[var(--color-text-primary)] uppercase tracking-wider mb-6">Fee Structure</label>
+            <div className="mt-8 border-t border-[var(--color-border)] pt-8">
+              <label className="block text-sm font-bold text-white uppercase tracking-wider mb-6">Fee Structure (Displayed on detail page)</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Registration Fee</label>
+                  <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Registration Fee</label>
                   <input 
                     type="text" 
-                    className="input" 
+                    className="input font-mono" 
                     placeholder="e.g. ₹1,000" 
                     value={formData.feeStructure?.registrationFee || ''} 
                     onChange={e => updateFeeStructure('registrationFee', e.target.value)} 
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Total Fee</label>
+                  <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Total Fee</label>
                   <input 
                     type="text" 
-                    className="input" 
+                    className="input font-mono" 
                     placeholder="e.g. ₹25,000" 
                     value={formData.feeStructure?.totalFee || ''} 
                     onChange={e => updateFeeStructure('totalFee', e.target.value)} 
@@ -245,9 +245,9 @@ export default function AdminCourseForm() {
                 </div>
               </div>
               <div className="mt-4">
-                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Fee Description / Installment Details</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Fee Description / Installment Details</label>
                 <textarea 
-                  className="input" 
+                  className="input min-h-[80px]" 
                   placeholder="Details about installments, periodic payments etc." 
                   rows={2}
                   value={formData.feeStructure?.description || ''} 
@@ -256,17 +256,17 @@ export default function AdminCourseForm() {
               </div>
             </div>
 
-            <div className="mt-8 border-t pt-8">
+            <div className="mt-8 border-t border-[var(--color-border)] pt-8">
               <div className="flex items-center justify-between mb-4">
-                <label className="block text-sm font-bold text-[var(--color-text-primary)] uppercase tracking-wider">Key Highlights</label>
-                <button type="button" onClick={addHighlight} className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1">
+                <label className="block text-sm font-bold text-white uppercase tracking-wider">Key Highlights</label>
+                <button type="button" onClick={addHighlight} className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1 border-0 shadow-md">
                   <Plus size={14} /> Add Highlight
                 </button>
               </div>
               <div className="space-y-3">
                 {formData.highlights.map((highlight, index) => (
                   <div key={index} className="flex items-center gap-2 group">
-                    <div className="text-slate-300 cursor-grab px-1"><GripVertical size={16} /></div>
+                    <div className="text-slate-500 cursor-grab px-1"><GripVertical size={16} /></div>
                     <input 
                       type="text" 
                       className="input flex-grow" 
@@ -277,45 +277,45 @@ export default function AdminCourseForm() {
                     <button 
                       type="button" 
                       onClick={() => removeHighlight(index)} 
-                      className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                      className="p-2 text-slate-500 hover:text-red-500 transition-colors"
                     >
                       <Trash2 size={18} />
                     </button>
                   </div>
                 ))}
                 {formData.highlights.length === 0 && (
-                  <div className="text-center py-8 border-2 border-dashed border-slate-100 rounded-xl">
-                    <p className="text-slate-400 text-sm italic">No highlights added yet.</p>
+                  <div className="text-center py-8 border-2 border-dashed border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]">
+                    <p className="text-[var(--color-text-tertiary)] text-sm italic">No highlights added yet.</p>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Full Description</label>
+            <div className="mt-6 border-t border-[var(--color-border)] pt-8">
+              <label className="block text-sm font-bold text-white uppercase tracking-wider mb-2">Detailed Course Content / Description</label>
               <textarea 
-                className="input w-full min-h-[200px]" 
+                className="input w-full min-h-[250px]" 
                 placeholder="Write detailed course content here..." 
                 value={formData.description || ''} 
                 onChange={e => setFormData({ ...formData, description: e.target.value })}
               />
             </div>
            
-           <div className="mt-6 flex flex-col gap-3">
-             <div className="flex items-center gap-2">
-               <input type="checkbox" id="isActive" checked={formData.isActive} onChange={e => setFormData({ ...formData, isActive: e.target.checked })} />
-               <label htmlFor="isActive" className="text-sm font-medium text-[var(--color-text-secondary)]">Active (visible to public)</label>
+           <div className="mt-6 flex flex-col gap-4 bg-[var(--color-surface)] p-4 rounded-xl border border-[var(--color-border)]">
+             <div className="flex items-center gap-3">
+               <input type="checkbox" id="isActive" className="w-5 h-5 rounded border-[var(--color-border)] text-[var(--color-primary-600)] focus:ring-[var(--color-primary-500)]" checked={formData.isActive} onChange={e => setFormData({ ...formData, isActive: e.target.checked })} />
+               <label htmlFor="isActive" className="text-sm font-semibold text-white">Active (Visible to public)</label>
              </div>
-             <div className="flex items-center gap-2">
-               <input type="checkbox" id="isPinned" checked={formData.isPinned} onChange={e => setFormData({ ...formData, isPinned: e.target.checked })} />
-               <label htmlFor="isPinned" className="text-sm font-medium text-[var(--color-text-secondary)]">Pin to Hero Carousel (Max 5)</label>
+             <div className="flex items-center gap-3">
+               <input type="checkbox" id="isPinned" className="w-5 h-5 rounded border-[var(--color-border)] text-[var(--color-primary-600)] focus:ring-[var(--color-primary-500)]" checked={formData.isPinned} onChange={e => setFormData({ ...formData, isPinned: e.target.checked })} />
+               <label htmlFor="isPinned" className="text-sm font-semibold text-white">Pin to Hero Carousel (Max 5)</label>
              </div>
            </div>
 
-           <div className="flex justify-end gap-3 mt-8">
-             <button type="button" onClick={() => navigate('/admin/courses')} className="btn-secondary">Cancel</button>
-             <button type="submit" disabled={isSubmitting} className="btn-primary">
-               {isSubmitting ? 'Saving...' : 'Save Course'}
+           <div className="flex justify-end gap-3 mt-10 pb-10">
+             <button type="button" onClick={() => navigate('/admin/courses')} className="btn-secondary px-8">Cancel</button>
+             <button type="submit" disabled={isSubmitting} className="btn-primary px-8 shadow-xl shadow-blue-900/20">
+               {isSubmitting ? 'Saving...' : 'Save Course Data'}
              </button>
            </div>
           </form>

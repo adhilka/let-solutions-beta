@@ -125,112 +125,116 @@ export default function AdminTestimonialsPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Student Feedbacks</h1>
-          <p className="mt-1 text-sm text-gray-500">Manage student reviews and video testimonials</p>
+          <h1 className="text-3xl font-display font-extrabold text-white mb-2 uppercase italic tracking-tight">Student Feedbacks</h1>
+          <p className="mt-1 text-sm text-[var(--color-text-secondary)] font-medium">Manage student reviews and video testimonials</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition"
+          className="btn-primary flex items-center gap-2 shadow-xl shadow-blue-900/20"
         >
-          <Plus className="w-5 h-5 mr-2" />
-          Add Feedback
+          <Plus size={18} /> Add Feedback
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="bg-[var(--color-surface-alt)] p-5 rounded-2xl shadow-lg border border-[var(--color-border)] flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div className="relative flex-1 w-full md:max-w-md">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-tertiary)]" />
           <input
             type="text"
-            placeholder="Search by student, course, or content..."
+            placeholder="Search student records..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full pl-12 pr-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary-500)] outline-none text-white text-sm"
           />
         </div>
-        <div className="flex items-center space-x-2">
-          <Filter className="w-5 h-5 text-gray-400" />
+        <div className="flex items-center space-x-3 w-full md:w-auto">
+          <Filter className="w-5 h-5 text-[var(--color-text-tertiary)]" />
           <select 
             value={filter}
             onChange={(e) => setFilter(e.target.value as any)}
-            className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="flex-1 md:flex-none bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[var(--color-primary-500)] outline-none text-white text-sm font-bold uppercase tracking-wider"
           >
-            <option value="all">All Feedback</option>
+            <option value="all">All Records</option>
             <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
+            <option value="pending">In Review</option>
           </select>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center p-8">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        <div className="flex justify-center p-20">
+          <div className="animate-spin w-10 h-10 border-4 border-[var(--color-primary-400)] border-t-transparent rounded-full" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
           {filteredTestimonials.map(t => (
-            <div key={t.id} className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition overflow-hidden flex flex-col">
-              <div className="p-5 flex-1">
-                <div className="flex justify-between items-start mb-4">
+            <div key={t.id} className="bg-[var(--color-surface-alt)] rounded-[2rem] shadow-xl border border-[var(--color-border)] hover:border-[var(--color-primary-600)] transition-all duration-300 overflow-hidden flex flex-col group">
+              <div className="p-6 flex-1">
+                <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center">
                     {t.imageUrl ? (
-                      <img src={t.imageUrl} alt={t.name} className="w-10 h-10 rounded-full object-cover mr-3" />
+                      <div className="relative">
+                        <img src={t.imageUrl} alt={t.name} className="w-12 h-12 rounded-2xl object-cover mr-4 border border-[var(--color-border)] shadow-lg" />
+                        <div className="absolute inset-0 bg-black/10 rounded-2xl" />
+                      </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-3">
+                      <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary-900)] border border-[var(--color-primary-800)] flex items-center justify-center text-[var(--color-primary-400)] font-black text-xl mr-4 shadow-lg uppercase">
                         {t.name.charAt(0)}
                       </div>
                     )}
                     <div>
-                      <h3 className="font-semibold text-gray-900">{t.name}</h3>
-                      <p className="text-xs text-blue-600 font-medium">{t.course} {t.batch && `(${t.batch})`}</p>
+                      <h3 className="font-extrabold text-white uppercase tracking-tight text-sm">{t.name}</h3>
+                      <p className="text-[10px] text-[var(--color-primary-400)] font-black uppercase tracking-widest mt-1">{t.course} {t.batch && `— ${t.batch}`}</p>
                     </div>
                   </div>
                   {t.videoUrl && (
-                    <span className="text-red-500" title="Video Testimonial">
-                      <PlayCircle className="w-6 h-6" />
+                    <span className="text-red-500 animate-pulse" title="Video Testimonial">
+                      <PlayCircle className="w-7 h-7" />
                     </span>
                   )}
                 </div>
 
-                <div className="flex mb-3">
+                <div className="flex mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`w-4 h-4 ${i < t.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                    <Star key={i} className={`w-4 h-4 mr-0.5 ${i < t.rating ? 'text-yellow-400 fill-current' : 'text-[var(--color-border)]'}`} />
                   ))}
                 </div>
 
-                <p className="text-gray-600 text-sm italic line-clamp-4">"{t.content}"</p>
+                <p className="text-[var(--color-text-secondary)] text-sm italic font-medium leading-relaxed line-clamp-4 bg-[var(--color-surface)] p-4 rounded-2xl border border-[var(--color-border)] shadow-inner">
+                   "{t.content}"
+                </p>
               </div>
 
-              <div className="bg-gray-50 p-3 pt-3 flex items-center justify-between border-t mt-auto">
+              <div className="bg-black/20 p-4 flex items-center justify-between border-t border-[var(--color-border)] mt-auto">
                 <div className="flex space-x-2">
                   <button 
                     onClick={() => toggleApproval(t.id!, t.approved)}
                     title={t.approved ? "Approved - Click to Unapprove" : "Pending - Click to Approve"}
-                    className={`p-1.5 rounded-md ${t.approved ? 'text-green-600 bg-green-50 hover:bg-green-100' : 'text-amber-500 bg-amber-50 hover:bg-amber-100'}`}
+                    className={`p-2 rounded-xl transition-all ${t.approved ? 'text-green-400 bg-green-500/10 hover:bg-green-500/20' : 'text-amber-500 bg-amber-500/10 hover:bg-amber-500/20'}`}
                   >
                     {t.approved ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
                   </button>
                   <button 
                     onClick={() => toggleFeatured(t.id!, t.isFeatured)}
                     title={t.isFeatured ? "Featured" : "Not Featured"}
-                    className={`p-1.5 rounded-md ${t.isFeatured ? 'text-blue-600 bg-blue-50 hover:bg-blue-100' : 'text-gray-400 hover:bg-gray-100'}`}
+                    className={`p-2 rounded-xl transition-all ${t.isFeatured ? 'text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 shadow-lg' : 'text-[var(--color-text-tertiary)] bg-white/5 hover:bg-white/10'}`}
                   >
                     <Star className={`w-5 h-5 ${t.isFeatured ? 'fill-current' : ''}`} />
                   </button>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 opacity-50 group-hover:opacity-100 transition-opacity">
                   <button 
-                    className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md"
+                    className="p-2 text-white bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     title="Edit"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => handleDelete(t.id!)}
-                    className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md"
+                    className="p-2 text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -240,9 +244,9 @@ export default function AdminTestimonialsPage() {
             </div>
           ))}
           {filteredTestimonials.length === 0 && (
-            <div className="col-span-full py-12 text-center bg-white rounded-lg border border-gray-100">
-              <Star className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-lg">No feedbacks found.</p>
+            <div className="col-span-full py-20 text-center bg-[var(--color-surface-alt)] rounded-[2.5rem] border-2 border-dashed border-[var(--color-border)]">
+              <Star className="w-16 h-16 text-[var(--color-text-tertiary)] mx-auto mb-6 opacity-20" />
+              <p className="text-[var(--color-text-secondary)] text-lg font-bold uppercase italic tracking-widest">No matching feedback artifacts.</p>
             </div>
           )}
         </div>
@@ -250,114 +254,114 @@ export default function AdminTestimonialsPage() {
 
       {/* Add Feedback Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-xl font-bold text-gray-900">Add New Feedback</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                <XCircle className="w-6 h-6" />
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-[var(--color-surface-alt)] rounded-[2.5rem] shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[var(--color-border)] animate-scale-up">
+            <div className="flex justify-between items-center p-8 border-b border-[var(--color-border)] bg-black/20">
+              <h2 className="text-2xl font-extrabold text-white uppercase italic tracking-tight">Manual Input Feedback</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-white bg-white/5 p-2 rounded-full border border-[var(--color-border)] transition-all">
+                <XCircle size={24} />
               </button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
+                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Student Name</label>
                   <input
                     required
                     type="text"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="e.g. John Doe"
+                    className="input w-full"
+                    placeholder="e.g. Adhil Tirur"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Course Architecture</label>
                   <input
                     required
                     type="text"
                     value={formData.course}
                     onChange={e => setFormData({ ...formData, course: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="e.g. Master Diploma in Mobile Repair"
+                    className="input w-full"
+                    placeholder="e.g. Master Diploma"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Batch (Optional)</label>
+                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Batch Code (Optional)</label>
                   <input
                     type="text"
                     value={formData.batch}
                     onChange={e => setFormData({ ...formData, batch: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="e.g. 2023 Batch"
+                    className="input w-full font-mono"
+                    placeholder="e.g. 2024-C1"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Rating Metric</label>
                   <select
                     value={formData.rating}
                     onChange={e => setFormData({ ...formData, rating: Number(e.target.value) })}
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="input w-full text-white font-bold"
                   >
-                    <option value="5">5 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="2">2 Stars</option>
-                    <option value="1">1 Star</option>
+                    <option value="5">Excellent (5 Stars)</option>
+                    <option value="4">Good (4 Stars)</option>
+                    <option value="3">Average (3 Stars)</option>
+                    <option value="2">Below Average (2 Stars)</option>
+                    <option value="1">Poor (1 Star)</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Feedback Content</label>
+                <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Testimonial Content</label>
                 <textarea
                   required
                   rows={4}
                   value={formData.content}
                   onChange={e => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Student's feedback goes here..."
+                  className="input w-full min-h-[120px]"
+                  placeholder="Insert student narrative..."
                 ></textarea>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Image URL (Optional)</label>
+                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Profile Portrait URL</label>
                   <input
                     type="url"
                     value={formData.imageUrl}
                     onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="input w-full font-mono text-xs"
                     placeholder="https://..."
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Video URL (Optional)</label>
+                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Video Stream Link</label>
                   <input
                     type="url"
                     value={formData.videoUrl}
                     onChange={e => setFormData({ ...formData, videoUrl: e.target.value })}
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="e.g. YouTube Link"
+                    className="input w-full font-mono text-xs"
+                    placeholder="YouTube/Drive link..."
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-6">
+              <div className="flex justify-end space-x-4 pt-8 border-t border-[var(--color-border)]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50 transition"
+                  className="px-8 py-3 rounded-xl border border-[var(--color-border)] text-white font-bold uppercase tracking-widest text-[10px] hover:bg-white/5 transition-all"
                   disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  className="btn-primary px-10 shadow-xl shadow-blue-900/40"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Saving...' : 'Save Feedback'}
+                  {isSubmitting ? 'Processing...' : 'Deploy Feedback'}
                 </button>
               </div>
             </form>

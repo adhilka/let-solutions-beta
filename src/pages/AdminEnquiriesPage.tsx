@@ -43,41 +43,41 @@ export default function AdminEnquiriesPage() {
 
       <div className="space-y-4">
         {isLoading ? (
-          <div className="py-8 text-center bg-white rounded-[var(--radius-xl)] shadow-sm">Loading...</div>
+          <div className="py-8 text-center bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] shadow-sm text-[var(--color-text-secondary)]">Loading...</div>
         ) : enquiries?.length === 0 ? (
-          <div className="py-8 text-center text-[var(--color-text-secondary)] bg-white rounded-[var(--radius-xl)] shadow-sm">No enquiries found.</div>
+          <div className="py-8 text-center text-[var(--color-text-secondary)] bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] shadow-sm">No enquiries found.</div>
         ) : (
           enquiries?.map(enq => (
-            <div key={enq.id} className="bg-white rounded-[var(--radius-xl)] shadow-sm border border-[var(--color-border)] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4 transition-colors hover:border-blue-200">
+            <div key={enq.id} className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] shadow-md border border-[var(--color-border)] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4 transition-colors hover:border-[var(--color-primary-600)]">
               <div className="flex-1 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-bold text-lg">{enq.name}</h3>
-                  <span className="text-sm text-slate-500">
+                  <h3 className="font-bold text-lg text-white">{enq.name}</h3>
+                  <span className="text-sm text-[var(--color-text-tertiary)]">
                     {enq.submittedAt?.toDate?.() ? new Date(enq.submittedAt.toDate()).toLocaleDateString() : 'N/A'}
                   </span>
                   {getStatusBadge(enq.status)}
                 </div>
                 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
-                  <span><strong>Phone:</strong> <a href={`tel:${enq.phone}`} className="text-blue-600 hover:underline">{enq.phone}</a></span>
-                  {enq.email && <span><strong>Email:</strong> <a href={`mailto:${enq.email}`} className="text-blue-600 hover:underline">{enq.email}</a></span>}
-                  <span><strong>Course:</strong> <span className="badge badge-blue">{enq.courseInterested}</span></span>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-text-secondary)]">
+                  <span><strong className="text-white">Phone:</strong> <a href={`tel:${enq.phone}`} className="text-[var(--color-primary-400)] hover:underline">{enq.phone}</a></span>
+                  {enq.email && <span><strong className="text-white">Email:</strong> <a href={`mailto:${enq.email}`} className="text-[var(--color-primary-400)] hover:underline">{enq.email}</a></span>}
+                  <span><strong className="text-white">Course:</strong> <span className="badge badge-blue">{enq.courseInterested}</span></span>
                 </div>
 
                 {enq.message && (
-                  <div className="mt-2 text-sm bg-slate-50 p-3 rounded-lg border border-slate-100 whitespace-pre-wrap">
-                    <strong>Message:</strong><br/>
+                  <div className="mt-2 text-sm bg-[var(--color-surface)] p-3 rounded-lg border border-[var(--color-border)] whitespace-pre-wrap text-[var(--color-text-secondary)]">
+                    <strong className="text-white">Message:</strong><br/>
                     {enq.message}
                   </div>
                 )}
               </div>
 
-              <div className="md:ml-auto md:min-w-[140px] shrink-0 border-t md:border-t-0 pt-4 md:pt-0 mt-2 md:mt-0">
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Update Status</label>
+              <div className="md:ml-auto md:min-w-[140px] shrink-0 border-t border-[var(--color-border)] md:border-t-0 pt-4 md:pt-0 mt-2 md:mt-0">
+                <label className="block text-xs font-semibold text-[var(--color-text-tertiary)] mb-1 uppercase tracking-wider">Update Status</label>
                 <select 
                   value={enq.status} 
                   onChange={(e) => updateStatus(enq.id, e.target.value)}
-                  className="input bg-white py-2 text-sm w-full font-medium"
+                  className="input bg-[var(--color-surface)] py-2 text-sm w-full font-medium"
                 >
                   <option value="new">New</option>
                   <option value="contacted">Contacted</option>

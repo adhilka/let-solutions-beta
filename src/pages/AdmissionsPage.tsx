@@ -68,13 +68,13 @@ export default function AdmissionsPage() {
         structuredData={breadcrumbSchema}
       />
 
-      <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">
+      <div className="bg-[var(--color-surface)] py-12 md:py-16 border-b border-[var(--color-border)]">
         <div className="container-wide px-4 sm:px-6 lg:px-8 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)]">
             {admissionTitle.split(' ')[0]} <span className="text-[var(--color-primary-600)]">{admissionTitle.split(' ').slice(1).join(' ')}</span>
           </h1>
           <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto md:mx-0">
-            Take the first step towards a stable technical career. View our upcoming batches and available scholarships.
+            Take the first step towards a stable technical career. View our upcoming batches and available <span className="text-neon-green font-bold">scholarships</span>.
           </p>
         </div>
       </div>
@@ -84,16 +84,16 @@ export default function AdmissionsPage() {
         {/* Dynamic Offers Redesigned with Image Support */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-display font-extrabold text-slate-900 tracking-tight">Current Offers & Notices</h2>
-            <div className="hidden md:block h-[1px] flex-grow mx-8 bg-slate-100"></div>
+            <h2 className="text-3xl font-display font-extrabold text-[var(--color-text-primary)] tracking-tight">Current Offers & Notices</h2>
+            <div className="hidden md:block h-[1px] flex-grow mx-8 bg-[var(--color-border)]"></div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
              {filteredOffers.length > 0 ? (
                 filteredOffers.map((offer: any) => (
-                  <div key={offer.id} className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden">
+                  <div key={offer.id} className="group bg-[var(--color-surface-alt)] rounded-3xl border border-[var(--color-border)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden">
                      {/* Image Header */}
-                     <div className="relative aspect-[16/10] bg-slate-50 overflow-hidden">
+                     <div className="relative aspect-[16/10] bg-black overflow-hidden">
                         {offer.imageUrl ? (
                           <img 
                             src={offer.imageUrl} 
@@ -120,17 +120,16 @@ export default function AdmissionsPage() {
                      </div>
 
                      <div className="p-8 flex flex-col flex-grow">
-                        <h3 className="font-display font-extrabold text-xl text-slate-900 mb-3 group-hover:text-[var(--color-primary-600)] transition-colors">
+                        <h3 className="font-display font-extrabold text-xl text-[var(--color-text-primary)] mb-3 group-hover:text-[var(--color-neon-green)] transition-colors">
                           {offer.headline}
                         </h3>
-                        <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">
+                        <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed mb-6 flex-grow">
                           {offer.subtext}
                         </p>
-                        
-                        {offer.ctaLabel && (
+                                                {offer.ctaLabel && (
                           <a 
                             href={offer.ctaHref || '/admissions'} 
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-md active:scale-95"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-primary-600)] text-white rounded-2xl font-bold text-sm hover:bg-[var(--color-primary-700)] transition-all shadow-md active:scale-95"
                           >
                             {offer.ctaLabel}
                             <Calendar size={16} />
@@ -140,8 +139,8 @@ export default function AdmissionsPage() {
                   </div>
                 ))
              ) : (
-                <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                <div className="col-span-full py-20 text-center bg-[var(--color-surface-alt)] rounded-3xl border border-dashed border-[var(--color-border)]">
+                  <div className="w-16 h-16 bg-[var(--color-primary-900)] rounded-full flex items-center justify-center mx-auto mb-4 text-[var(--color-primary-400)]">
                      <ShieldCheck size={32} />
                   </div>
                   <p className="text-slate-400 font-medium italic">Redirecting to our contact specialists...</p>
@@ -151,7 +150,7 @@ export default function AdmissionsPage() {
         </div>
 
         <div className="mt-16 text-center">
-           <a href="/contact" className="btn-primary inline-flex items-center gap-3 px-10 py-5 rounded-[2rem] text-lg shadow-xl shadow-blue-100 hover:scale-105 transition-transform active:scale-95">
+           <a href="/contact" className="btn-primary inline-flex items-center gap-3 px-10 py-5 rounded-[2rem] text-lg shadow-xl shadow-black/40 hover:scale-105 transition-transform active:scale-95 border border-white/5">
               Start Your Application <ArrowRight size={20} />
            </a>
         </div>

@@ -169,7 +169,7 @@ export default function HomePage() {
 
       {/* Stats Bar */}
       <section className="bg-[var(--color-surface)] border-y border-[var(--color-border)] py-8 md:py-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none transform translate-x-1/3 -translate-y-1/3 text-[var(--color-text-primary)]">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none transform translate-x-1/3 -translate-y-1/3 text-white">
            <Quote size={200} className="scale-x-[-1]" />
         </div>
         <div className="container-wide px-4 sm:px-6 lg:px-8 relative z-10">
@@ -181,7 +181,7 @@ export default function HomePage() {
               transition={{ delay: 0.1 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.studentsTrained}</div>
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.studentsTrained}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Students Trained</div>
             </motion.div>
             <motion.div 
@@ -191,7 +191,7 @@ export default function HomePage() {
               transition={{ delay: 0.2 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.yearsExcellence}</div>
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.yearsExcellence}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Years Experience</div>
             </motion.div>
             <motion.div 
@@ -201,7 +201,7 @@ export default function HomePage() {
               transition={{ delay: 0.3 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.placementRate}</div>
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.placementRate}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Placement Rate</div>
             </motion.div>
             <motion.div 
@@ -211,7 +211,7 @@ export default function HomePage() {
               transition={{ delay: 0.4 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.courseModules}</div>
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.courseModules}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Course Modules</div>
             </motion.div>
           </div>
@@ -220,7 +220,7 @@ export default function HomePage() {
 
       {/* Featured Courses */}
       <section className="py-16 md:py-24 2xl:py-32 relative bg-[var(--color-surface-alt)]/30">
-        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-text-primary) 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+        <div className="absolute inset-0 opacity-[0.1] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-primary-300) 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
         <div className="container-wide px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 lg:mb-16 gap-4">
             <motion.div
@@ -267,45 +267,42 @@ export default function HomePage() {
               >
                 <Link 
                   to={`/courses/${course.slug}`}
-                  className="glass-dark border border-[var(--color-border)] rounded-[2rem] shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,156,0.15)] hover:border-[var(--color-text-primary)] flex flex-col h-full group relative"
+                  className="bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-[2rem] shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-[var(--color-primary-600)] flex flex-col h-full group relative"
                 >
-                  {/* Glass Pattern Overlay */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,var(--color-text-primary),transparent_50%)] opacity-[0.03] pointer-events-none group-hover:opacity-[0.08] transition-opacity"></div>
-
                   <div className="relative aspect-video overflow-hidden">
                     <img 
                       src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'} 
                       alt={course.title} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)]/80 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute top-4 left-4 flex gap-2">
-                      <span className="glass-dark backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-primary)] border border-[var(--color-text-primary)]/20 shadow-[0_0_10px_rgba(0,255,156,0.2)]">
-                        {course.category === 'software' ? <ShieldCheck size={12} className="text-[var(--color-text-primary)]"/> : 
-                         course.category === 'networking' ? <Server size={12} className="text-[var(--color-text-primary)]"/> : 
-                         <MonitorSmartphone size={12} className="text-[var(--color-text-primary)]"/>} 
+                      <span className="glass-light backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-800 border border-white/40">
+                        {course.category === 'software' ? <ShieldCheck size={12} className="text-blue-600"/> : 
+                         course.category === 'networking' ? <Server size={12} className="text-blue-600"/> : 
+                         <MonitorSmartphone size={12} className="text-blue-600"/>} 
                         {course.category?.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                       </span>
                     </div>
                     {course.badge && (
-                      <div className="absolute top-4 right-4 text-[10px] bg-red-600 text-white px-2 py-1 rounded-md font-extrabold uppercase tracking-widest shadow-lg transform rotate-2">
+                      <div className="absolute top-4 right-4 text-[10px] bg-red-500 text-white px-2 py-1 rounded-md font-extrabold uppercase tracking-widest shadow-lg transform rotate-2">
                         {course.badge}
                       </div>
                     )}
                   </div>
                   <div className="p-8 flex flex-col flex-grow">
-                    <h3 className="text-xl font-extrabold mb-3 line-clamp-2 text-[var(--color-text-primary)] group-hover:underline transition-colors leading-snug tracking-tight">{course.title}</h3>
+                    <h3 className="text-xl font-extrabold mb-3 line-clamp-2 group-hover:text-[var(--color-primary-600)] transition-colors leading-snug tracking-tight">{course.title}</h3>
                     <p className="text-[var(--color-text-secondary)] text-sm mb-6 line-clamp-2 flex-grow font-medium leading-relaxed">{course.shortDescription}</p>
                     
-                    <div className="flex justify-between items-center py-4 border-y border-[var(--color-border)] mb-6 bg-[var(--color-surface-alt)]/50 -mx-8 px-8">
-                      <div className="text-xs font-bold text-[var(--color-text-tertiary)] flex items-center gap-2">
-                        <div className="p-1.5 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-lg">
+            <div className="flex justify-between items-center py-4 border-y border-[var(--color-border)] mb-6 bg-[var(--color-surface)]/50 -mx-8 px-8">
+                      <div className="text-xs font-bold text-[var(--color-text-secondary)] flex items-center gap-2">
+                        <div className="p-1.5 bg-[var(--color-primary-900)] text-[var(--color-primary-400)] rounded-lg">
                           <Clock size={14} />
                         </div>
                         <span>{course.duration}</span>
                       </div>
-                      <div className="text-xs font-bold text-[var(--color-text-tertiary)] flex items-center gap-2">
-                        <div className="p-1.5 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-lg">
+                      <div className="text-xs font-bold text-[var(--color-text-secondary)] flex items-center gap-2">
+                        <div className="p-1.5 bg-[var(--color-primary-900)] text-amber-500 rounded-lg">
                           <Zap size={14} />
                         </div>
                         <span className="font-mono">{course.level}</span>
@@ -313,13 +310,13 @@ export default function HomePage() {
                     </div>
 
                     <div className="flex items-center justify-between mt-auto">
-                      <div className="font-extrabold text-xl text-[var(--color-text-primary)] tracking-tight">
+              <div className="font-extrabold text-xl text-[var(--color-text-primary)] tracking-tight">
                         {course.pinnedOfferId && offers?.find((o: any) => o.id === course.pinnedOfferId)?.discountedFee ? (
                           <div className="flex flex-col">
                              <span className="text-[10px] text-[var(--color-text-tertiary)] line-through font-semibold mb-0.5">
                                {course.feeStructure?.totalFee ? (course.feeStructure.totalFee.startsWith('₹') ? course.feeStructure.totalFee : `₹${course.feeStructure.totalFee}`) : (course.price > 0 ? `₹${course.price.toLocaleString('en-IN')}` : '')}
                              </span>
-                             <span className="text-[var(--color-text-primary)]">
+                             <span className="text-[var(--color-neon-green)]">
                                {offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee.startsWith('₹') 
                                  ? offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee 
                                  : `₹${offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee}`}
@@ -335,7 +332,7 @@ export default function HomePage() {
                           <span className="text-sm text-[var(--color-text-tertiary)]">Fee on Enquiry</span>
                         )}
                       </div>
-                      <div className="btn-primary flex items-center gap-2 rounded-xl text-xs font-bold tracking-wider px-5 py-3 group-hover:scale-105 transition-all shadow-lg border-0">
+                      <div className="btn-primary flex items-center gap-2 rounded-xl text-xs font-bold tracking-wider px-5 py-3 group-hover:scale-105 group-hover:bg-blue-700 transition-all shadow-lg border-0">
                         {course.price > 0 || course.feeStructure?.totalFee ? 'VIEW COURSE' : 'ENQUIRE NOW'}
                       </div>
                     </div>
@@ -349,20 +346,20 @@ export default function HomePage() {
 
       {/* Offer Banner / Dynamic Offers */}
       {offers && offers.length > 0 ? (
-        <section className="py-16 md:py-24 bg-[var(--color-surface-alt)] border-y border-[var(--color-border)]">
+        <section className="py-16 md:py-24 bg-[var(--color-surface)] border-y border-[var(--color-border)]">
           <div className="container-wide px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <span className="inline-block px-4 py-1 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] border border-[var(--color-text-primary)]/20 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Limited Opportunities</span>
-              <h2 className="text-3xl font-bold text-[var(--color-text-primary)] drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">Current Offers & Scholarships</h2>
+              <span className="badge badge-blue mb-3">Limited Opportunities</span>
+              <h2 className="text-3xl font-bold text-[var(--color-text-primary)]">Current Offers & <span className="text-neon-green">Scholarships</span></h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {offers.map((offer: any) => (
-                <div key={offer.id} className="bg-[var(--color-surface)] rounded-3xl p-6 border border-[var(--color-border)] shadow-xl hover:border-[var(--color-text-primary)]/30 transition-all flex flex-col group">
-                  <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-gray-900 border border-[var(--color-border)]">
+                <div key={offer.id} className="bg-[var(--color-surface-alt)] rounded-3xl p-6 border border-[var(--color-border)] shadow-sm hover:shadow-md transition-all flex flex-col group">
+                  <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-slate-900 italic">
                     {offer.imageUrl ? (
-                      <img src={offer.imageUrl} alt={offer.headline} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 opacity-80" />
+                      <img src={offer.imageUrl} alt={offer.headline} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
                     ) : (
-                      <div className="flex items-center justify-center h-full text-[var(--color-text-primary)] opacity-20">
+                      <div className="flex items-center justify-center h-full text-[var(--color-primary-200)]">
                         <Award size={48} />
                       </div>
                     )}
@@ -378,11 +375,11 @@ export default function HomePage() {
                       </div>
                     )}
                   </div>
-                  <h3 className="text-xl font-extrabold mb-3 line-clamp-1 text-[var(--color-text-primary)]">{offer.headline}</h3>
+                  <h3 className="text-xl font-extrabold mb-3 line-clamp-1">{offer.headline}</h3>
                   <p className="text-[var(--color-text-secondary)] text-sm mb-6 line-clamp-2 leading-relaxed h-10">{offer.subtext}</p>
                   <Link 
                     to={offer.ctaHref || '/admissions'} 
-                    className="mt-auto flex items-center justify-center gap-2 w-full py-3 bg-[var(--color-text-primary)] text-[var(--color-surface)] font-bold rounded-xl hover:bg-[var(--color-text-primary)]/90 transition-all shadow-[0_0_15px_rgba(0,255,156,0.3)]"
+                    className="mt-auto flex items-center justify-center gap-2 w-full py-3 bg-[var(--color-primary-600)] text-white font-bold rounded-xl hover:bg-[var(--color-primary-700)] transition-colors shadow-lg shadow-black/40 border border-white/5"
                   >
                     {offer.ctaLabel || 'Enquire Now'} <ArrowRight size={16} />
                   </Link>
@@ -400,7 +397,7 @@ export default function HomePage() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold mb-2">{admissionStatus} — New Batch!</h2>
-                <p className="text-[var(--color-primary-100)]">Register now to secure your seat and avail early enrollment scholarship facilities.</p>
+                <p className="text-[var(--color-primary-100)]">Register now to secure your seat and avail early enrollment <span className="text-neon-green font-bold">scholarship</span> facilities.</p>
               </div>
             </div>
             <Link to="/admissions" className="bg-white text-[var(--color-primary-700)] font-bold py-3 px-8 rounded-md hover:bg-gray-100 transition-colors whitespace-nowrap">
@@ -445,7 +442,7 @@ export default function HomePage() {
                 {feedbacks.map((t, index) => (
                   <motion.div 
                     key={t.id || index} 
-                    className="min-w-[300px] md:min-w-[420px] glass-dark p-8 rounded-[2.5rem] shadow-2xl border border-[var(--color-border)] flex flex-col relative group snap-center overflow-hidden"
+                    className="min-w-[300px] md:min-w-[420px] bg-[var(--color-surface-alt)] p-8 rounded-[2.5rem] shadow-sm border border-[var(--color-border)] flex flex-col relative group snap-center"
                     variants={{
                       hidden: { opacity: 0, y: 30, scale: 0.95 },
                       visible: { 
@@ -462,7 +459,7 @@ export default function HomePage() {
                     whileHover={{ 
                       y: -10, 
                       scale: 1.02,
-                      boxShadow: "0 25px 30px -10px rgba(0,255,156,0.2)" 
+                      boxShadow: "0 25px 30px -10px rgb(0 0 0 / 0.1)" 
                     }}
                     whileInView={{ 
                       opacity: 1,
@@ -470,35 +467,32 @@ export default function HomePage() {
                     }}
                     viewport={{ once: false, amount: 0.5 }}
                   >
-                    {/* Glass Pattern Overlay */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,var(--color-text-primary),transparent_40%)] opacity-[0.02] pointer-events-none group-hover:opacity-[0.06] transition-opacity"></div>
+                    <Quote className="absolute top-8 right-10 w-20 h-20 text-[var(--color-primary-900)] group-hover:text-[var(--color-primary-800)] transition-all duration-500 -scale-x-100 opacity-50 group-hover:opacity-80" />
                     
-                    <Quote className="absolute top-8 right-10 w-20 h-20 text-[var(--color-text-primary)] transition-all duration-500 -scale-x-100 opacity-5 group-hover:opacity-100" />
-                    
-                    <div className="flex gap-1 mb-6 bg-[var(--color-surface)] self-start px-3 py-1.5 rounded-full">
+                    <div className="flex gap-1 mb-6 bg-[var(--color-primary-900)] self-start px-3 py-1.5 rounded-full">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className={`w-3.5 h-3.5 ${i < t.rating ? 'text-amber-400 fill-current' : 'text-slate-700'}`} />
                       ))}
                     </div>
 
-                    <p className="text-[var(--color-text-secondary)] italic mb-10 leading-relaxed text-lg relative z-10 flex-grow pt-2">
+                    <p className="text-[var(--color-text-primary)] italic mb-10 leading-relaxed text-lg relative z-10 flex-grow pt-2">
                       "{t.content}"
                     </p>
 
                     <div className="flex items-center gap-4 mt-auto">
                       <div className="relative">
                         {t.imageUrl ? (
-                          <img src={t.imageUrl} alt={t.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-[var(--color-text-primary)]/20 shadow-md opacity-80" />
+                          <img src={t.imageUrl} alt={t.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-[var(--color-border)] shadow-md" />
                         ) : (
-                          <div className="w-14 h-14 rounded-2xl bg-[var(--color-text-primary)]/10 flex items-center justify-center text-[var(--color-text-primary)] text-xl font-extrabold shadow-md border border-[var(--color-text-primary)]/20">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-primary-700)] flex items-center justify-center text-white text-xl font-extrabold shadow-md">
                             {t.name.charAt(0)}
                           </div>
                         )}
-                        <div className="absolute -bottom-1 -right-1 bg-[var(--color-text-primary)] w-4 h-4 rounded-full border-2 border-[var(--color-surface)] shadow-[0_0_5px_rgba(0,255,156,0.5)]"></div>
+                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-[var(--color-surface)]"></div>
                       </div>
                       <div>
                         <h4 className="font-bold text-[var(--color-text-primary)] text-base leading-tight">{t.name}</h4>
-                        <p className="text-sm font-semibold text-[var(--color-text-secondary)] tracking-tight">{t.course}</p>
+                        <p className="text-sm font-semibold text-[var(--color-primary-400)] tracking-tight">{t.course}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -511,7 +505,7 @@ export default function HomePage() {
 
               {/* Scroll Indicator Hint */}
               <motion.div 
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-[var(--color-surface-alt)]/80 backdrop-blur-sm p-3 rounded-full shadow-lg border border-[var(--color-border)] text-[var(--color-text-primary)] opacity-0 lg:group-hover:opacity-100 transition-opacity pointer-events-none"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-[var(--color-surface-alt)]/80 backdrop-blur-sm p-3 rounded-full shadow-lg border border-[var(--color-border)] text-white opacity-0 lg:group-hover:opacity-100 transition-opacity pointer-events-none"
                 animate={{ x: [0, 8, 0] }}
                 transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
               >
@@ -525,7 +519,7 @@ export default function HomePage() {
               </Link>
               <button 
                 onClick={() => setIsModalOpen(true)}
-                className="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-[1.25rem] font-bold shadow-[0_0_20px_rgba(0,255,156,0.2)] hover:scale-105 transition-transform"
+                className="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-[1.25rem] font-bold shadow-2xl shadow-blue-900/40 hover:scale-105 transition-transform"
               >
                 <PenLine size={20} /> Share Your Experience
               </button>
@@ -536,11 +530,11 @@ export default function HomePage() {
 
       {/* FEEDBACK MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[100] backdrop-blur-md">
-          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
-            <div className="p-6 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--color-surface-alt)]">
-              <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Share Your Experience</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-white transition-colors">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
+          <div className="bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+            <div className="p-6 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--color-surface)]">
+              <h2 className="text-xl font-bold text-white">Share Your Experience</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white transition-colors">
                 <XCircle className="w-6 h-6" />
               </button>
             </div>
@@ -552,7 +546,7 @@ export default function HomePage() {
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="input"
+                  className="input w-full"
                   placeholder="e.g. Rahul Kumar"
                 />
               </div>
@@ -563,7 +557,7 @@ export default function HomePage() {
                   type="text"
                   value={formData.course}
                   onChange={e => setFormData({ ...formData, course: e.target.value })}
-                  className="input"
+                  className="input w-full"
                   placeholder="e.g. Laptop Repairing"
                 />
               </div>
@@ -576,7 +570,7 @@ export default function HomePage() {
                       type="button"
                       onClick={() => setFormData({ ...formData, rating: star })}
                     >
-                      <Star className={`w-6 h-6 ${star <= formData.rating ? 'text-[var(--color-text-primary)] fill-current drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]' : 'text-[var(--color-text-tertiary)]'}`} />
+                      <Star className={`w-6 h-6 ${star <= formData.rating ? 'text-amber-400 fill-current' : 'text-slate-700'}`} />
                     </button>
                   ))}
                 </div>
@@ -587,9 +581,9 @@ export default function HomePage() {
                   type="file"
                   accept="image/*"
                   onChange={e => setImageFile(e.target.files?.[0] || null)}
-                  className="w-full text-sm text-[var(--color-text-tertiary)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[var(--color-text-primary)]/10 file:text-[var(--color-text-primary)] hover:file:bg-[var(--color-text-primary)]/20 transition cursor-pointer"
+                  className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary-900)] file:text-[var(--color-primary-400)] hover:file:bg-[var(--color-primary-800)] transition"
                 />
-                {imageFile && <p className="text-[10px] text-[var(--color-text-primary)] mt-1 font-bold">Selected: {imageFile.name}</p>}
+                {imageFile && <p className="text-[10px] text-blue-400 mt-1">Selected: {imageFile.name}</p>}
               </div>
               <div>
                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-1">Feedback</label>
@@ -598,7 +592,7 @@ export default function HomePage() {
                   rows={3}
                   value={formData.content}
                   onChange={e => setFormData({ ...formData, content: e.target.value })}
-                  className="input min-h-[80px]"
+                  className="input w-full"
                   placeholder="Your experience..."
                 ></textarea>
               </div>

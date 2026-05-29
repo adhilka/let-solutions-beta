@@ -96,7 +96,7 @@ export default function CoursesPage() {
       <div className="bg-[var(--color-surface)] py-12 md:py-16 border-b border-[var(--color-border)]">
         <div className="container-wide px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)]">
-            Our <span className="text-[var(--color-text-primary)] drop-shadow-[0_0_10px_rgba(0,255,156,0.5)]">Courses</span>
+            Our <span className="text-[var(--color-primary-600)]">Courses</span>
           </h1>
           <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl">
             Choose from our specialized programs designed to give you practical, hands-on experience and a guaranteed path to your career.
@@ -107,7 +107,7 @@ export default function CoursesPage() {
       <div className="container-wide px-4 sm:px-6 lg:px-8 py-12">
         {/* Content */}
         {error ? (
-           <div className="text-center py-12 bg-[var(--color-surface-alt)] rounded-3xl border border-[var(--color-error)]/20">
+           <div className="text-center py-12">
              <p className="text-[var(--color-error)]">Failed to load courses. Please try again.</p>
            </div>
         ) : allCourses.length === 0 ? (
@@ -121,19 +121,16 @@ export default function CoursesPage() {
               <Link 
                 key={course.id} 
                 to={`/courses/${course.slug}`}
-                className="glass-dark border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-[var(--color-text-primary)]/50 flex flex-col h-full group relative"
+                className="bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-primary-200)] flex flex-col h-full group"
               >
-                {/* Subtle Gradient Pattern Overlay */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,var(--color-text-primary),transparent_70%)] opacity-[0.03] pointer-events-none group-hover:opacity-[0.07] transition-opacity"></div>
-                
                 <div className="relative aspect-video overflow-hidden">
                   <img 
                     src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&w=600&q=80'} 
                     alt={course.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute top-3 left-3 flex gap-2">
-                    <span className="badge bg-[var(--color-text-primary)]/20 text-[var(--color-text-primary)] border border-[var(--color-text-primary)]/30 backdrop-blur-sm flex items-center gap-1">
+                    <span className="badge badge-blue flex items-center gap-1">
                       {course.category === 'software' ? <ShieldCheck size={12}/> : 
                        course.category === 'networking' ? <Server size={12}/> : 
                        <MonitorSmartphone size={12}/>} 
@@ -147,16 +144,16 @@ export default function CoursesPage() {
                   )}
                 </div>
                 <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold mb-2 line-clamp-2 text-[var(--color-text-primary)] group-hover:underline transition-colors">{course.title}</h3>
+                  <h3 className="text-xl font-bold mb-2 line-clamp-2 group-hover:text-[var(--color-primary-600)] transition-colors">{course.title}</h3>
                   <p className="text-[var(--color-text-secondary)] text-sm mb-4 line-clamp-2 flex-grow">{course.shortDescription}</p>
                   
-                  <div className="flex justify-between items-center py-4 border-y border-[var(--color-border)] mb-4 bg-[var(--color-surface)]/50 -mx-6 px-6">
+                  <div className="flex justify-between items-center py-4 border-y border-[var(--color-border)] mb-4 bg-black/50 -mx-6 px-6">
                     <div className="text-sm font-medium text-[var(--color-text-tertiary)] flex items-center gap-1.5">
-                      <Clock size={14} className="text-[var(--color-text-primary)]" />
+                      <Clock size={14} className="text-slate-400" />
                       <span>{course.duration}</span>
                     </div>
                     <div className="text-sm font-medium text-[var(--color-text-tertiary)] flex items-center gap-1.5">
-                      <Zap size={14} className="text-amber-500" />
+                      <Zap size={14} className="text-slate-400" />
                       <span className="font-mono">{course.level}</span>
                     </div>
                   </div>
@@ -168,7 +165,7 @@ export default function CoursesPage() {
                            <span className="text-xs text-[var(--color-text-tertiary)] line-through">
                              {course.feeStructure?.totalFee ? (course.feeStructure.totalFee.startsWith('₹') ? course.feeStructure.totalFee : `₹${course.feeStructure.totalFee}`) : (course.price > 0 ? `₹${course.price.toLocaleString('en-IN')}` : '')}
                            </span>
-                           <span>
+                           <span className="text-[var(--color-neon-green)]">
                              {offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee.startsWith('₹') 
                                ? offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee 
                                : `₹${offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee}`}

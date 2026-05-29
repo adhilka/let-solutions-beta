@@ -17,8 +17,40 @@ export default function AdminAboutPage() {
   });
 
   useEffect(() => {
+    const ensureArray = (val: any, fallback: any[]) => {
+      if (Array.isArray(val)) return val;
+      if (val && typeof val === 'object') {
+        const keys = Object.keys(val).sort((a, b) => Number(a) - Number(b));
+        return keys.map(k => val[k]);
+      }
+      return fallback;
+    };
+
     if (aboutData) {
-      setFormData(aboutData);
+      const merged = {
+        ...FAILSAFE_ABOUT,
+        ...aboutData,
+        hero: {
+          ...FAILSAFE_ABOUT.hero,
+          ...(aboutData.hero || {})
+        },
+        story: {
+          ...FAILSAFE_ABOUT.story,
+          ...(aboutData.story || {}),
+          content: ensureArray(aboutData.story?.content, FAILSAFE_ABOUT.story.content),
+          images: ensureArray(aboutData.story?.images, FAILSAFE_ABOUT.story.images)
+        },
+        vision: {
+          ...FAILSAFE_ABOUT.vision,
+          ...(aboutData.vision || {})
+        },
+        mission: {
+          ...FAILSAFE_ABOUT.mission,
+          ...(aboutData.mission || {})
+        },
+        leadership: ensureArray(aboutData.leadership, FAILSAFE_ABOUT.leadership)
+      };
+      setFormData(merged);
     } else if (!isLoading) {
       setFormData(FAILSAFE_ABOUT);
     }
@@ -59,8 +91,13 @@ export default function AdminAboutPage() {
       const newData = { ...prev };
       let current = newData;
       for (let i = 0; i < path.length - 1; i++) {
-        current[path[i]] = { ...current[path[i]] };
-        current = current[path[i]];
+        const key = path[i];
+        if (Array.isArray(current[key])) {
+          current[key] = [...current[key]];
+        } else {
+          current[key] = { ...current[key] };
+        }
+        current = current[key];
       }
       current[path[path.length - 1]] = value;
       return newData;
@@ -125,24 +162,24 @@ export default function AdminAboutPage() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Edit About Page</h1>
+        <h1 className="text-2xl font-bold text-white uppercase tracking-tight">Edit About Page</h1>
         <button 
           onClick={() => saveMutation.mutate(formData)}
           disabled={saveMutation.isPending}
-          className="btn btn-primary flex items-center gap-2"
+          className="btn btn-primary flex items-center gap-2 px-6 py-2 shadow-lg shadow-blue-900/40 rounded-xl"
         >
           {saveMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
           {saveMutation.isPending ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-8 pb-12">
         {/* Hero Section */}
-        <div className="bg-white p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-sm">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">Hero Section</h2>
+        <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-md">
+          <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-white italic">Hero Section</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Hero Title</label>
+              <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider">Hero Title</label>
               <input 
                 type="text" 
                 className="input" 
@@ -151,7 +188,7 @@ export default function AdminAboutPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Hero Subtitle</label>
+              <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider">Hero Subtitle</label>
               <textarea 
                 className="input min-h-[80px]" 
                 value={formData.hero.subtitle} 
@@ -162,11 +199,11 @@ export default function AdminAboutPage() {
         </div>
 
         {/* Our Story Section */}
-        <div className="bg-white p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-sm">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">Our Story</h2>
+        <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-md">
+          <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-white italic">Our Story</h2>
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Story Title</label>
+              <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider">Story Title</label>
               <input 
                 type="text" 
                 className="input" 
@@ -176,18 +213,18 @@ export default function AdminAboutPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Content Paragraphs</label>
-              <div className="space-y-3">
+              <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Content Paragraphs</label>
+              <div className="space-y-4">
                 {formData.story.content.map((p: string, i: number) => (
                   <div key={i} className="flex gap-2">
                     <textarea 
-                      className="input min-h-[100px]" 
+                      className="input min-h-[120px]" 
                       value={p} 
                       onChange={e => handleContentChange(i, e.target.value)}
                     />
                     <button 
                       onClick={() => removeParagraph(i)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg h-fit"
+                      className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg h-fit transition-colors"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -195,7 +232,7 @@ export default function AdminAboutPage() {
                 ))}
                 <button 
                   onClick={addParagraph}
-                  className="text-sm text-[var(--color-primary-600)] font-medium flex items-center gap-1 mt-2"
+                  className="text-sm text-[var(--color-primary-400)] font-bold flex items-center gap-1 mt-2 hover:text-[var(--color-primary-300)] transition-colors"
                 >
                   <Plus size={16} /> Add Paragraph
                 </button>
@@ -203,15 +240,15 @@ export default function AdminAboutPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Story Images (2 recommended)</label>
+              <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Story Images (2 recommended)</label>
               <div className="grid grid-cols-2 gap-4">
                 {[0, 1].map((idx) => (
-                  <div key={idx} className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 group">
+                  <div key={idx} className="relative aspect-video bg-[var(--color-surface)] rounded-2xl overflow-hidden border-2 border-dashed border-[var(--color-border)] group shadow-inner">
                     {formData.story.images[idx] ? (
                       <>
-                        <img src={formData.story.images[idx]} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <label className="cursor-pointer p-2 bg-white rounded-full text-gray-900 shadow-lg">
+                        <img src={formData.story.images[idx]} className="w-full h-full object-cover" alt="" />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <label className="cursor-pointer p-3 bg-white rounded-full text-gray-900 shadow-xl hover:scale-110 transition-transform">
                             <Upload size={20} />
                             <input 
                               type="file" 
@@ -223,9 +260,9 @@ export default function AdminAboutPage() {
                         </div>
                       </>
                     ) : (
-                      <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer">
-                        <Upload className="text-gray-400 mb-2" />
-                        <span className="text-xs text-gray-500">Upload Image {idx + 1}</span>
+                      <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
+                        <Upload className="text-[var(--color-text-tertiary)] mb-2" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">Upload Image {idx + 1}</span>
                         <input 
                           type="file" 
                           className="hidden" 
@@ -235,8 +272,8 @@ export default function AdminAboutPage() {
                       </label>
                     )}
                     {isUploading === `story.images.${idx}` && (
-                      <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
-                        <Loader2 className="animate-spin text-[var(--color-primary-600)]" />
+                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-sm">
+                        <Loader2 className="animate-spin text-[var(--color-primary-400)]" />
                       </div>
                     )}
                   </div>
@@ -248,8 +285,8 @@ export default function AdminAboutPage() {
 
         {/* Vision & Mission */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-sm">
-            <h2 className="text-lg font-bold mb-4">Vision</h2>
+          <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-md">
+            <h2 className="text-lg font-bold mb-4 text-white italic">Vision</h2>
             <div className="space-y-4">
               <input 
                 type="text" 
@@ -266,8 +303,8 @@ export default function AdminAboutPage() {
               />
             </div>
           </div>
-          <div className="bg-white p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-sm">
-            <h2 className="text-lg font-bold mb-4">Mission</h2>
+          <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-md">
+            <h2 className="text-lg font-bold mb-4 text-white italic">Mission</h2>
             <div className="space-y-4">
               <input 
                 type="text" 
@@ -287,37 +324,37 @@ export default function AdminAboutPage() {
         </div>
 
         {/* Leadership */}
-        <div className="bg-white p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-sm">
+        <div className="bg-[var(--color-surface-alt)] p-6 rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-md">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold">Leadership</h2>
+            <h2 className="text-lg font-bold text-white italic">Leadership</h2>
             <button 
               onClick={addLeadershipMember}
-              className="text-sm bg-[var(--color-primary-600)] text-white px-3 py-1 rounded-lg flex items-center gap-1"
+              className="text-xs bg-[var(--color-primary-600)] text-white px-4 py-2 rounded-xl flex items-center gap-1 font-bold shadow-lg"
             >
               <Plus size={16} /> Add Member
             </button>
           </div>
           <div className="space-y-8">
             {formData.leadership.map((member: any, i: number) => (
-              <div key={i} className="p-4 border border-[var(--color-border)] rounded-lg bg-gray-50 relative">
+              <div key={i} className="p-6 border border-[var(--color-border)] rounded-2xl bg-[var(--color-surface)] relative group">
                 <button 
                   onClick={() => removeLeadershipMember(i)}
-                  className="absolute top-4 right-4 text-red-500 p-1 hover:bg-red-50 rounded"
+                  className="absolute top-4 right-4 text-red-500 p-2 hover:bg-red-500/10 rounded-full transition-colors opacity-0 group-hover:opacity-100"
                 >
                   <Trash2 size={18} />
                 </button>
-                <div className="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-8">
                   <div className="space-y-2">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full overflow-hidden relative group mx-auto md:mx-0">
+                    <div className="w-28 h-28 bg-[var(--color-surface-alt)] rounded-2xl overflow-hidden relative group/avatar mx-auto md:mx-0 border border-[var(--color-border)]">
                       {member.imageUrl ? (
-                        <img src={member.imageUrl} className="w-full h-full object-cover" />
+                        <img src={member.imageUrl} className="w-full h-full object-cover" alt="" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <Users size={32} />
+                        <div className="w-full h-full flex items-center justify-center text-[var(--color-text-tertiary)]">
+                          <Users size={40} />
                         </div>
                       )}
-                      <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                        <Upload size={18} className="text-white" />
+                      <label className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                        <Upload size={20} className="text-white" />
                         <input 
                           type="file" 
                           className="hidden" 
@@ -326,8 +363,8 @@ export default function AdminAboutPage() {
                         />
                       </label>
                       {isUploading === `leadership.${i}.imageUrl` && (
-                        <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
-                          <Loader2 className="animate-spin text-[var(--color-primary-600)] w-6 h-6" />
+                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center backdrop-blur-sm">
+                          <Loader2 className="animate-spin text-[var(--color-primary-400)] w-8 h-8" />
                         </div>
                       )}
                     </div>
@@ -335,28 +372,28 @@ export default function AdminAboutPage() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Name</label>
+                        <label className="block text-xs font-bold text-[var(--color-text-tertiary)] mb-1 uppercase tracking-wider">Name</label>
                         <input 
                           type="text" 
-                          className="input py-1.5" 
+                          className="input py-2" 
                           value={member.name} 
                           onChange={e => updateLeadershipMember(i, 'name', e.target.value)}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Role</label>
+                        <label className="block text-xs font-bold text-[var(--color-text-tertiary)] mb-1 uppercase tracking-wider">Role</label>
                         <input 
                           type="text" 
-                          className="input py-1.5" 
+                          className="input py-2" 
                           value={member.role} 
                           onChange={e => updateLeadershipMember(i, 'role', e.target.value)}
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Bio</label>
+                      <label className="block text-xs font-bold text-[var(--color-text-tertiary)] mb-1 uppercase tracking-wider">Bio</label>
                       <textarea 
-                        className="input py-1.5 min-h-[60px]" 
+                        className="input py-2 min-h-[80px]" 
                         value={member.bio} 
                         onChange={e => updateLeadershipMember(i, 'bio', e.target.value)}
                       />

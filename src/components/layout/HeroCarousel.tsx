@@ -38,7 +38,7 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
   const activeCourse = featuredCourses[current];
 
   return (
-    <section className="relative h-[85vh] md:h-[80vh] overflow-hidden -mt-16 bg-[var(--color-surface)]">
+    <section className="relative h-[85vh] md:h-[80vh] overflow-hidden -mt-16 bg-black">
       <AnimatePresence custom={direction}>
         <motion.div
           key={activeCourse.id}
@@ -52,10 +52,10 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
           <img 
             src={activeCourse.imageUrl} 
             alt={activeCourse.title} 
-            className="w-full h-full object-cover animate-ken-burns opacity-60"
+            className="w-full h-full object-cover animate-ken-burns transition-opacity duration-300 opacity-60"
           />
-          <div className="absolute inset-0 bg-[var(--color-surface)]/60 mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-[var(--color-surface)]/20"></div>
+          <div className="absolute inset-0 bg-black/40 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20"></div>
         </motion.div>
       </AnimatePresence>
 
@@ -70,12 +70,12 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="space-y-6 md:space-y-8"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-[10px] md:text-xs uppercase tracking-widest bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] backdrop-blur-md border border-[var(--color-text-primary)]/20 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-[var(--color-text-primary)] animate-pulse"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full font-bold text-[10px] md:text-xs uppercase tracking-[0.15em] bg-white/5 text-white backdrop-blur-md border border-white/10 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-[var(--color-neon-green)] animate-pulse shadow-[0_0_8px_var(--color-neon-green)]"></span>
                 {admissionStatus}
               </div>
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-[var(--color-text-primary)] drop-shadow-[0_0_15px_rgba(0,255,156,0.3)]">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-white drop-shadow-2xl">
                 {activeCourse.title}
               </h1>
               
@@ -83,28 +83,30 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
                 {activeCourse.shortDescription}
               </p>
               
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex items-center gap-3 sm:gap-4 pt-2">
                 <Link 
                   to={`/courses/${activeCourse.slug}`} 
-                  className="btn-primary"
+                  className="group relative flex items-center justify-center gap-2 bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-500)] text-white rounded-xl font-bold px-5 py-3 sm:px-8 sm:py-4 text-xs sm:text-sm md:text-base transition-all shadow-xl shadow-black/40 hover:-translate-y-1 active:translate-y-0 whitespace-nowrap"
                 >
-                  Learn More
-                  <ArrowRight size={18} className="inline ml-2" />
+                  Explore Course
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
                   to="/courses" 
-                  className="btn-secondary"
+                  className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 text-white rounded-xl font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-[10px] sm:text-xs md:text-sm transition-all hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap"
                 >
-                  Browse All
+                  View All Programs
                 </Link>
               </div>
               
               {activeCourse.highlights && activeCourse.highlights.length > 0 && (
-                <div className="flex flex-wrap gap-x-6 gap-y-3 pt-6 border-t border-[var(--color-border)]">
+                <div className="flex flex-wrap gap-x-8 gap-y-3 pt-6 border-t border-white/10">
                   {activeCourse.highlights.slice(0, 2).map((feature: string, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2 text-[var(--color-text-primary)]">
-                      <CheckCircle size={18} className="text-[var(--color-text-primary)]" />
-                      <span className="text-xs md:text-sm font-bold opacity-90">{feature}</span>
+                    <div key={idx} className="flex items-center gap-3 text-white">
+                      <div className="p-1 bg-[var(--color-neon-green)]/10 rounded-full">
+                        <CheckCircle size={18} className="text-[var(--color-neon-green)]" />
+                      </div>
+                      <span className="text-xs md:text-base font-bold drop-shadow-md tracking-tight">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -120,21 +122,21 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
           <div className="absolute bottom-10 right-4 sm:right-10 z-20 flex gap-2">
             <button 
               onClick={prevSlide}
-              className="p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all shadow-lg active:scale-95"
+              className="p-3 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-white/10 transition-all shadow-lg active:scale-95"
               aria-label="Previous Slide"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} />
             </button>
             <button 
               onClick={nextSlide}
-              className="p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all shadow-lg active:scale-95"
+              className="p-3 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white hover:bg-white/10 transition-all shadow-lg active:scale-95"
               aria-label="Next Slide"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={20} />
             </button>
           </div>
 
-          <div className="absolute bottom-10 left-4 sm:left-10 z-20 flex gap-2">
+          <div className="absolute bottom-10 left-4 sm:left-10 z-20 flex gap-3">
             {featuredCourses.map((_, i) => (
               <button
                 key={i}
@@ -142,7 +144,7 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
                   setDirection(i > current ? 1 : -1);
                   setCurrent(i);
                 }}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? 'w-8 bg-blue-500' : 'w-2 bg-white/30'}`}
+                className={`h-1.5 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-[var(--color-neon-green)]' : 'w-3 bg-white/20'}`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
