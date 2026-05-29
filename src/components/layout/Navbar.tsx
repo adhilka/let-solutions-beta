@@ -44,17 +44,17 @@ export default function Navbar() {
         'sticky top-0 z-50 w-full h-16 transition-all duration-300 border-b',
         isHome
           ? isScrolled 
-            ? 'bg-white/80 backdrop-blur-md border-[var(--color-border)] shadow-sm' 
-            : 'bg-white/45 backdrop-blur-md border-transparent text-slate-900 shadow-none'
+            ? 'bg-[var(--color-surface)]/80 backdrop-blur-md border-[var(--color-border)] shadow-sm' 
+            : 'bg-[var(--color-surface)]/45 backdrop-blur-md border-transparent text-[var(--color-text-primary)] shadow-none'
           : isScrolled
-            ? 'bg-white/95 backdrop-blur-sm border-[var(--color-border)] shadow-sm'
-            : 'bg-white border-[var(--color-border)]'
+            ? 'bg-[var(--color-surface)]/95 backdrop-blur-sm border-[var(--color-border)] shadow-sm'
+            : 'bg-[var(--color-surface)] border-[var(--color-border)]'
       )}
     >
       <div className="container-wide h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img src={logoUrl} alt={instituteName} className="h-10 w-auto object-contain" />
+          <img src={logoUrl} alt={instituteName} className="h-10 w-auto object-contain brightness-0 invert" />
         </Link>
 
         {/* Desktop Nav */}
@@ -94,7 +94,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="absolute top-16 left-0 w-full bg-white border-b border-[var(--color-border)] shadow-lg md:hidden overflow-hidden"
+            className="absolute top-16 left-0 w-full bg-[var(--color-surface)] border-b border-[var(--color-border)] shadow-lg md:hidden overflow-hidden"
           >
             <nav className="flex flex-col px-4 py-4 space-y-4">
               {navLinks.map((link) => (

@@ -43,14 +43,14 @@ export default function BlogListPage() {
         structuredData={breadcrumbSchema}
       />
 
-      <div className="bg-[var(--color-primary-50)] py-12 md:py-16 border-b border-[var(--color-border)]">
+      <div className="bg-[var(--color-surface)] py-12 md:py-16 border-b border-[var(--color-border)]">
         <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
-          <span className="inline-block px-3 py-1 bg-[var(--color-primary-100)] text-[var(--color-primary-700)] rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+          <span className="inline-block px-3 py-1 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-[var(--color-text-primary)]/20">
             Tech Blog
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[var(--color-text-primary)]">
             Institute News &{" "}
-            <span className="text-[var(--color-primary-600)]">
+            <span className="text-[var(--color-text-primary)] drop-shadow-[0_0_10px_rgba(0,255,156,0.5)]">
               Tech Updates
             </span>
           </h1>
@@ -63,7 +63,7 @@ export default function BlogListPage() {
 
       <div className="container-wide px-4 sm:px-6 lg:px-8 py-16">
         {isLoading ? (
-          <div className="text-center py-12 font-medium text-slate-500">
+          <div className="text-center py-12 font-medium text-[var(--color-text-tertiary)]">
             Loading posts...
           </div>
         ) : posts && posts.length > 0 ? (
@@ -72,31 +72,31 @@ export default function BlogListPage() {
               <Link
                 to={`/blog/${post.slug}`}
                 key={post.id}
-                className="group bg-white border flex flex-col border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden hover:shadow-lg transition-all duration-300"
+                className="group bg-[var(--color-surface-alt)] border flex flex-col border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-xl overflow-hidden hover:scale-[1.02] hover:border-[var(--color-text-primary)]/40 transition-all duration-300"
               >
-                <div className="relative aspect-video bg-gray-200 overflow-hidden">
+                <div className="relative aspect-video bg-gray-900 overflow-hidden">
                   {post.coverImage && (
                     <img
                       src={post.coverImage}
                       alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
                     />
                   )}
                 </div>
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex gap-2 mb-3">
                     {post.isFile ? (
-                      <span className={`flex items-center gap-1.5 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider ${isGitHubLink(post.downloadUrl) ? 'text-slate-900 bg-slate-100' : 'text-indigo-600 bg-indigo-50'}`}>
+                      <span className={`flex items-center gap-1.5 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider ${isGitHubLink(post.downloadUrl) ? 'text-[var(--color-surface)] bg-[var(--color-text-primary)]' : 'text-[var(--color-text-primary)] bg-[var(--color-text-primary)]/10 border border-[var(--color-text-primary)]/20'}`}>
                         {isGitHubLink(post.downloadUrl) ? <Github size={12} /> : <FileIcon size={12} />}
                         {isGitHubLink(post.downloadUrl) ? 'GitHub Project' : 'Resource File'}
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1.5 text-slate-500 font-bold bg-slate-50 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                      <span className="flex items-center gap-1.5 text-[var(--color-text-secondary)] font-bold bg-[var(--color-surface)] border border-[var(--color-border)] px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
                         <FileText size={12} /> Article
                       </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors uppercase tracking-tight">
+                  <h3 className="text-lg font-bold mb-2 line-clamp-2 text-[var(--color-text-primary)] group-hover:underline transition-colors uppercase tracking-tight">
                     {post.title}
                   </h3>
                   <p className="text-[var(--color-text-secondary)] text-sm mb-4 line-clamp-2 flex-grow">
@@ -107,15 +107,15 @@ export default function BlogListPage() {
                       <img
                         src={post.author.avatarUrl}
                         alt={post.author.name}
-                        className="w-8 h-8 rounded-full"
+                        className="w-8 h-8 rounded-full border border-[var(--color-border)]"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-[var(--color-primary-100)] flex items-center justify-center text-[10px] font-bold text-blue-600">
+                      <div className="w-8 h-8 rounded-full bg-[var(--color-text-primary)]/10 flex items-center justify-center text-[10px] font-bold text-[var(--color-text-primary)]">
                         LS
                       </div>
                     )}
                     <div className="text-xs">
-                      <div className="font-semibold">
+                      <div className="font-semibold text-[var(--color-text-primary)]">
                         {post.author?.name || "Admin"}
                       </div>
                       <div className="text-[var(--color-text-tertiary)]">
@@ -136,7 +136,7 @@ export default function BlogListPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white border border-[var(--color-border)] rounded-[var(--radius-xl)]">
+          <div className="text-center py-20 bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-[var(--radius-xl)]">
             <p className="text-[var(--color-text-primary)] text-lg font-medium mb-2">
               No posts available right now.
             </p>

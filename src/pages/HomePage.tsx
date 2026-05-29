@@ -168,134 +168,201 @@ export default function HomePage() {
 
 
       {/* Stats Bar */}
-      <section className="bg-white border-y border-[var(--color-border)] py-8 md:py-12">
-        <div className="container-wide px-4 sm:px-6 lg:px-8">
+      <section className="bg-[var(--color-surface)] border-y border-[var(--color-border)] py-8 md:py-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none transform translate-x-1/3 -translate-y-1/3 text-[var(--color-text-primary)]">
+           <Quote size={200} className="scale-x-[-1]" />
+        </div>
+        <div className="container-wide px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 2xl:gap-12 lg:divide-x divide-[var(--color-border)] text-center">
-            <div>
-              <div className="text-3xl font-bold text-[var(--color-primary-700)] mb-1">{statsValues.studentsTrained}</div>
-              <div className="text-sm font-medium uppercase tracking-wide text-[var(--color-text-tertiary)]">Students Trained</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-[var(--color-primary-700)] mb-1">{statsValues.yearsExcellence}</div>
-              <div className="text-sm font-medium uppercase tracking-wide text-[var(--color-text-tertiary)]">Years Experience</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-[var(--color-primary-700)] mb-1">{statsValues.placementRate}</div>
-              <div className="text-sm font-medium uppercase tracking-wide text-[var(--color-text-tertiary)]">Placement Rate</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-[var(--color-primary-700)] mb-1">{statsValues.courseModules}</div>
-              <div className="text-sm font-medium uppercase tracking-wide text-[var(--color-text-tertiary)]">Course Modules</div>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="hover:scale-105 transition-transform duration-300"
+            >
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.studentsTrained}</div>
+              <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Students Trained</div>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="hover:scale-105 transition-transform duration-300"
+            >
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.yearsExcellence}</div>
+              <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Years Experience</div>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="hover:scale-105 transition-transform duration-300"
+            >
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.placementRate}</div>
+              <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Placement Rate</div>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="hover:scale-105 transition-transform duration-300"
+            >
+              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] mb-1 drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">{statsValues.courseModules}</div>
+              <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Course Modules</div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Featured Courses */}
-      <section className="py-16 md:py-24 2xl:py-32">
-        <div className="container-wide px-4 sm:px-6 lg:px-8">
+      <section className="py-16 md:py-24 2xl:py-32 relative bg-[var(--color-surface-alt)]/30">
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-text-primary) 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+        <div className="container-wide px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 lg:mb-16 gap-4">
-            <div>
-              <h2 className="text-3xl font-bold mb-3">Featured Courses</h2>
-              <p className="text-[var(--color-text-secondary)]">Master the most in-demand technical skills.</p>
-            </div>
-            <Link to="/courses" className="text-[var(--color-primary-600)] font-semibold flex items-center gap-1 hover:underline">
-              View All Courses <ArrowRight size={18} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredCourses.map((course) => (
-              <Link 
-                key={course.id} 
-                to={`/courses/${course.slug}`}
-                className="bg-white border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:border-[var(--color-primary-200)] flex flex-col h-full group"
-              >
-                <div className="relative aspect-video overflow-hidden">
-                  <img 
-                    src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'} 
-                    alt={course.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  />
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    <span className="badge badge-blue flex items-center gap-1">
-                      {course.category === 'software' ? <ShieldCheck size={12}/> : 
-                       course.category === 'networking' ? <Server size={12}/> : 
-                       <MonitorSmartphone size={12}/>} 
-                      {course.category?.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                    </span>
-                  </div>
-                  {course.badge && (
-                    <div className="absolute top-3 right-3 text-xs bg-[var(--color-warning)] text-white px-2 py-1 rounded-md font-bold uppercase tracking-wider shadow-sm">
-                      {course.badge}
-                    </div>
-                  )}
-                </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold mb-2 line-clamp-2 group-hover:text-[var(--color-primary-600)] transition-colors">{course.title}</h3>
-                  <p className="text-[var(--color-text-secondary)] text-sm mb-4 line-clamp-2 flex-grow">{course.shortDescription}</p>
-                  
-                  <div className="flex justify-between items-center py-4 border-y border-[var(--color-border)] mb-4 bg-slate-50/50 -mx-6 px-6">
-                    <div className="text-sm font-medium text-[var(--color-text-tertiary)] flex items-center gap-1.5">
-                      <Clock size={14} className="text-slate-400" />
-                      <span>{course.duration}</span>
-                    </div>
-                    <div className="text-sm font-medium text-[var(--color-text-tertiary)] flex items-center gap-1.5">
-                      <Zap size={14} className="text-slate-400" />
-                      <span className="font-mono">{course.level}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="font-bold text-lg text-[var(--color-primary-700)] line-clamp-1">
-                      {course.pinnedOfferId && offers?.find((o: any) => o.id === course.pinnedOfferId)?.discountedFee ? (
-                        <div className="flex flex-col">
-                           <span className="text-xs text-[var(--color-text-tertiary)] line-through">
-                             {course.feeStructure?.totalFee ? (course.feeStructure.totalFee.startsWith('₹') ? course.feeStructure.totalFee : `₹${course.feeStructure.totalFee}`) : (course.price > 0 ? `₹${course.price.toLocaleString('en-IN')}` : '')}
-                           </span>
-                           <span>
-                             {offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee.startsWith('₹') 
-                               ? offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee 
-                               : `₹${offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee}`}
-                           </span>
-                        </div>
-                      ) : course.feeStructure?.totalFee ? (
-                        course.feeStructure.totalFee.startsWith('₹') 
-                          ? course.feeStructure.totalFee 
-                          : `₹${course.feeStructure.totalFee}`
-                      ) : course.price > 0 ? (
-                        `₹${course.price.toLocaleString('en-IN')}`
-                      ) : (
-                        'Fee Details →'
-                      )}
-                    </div>
-                    <div className="btn-primary">
-                      {course.price > 0 || course.feeStructure?.totalFee ? 'View Details' : 'Enquire Now'}
-                    </div>
-                  </div>
-                </div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">Featured Courses</h2>
+              <p className="text-[var(--color-text-secondary)] font-medium">Master the most in-demand technical skills with our professional certification programs.</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <Link to="/courses" className="btn-secondary group flex items-center gap-2 rounded-xl transition-all hover:gap-3">
+                View All Courses <ArrowRight size={18} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
               </Link>
-            ))}
+            </motion.div>
           </div>
+
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+          >
+            {featuredCourses.map((course) => (
+              <motion.div
+                key={course.id}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                }}
+              >
+                <Link 
+                  to={`/courses/${course.slug}`}
+                  className="glass-dark border border-[var(--color-border)] rounded-[2rem] shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,156,0.15)] hover:border-[var(--color-text-primary)] flex flex-col h-full group relative"
+                >
+                  {/* Glass Pattern Overlay */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,var(--color-text-primary),transparent_50%)] opacity-[0.03] pointer-events-none group-hover:opacity-[0.08] transition-opacity"></div>
+
+                  <div className="relative aspect-video overflow-hidden">
+                    <img 
+                      src={course.imageUrl || 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'} 
+                      alt={course.title} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)]/80 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <span className="glass-dark backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-primary)] border border-[var(--color-text-primary)]/20 shadow-[0_0_10px_rgba(0,255,156,0.2)]">
+                        {course.category === 'software' ? <ShieldCheck size={12} className="text-[var(--color-text-primary)]"/> : 
+                         course.category === 'networking' ? <Server size={12} className="text-[var(--color-text-primary)]"/> : 
+                         <MonitorSmartphone size={12} className="text-[var(--color-text-primary)]"/>} 
+                        {course.category?.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                      </span>
+                    </div>
+                    {course.badge && (
+                      <div className="absolute top-4 right-4 text-[10px] bg-red-600 text-white px-2 py-1 rounded-md font-extrabold uppercase tracking-widest shadow-lg transform rotate-2">
+                        {course.badge}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-8 flex flex-col flex-grow">
+                    <h3 className="text-xl font-extrabold mb-3 line-clamp-2 text-[var(--color-text-primary)] group-hover:underline transition-colors leading-snug tracking-tight">{course.title}</h3>
+                    <p className="text-[var(--color-text-secondary)] text-sm mb-6 line-clamp-2 flex-grow font-medium leading-relaxed">{course.shortDescription}</p>
+                    
+                    <div className="flex justify-between items-center py-4 border-y border-[var(--color-border)] mb-6 bg-[var(--color-surface-alt)]/50 -mx-8 px-8">
+                      <div className="text-xs font-bold text-[var(--color-text-tertiary)] flex items-center gap-2">
+                        <div className="p-1.5 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-lg">
+                          <Clock size={14} />
+                        </div>
+                        <span>{course.duration}</span>
+                      </div>
+                      <div className="text-xs font-bold text-[var(--color-text-tertiary)] flex items-center gap-2">
+                        <div className="p-1.5 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] rounded-lg">
+                          <Zap size={14} />
+                        </div>
+                        <span className="font-mono">{course.level}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="font-extrabold text-xl text-[var(--color-text-primary)] tracking-tight">
+                        {course.pinnedOfferId && offers?.find((o: any) => o.id === course.pinnedOfferId)?.discountedFee ? (
+                          <div className="flex flex-col">
+                             <span className="text-[10px] text-[var(--color-text-tertiary)] line-through font-semibold mb-0.5">
+                               {course.feeStructure?.totalFee ? (course.feeStructure.totalFee.startsWith('₹') ? course.feeStructure.totalFee : `₹${course.feeStructure.totalFee}`) : (course.price > 0 ? `₹${course.price.toLocaleString('en-IN')}` : '')}
+                             </span>
+                             <span className="text-[var(--color-text-primary)]">
+                               {offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee.startsWith('₹') 
+                                 ? offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee 
+                                 : `₹${offers.find((o: any) => o.id === course.pinnedOfferId).discountedFee}`}
+                             </span>
+                          </div>
+                        ) : course.feeStructure?.totalFee ? (
+                          course.feeStructure.totalFee.startsWith('₹') 
+                            ? course.feeStructure.totalFee 
+                            : `₹${course.feeStructure.totalFee}`
+                        ) : course.price > 0 ? (
+                          `₹${course.price.toLocaleString('en-IN')}`
+                        ) : (
+                          <span className="text-sm text-[var(--color-text-tertiary)]">Fee on Enquiry</span>
+                        )}
+                      </div>
+                      <div className="btn-primary flex items-center gap-2 rounded-xl text-xs font-bold tracking-wider px-5 py-3 group-hover:scale-105 transition-all shadow-lg border-0">
+                        {course.price > 0 || course.feeStructure?.totalFee ? 'VIEW COURSE' : 'ENQUIRE NOW'}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
       {/* Offer Banner / Dynamic Offers */}
       {offers && offers.length > 0 ? (
-        <section className="py-16 md:py-24 bg-[var(--color-primary-50)]">
+        <section className="py-16 md:py-24 bg-[var(--color-surface-alt)] border-y border-[var(--color-border)]">
           <div className="container-wide px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <span className="badge badge-blue mb-3">Limited Opportunities</span>
-              <h2 className="text-3xl font-bold text-slate-900">Current Offers & Scholarships</h2>
+              <span className="inline-block px-4 py-1 bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] border border-[var(--color-text-primary)]/20 rounded-full text-xs font-bold uppercase tracking-wider mb-4">Limited Opportunities</span>
+              <h2 className="text-3xl font-bold text-[var(--color-text-primary)] drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]">Current Offers & Scholarships</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {offers.map((offer: any) => (
-                <div key={offer.id} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col group">
-                  <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-slate-100 italic">
+                <div key={offer.id} className="bg-[var(--color-surface)] rounded-3xl p-6 border border-[var(--color-border)] shadow-xl hover:border-[var(--color-text-primary)]/30 transition-all flex flex-col group">
+                  <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-gray-900 border border-[var(--color-border)]">
                     {offer.imageUrl ? (
-                      <img src={offer.imageUrl} alt={offer.headline} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" />
+                      <img src={offer.imageUrl} alt={offer.headline} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 opacity-80" />
                     ) : (
-                      <div className="flex items-center justify-center h-full text-[var(--color-primary-200)]">
+                      <div className="flex items-center justify-center h-full text-[var(--color-text-primary)] opacity-20">
                         <Award size={48} />
                       </div>
                     )}
@@ -311,11 +378,11 @@ export default function HomePage() {
                       </div>
                     )}
                   </div>
-                  <h3 className="text-xl font-extrabold mb-3 line-clamp-1">{offer.headline}</h3>
-                  <p className="text-slate-600 text-sm mb-6 line-clamp-2 leading-relaxed h-10">{offer.subtext}</p>
+                  <h3 className="text-xl font-extrabold mb-3 line-clamp-1 text-[var(--color-text-primary)]">{offer.headline}</h3>
+                  <p className="text-[var(--color-text-secondary)] text-sm mb-6 line-clamp-2 leading-relaxed h-10">{offer.subtext}</p>
                   <Link 
                     to={offer.ctaHref || '/admissions'} 
-                    className="mt-auto flex items-center justify-center gap-2 w-full py-3 bg-[var(--color-primary-600)] text-white font-bold rounded-xl hover:bg-[var(--color-primary-700)] transition-colors shadow-lg shadow-blue-100"
+                    className="mt-auto flex items-center justify-center gap-2 w-full py-3 bg-[var(--color-text-primary)] text-[var(--color-surface)] font-bold rounded-xl hover:bg-[var(--color-text-primary)]/90 transition-all shadow-[0_0_15px_rgba(0,255,156,0.3)]"
                   >
                     {offer.ctaLabel || 'Enquire Now'} <ArrowRight size={16} />
                   </Link>
@@ -345,12 +412,12 @@ export default function HomePage() {
 
       {/* Featured Feedbacks */}
       {feedbacks.length > 0 && (
-        <section className="py-16 md:py-24 2xl:py-32 bg-slate-50 border-t border-[var(--color-border)] overflow-hidden">
+        <section className="py-16 md:py-24 2xl:py-32 bg-[var(--color-surface)] border-t border-[var(--color-border)] overflow-hidden">
           <div className="container-wide px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
               <div className="max-w-2xl">
                 <h2 className="text-3xl font-bold mb-4 tracking-tight">Student Success Stories</h2>
-                <p className="text-slate-600">Discover how our practical training approach has helped students launch successful technical careers.</p>
+                <p className="text-[var(--color-text-secondary)]">Discover how our practical training approach has helped students launch successful technical careers.</p>
               </div>
               <div className="hidden md:flex gap-4">
                  <Link to="/feedbacks" className="text-[var(--color-primary-600)] font-semibold flex items-center gap-1 hover:underline">
@@ -378,7 +445,7 @@ export default function HomePage() {
                 {feedbacks.map((t, index) => (
                   <motion.div 
                     key={t.id || index} 
-                    className="min-w-[300px] md:min-w-[420px] bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col relative group snap-center"
+                    className="min-w-[300px] md:min-w-[420px] glass-dark p-8 rounded-[2.5rem] shadow-2xl border border-[var(--color-border)] flex flex-col relative group snap-center overflow-hidden"
                     variants={{
                       hidden: { opacity: 0, y: 30, scale: 0.95 },
                       visible: { 
@@ -395,7 +462,7 @@ export default function HomePage() {
                     whileHover={{ 
                       y: -10, 
                       scale: 1.02,
-                      boxShadow: "0 25px 30px -10px rgb(0 0 0 / 0.1)" 
+                      boxShadow: "0 25px 30px -10px rgba(0,255,156,0.2)" 
                     }}
                     whileInView={{ 
                       opacity: 1,
@@ -403,32 +470,35 @@ export default function HomePage() {
                     }}
                     viewport={{ once: false, amount: 0.5 }}
                   >
-                    <Quote className="absolute top-8 right-10 w-20 h-20 text-slate-50 group-hover:text-blue-50 transition-all duration-500 -scale-x-100 opacity-50 group-hover:opacity-80" />
+                    {/* Glass Pattern Overlay */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,var(--color-text-primary),transparent_40%)] opacity-[0.02] pointer-events-none group-hover:opacity-[0.06] transition-opacity"></div>
                     
-                    <div className="flex gap-1 mb-6 bg-slate-50 self-start px-3 py-1.5 rounded-full">
+                    <Quote className="absolute top-8 right-10 w-20 h-20 text-[var(--color-text-primary)] transition-all duration-500 -scale-x-100 opacity-5 group-hover:opacity-100" />
+                    
+                    <div className="flex gap-1 mb-6 bg-[var(--color-surface)] self-start px-3 py-1.5 rounded-full">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-3.5 h-3.5 ${i < t.rating ? 'text-amber-400 fill-current' : 'text-slate-200'}`} />
+                        <Star key={i} className={`w-3.5 h-3.5 ${i < t.rating ? 'text-amber-400 fill-current' : 'text-slate-700'}`} />
                       ))}
                     </div>
 
-                    <p className="text-slate-700 italic mb-10 leading-relaxed text-lg relative z-10 flex-grow pt-2">
+                    <p className="text-[var(--color-text-secondary)] italic mb-10 leading-relaxed text-lg relative z-10 flex-grow pt-2">
                       "{t.content}"
                     </p>
 
                     <div className="flex items-center gap-4 mt-auto">
                       <div className="relative">
                         {t.imageUrl ? (
-                          <img src={t.imageUrl} alt={t.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-md" />
+                          <img src={t.imageUrl} alt={t.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-[var(--color-text-primary)]/20 shadow-md opacity-80" />
                         ) : (
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-primary-700)] flex items-center justify-center text-white text-xl font-extrabold shadow-md">
+                          <div className="w-14 h-14 rounded-2xl bg-[var(--color-text-primary)]/10 flex items-center justify-center text-[var(--color-text-primary)] text-xl font-extrabold shadow-md border border-[var(--color-text-primary)]/20">
                             {t.name.charAt(0)}
                           </div>
                         )}
-                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
+                        <div className="absolute -bottom-1 -right-1 bg-[var(--color-text-primary)] w-4 h-4 rounded-full border-2 border-[var(--color-surface)] shadow-[0_0_5px_rgba(0,255,156,0.5)]"></div>
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-900 text-base leading-tight">{t.name}</h4>
-                        <p className="text-sm font-semibold text-[var(--color-primary-600)] tracking-tight">{t.course}</p>
+                        <h4 className="font-bold text-[var(--color-text-primary)] text-base leading-tight">{t.name}</h4>
+                        <p className="text-sm font-semibold text-[var(--color-text-secondary)] tracking-tight">{t.course}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -436,12 +506,12 @@ export default function HomePage() {
               </motion.div>
               
               {/* Desktop fade indicators */}
-              <div className="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-slate-50 via-slate-50/20 to-transparent pointer-events-none hidden lg:block"></div>
-              <div className="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-slate-50 via-slate-50/20 to-transparent pointer-events-none hidden lg:block"></div>
+              <div className="absolute top-0 right-0 h-full w-32 bg-gradient-to-l from-[var(--color-surface)] via-[var(--color-surface)]/20 to-transparent pointer-events-none hidden lg:block"></div>
+              <div className="absolute top-0 left-0 h-full w-32 bg-gradient-to-r from-[var(--color-surface)] via-[var(--color-surface)]/20 to-transparent pointer-events-none hidden lg:block"></div>
 
               {/* Scroll Indicator Hint */}
               <motion.div 
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 backdrop-blur-sm p-3 rounded-full shadow-lg border border-slate-200 text-slate-400 opacity-0 lg:group-hover:opacity-100 transition-opacity pointer-events-none"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-[var(--color-surface-alt)]/80 backdrop-blur-sm p-3 rounded-full shadow-lg border border-[var(--color-border)] text-[var(--color-text-primary)] opacity-0 lg:group-hover:opacity-100 transition-opacity pointer-events-none"
                 animate={{ x: [0, 8, 0] }}
                 transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
               >
@@ -455,7 +525,7 @@ export default function HomePage() {
               </Link>
               <button 
                 onClick={() => setIsModalOpen(true)}
-                className="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-[1.25rem] font-bold shadow-xl shadow-blue-100 hover:scale-105 transition-transform"
+                className="btn-primary inline-flex items-center gap-2 px-10 py-4 rounded-[1.25rem] font-bold shadow-[0_0_20px_rgba(0,255,156,0.2)] hover:scale-105 transition-transform"
               >
                 <PenLine size={20} /> Share Your Experience
               </button>
@@ -466,39 +536,39 @@ export default function HomePage() {
 
       {/* FEEDBACK MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
-            <div className="p-6 border-b flex justify-between items-center bg-slate-50">
-              <h2 className="text-xl font-bold text-slate-900">Share Your Experience</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[100] backdrop-blur-md">
+          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+            <div className="p-6 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--color-surface-alt)]">
+              <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Share Your Experience</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-white transition-colors">
                 <XCircle className="w-6 h-6" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-8 space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Your Name</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-1">Your Name</label>
                 <input
                   required
                   type="text"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="input w-full"
+                  className="input"
                   placeholder="e.g. Rahul Kumar"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Course Attended</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-1">Course Attended</label>
                 <input
                   required
                   type="text"
                   value={formData.course}
                   onChange={e => setFormData({ ...formData, course: e.target.value })}
-                  className="input w-full"
+                  className="input"
                   placeholder="e.g. Laptop Repairing"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Rating</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-1">Rating</label>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map(star => (
                     <button
@@ -506,29 +576,29 @@ export default function HomePage() {
                       type="button"
                       onClick={() => setFormData({ ...formData, rating: star })}
                     >
-                      <Star className={`w-6 h-6 ${star <= formData.rating ? 'text-amber-400 fill-current' : 'text-slate-200'}`} />
+                      <Star className={`w-6 h-6 ${star <= formData.rating ? 'text-[var(--color-text-primary)] fill-current drop-shadow-[0_0_10px_rgba(0,255,156,0.3)]' : 'text-[var(--color-text-tertiary)]'}`} />
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Your Photo (Optional)</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-1">Your Photo (Optional)</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={e => setImageFile(e.target.files?.[0] || null)}
-                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition"
+                  className="w-full text-sm text-[var(--color-text-tertiary)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[var(--color-text-primary)]/10 file:text-[var(--color-text-primary)] hover:file:bg-[var(--color-text-primary)]/20 transition cursor-pointer"
                 />
-                {imageFile && <p className="text-[10px] text-blue-600 mt-1">Selected: {imageFile.name}</p>}
+                {imageFile && <p className="text-[10px] text-[var(--color-text-primary)] mt-1 font-bold">Selected: {imageFile.name}</p>}
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">Feedback</label>
+                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-1">Feedback</label>
                 <textarea
                   required
                   rows={3}
                   value={formData.content}
                   onChange={e => setFormData({ ...formData, content: e.target.value })}
-                  className="input w-full"
+                  className="input min-h-[80px]"
                   placeholder="Your experience..."
                 ></textarea>
               </div>

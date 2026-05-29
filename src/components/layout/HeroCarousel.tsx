@@ -38,7 +38,7 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
   const activeCourse = featuredCourses[current];
 
   return (
-    <section className="relative h-[85vh] md:h-[80vh] overflow-hidden -mt-16 bg-slate-900">
+    <section className="relative h-[85vh] md:h-[80vh] overflow-hidden -mt-16 bg-[var(--color-surface)]">
       <AnimatePresence custom={direction}>
         <motion.div
           key={activeCourse.id}
@@ -52,10 +52,10 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
           <img 
             src={activeCourse.imageUrl} 
             alt={activeCourse.title} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover animate-ken-burns opacity-60"
           />
-          <div className="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/30"></div>
+          <div className="absolute inset-0 bg-[var(--color-surface)]/60 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-[var(--color-surface)]/20"></div>
         </motion.div>
       </AnimatePresence>
 
@@ -64,47 +64,47 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
           <AnimatePresence mode="popLayout">
             <motion.div
               key={activeCourse.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="space-y-6 md:space-y-8"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-[10px] md:text-xs uppercase tracking-widest bg-white/10 text-white backdrop-blur-md border border-white/20 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-[10px] md:text-xs uppercase tracking-widest bg-[var(--color-text-primary)]/10 text-[var(--color-text-primary)] backdrop-blur-md border border-[var(--color-text-primary)]/20 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-[var(--color-text-primary)] animate-pulse"></span>
                 {admissionStatus}
               </div>
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-white drop-shadow-2xl">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-[var(--color-text-primary)] drop-shadow-[0_0_15px_rgba(0,255,156,0.3)]">
                 {activeCourse.title}
               </h1>
               
-              <p className="text-lg md:text-xl leading-relaxed max-w-2xl text-slate-100 drop-shadow-lg font-medium opacity-90">
+              <p className="text-lg md:text-xl leading-relaxed max-w-2xl text-[var(--color-text-secondary)] drop-shadow-lg font-medium opacity-90">
                 {activeCourse.shortDescription}
               </p>
               
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link 
                   to={`/courses/${activeCourse.slug}`} 
-                  className="group relative flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold px-6 py-3 text-sm md:text-base transition-all shadow-xl shadow-blue-900/40 hover:-translate-y-1 active:translate-y-0"
+                  className="btn-primary"
                 >
                   Learn More
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight size={18} className="inline ml-2" />
                 </Link>
                 <Link 
                   to="/courses" 
-                  className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white rounded-lg font-semibold px-4 py-2 text-xs transition-all hover:-translate-y-0.5 active:translate-y-0"
+                  className="btn-secondary"
                 >
                   Browse All
                 </Link>
               </div>
               
               {activeCourse.highlights && activeCourse.highlights.length > 0 && (
-                <div className="flex flex-wrap gap-x-6 gap-y-3 pt-6 border-t border-white/20">
+                <div className="flex flex-wrap gap-x-6 gap-y-3 pt-6 border-t border-[var(--color-border)]">
                   {activeCourse.highlights.slice(0, 2).map((feature: string, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2 text-white">
-                      <CheckCircle size={18} className="text-blue-400" />
-                      <span className="text-xs md:text-sm font-medium drop-shadow-md">{feature}</span>
+                    <div key={idx} className="flex items-center gap-2 text-[var(--color-text-primary)]">
+                      <CheckCircle size={18} className="text-[var(--color-text-primary)]" />
+                      <span className="text-xs md:text-sm font-bold opacity-90">{feature}</span>
                     </div>
                   ))}
                 </div>
