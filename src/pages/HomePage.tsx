@@ -173,7 +173,7 @@ export default function HomePage() {
            <Quote size={200} className="scale-x-[-1]" />
         </div>
         <div className="container-wide px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 2xl:gap-12 lg:divide-x divide-[var(--color-border)] text-center">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 2xl:gap-12 lg:divide-x divide-[var(--color-border)] text-center animate-pulse-subtle">
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -181,7 +181,7 @@ export default function HomePage() {
               transition={{ delay: 0.1 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.studentsTrained}</div>
+              <div className="text-3xl lg:text-4xl @lg:text-5xl font-extrabold text-green-500 mb-1">{statsValues.studentsTrained}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Students Trained</div>
             </motion.div>
             <motion.div 
@@ -191,7 +191,7 @@ export default function HomePage() {
               transition={{ delay: 0.2 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.yearsExcellence}</div>
+              <div className="text-3xl lg:text-4xl @lg:text-5xl font-extrabold text-green-500 mb-1">{statsValues.yearsExcellence}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Years Experience</div>
             </motion.div>
             <motion.div 
@@ -201,7 +201,7 @@ export default function HomePage() {
               transition={{ delay: 0.3 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.placementRate}</div>
+              <div className="text-3xl lg:text-4xl @lg:text-5xl font-extrabold text-green-500 mb-1">{statsValues.placementRate}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Placement Rate</div>
             </motion.div>
             <motion.div 
@@ -211,7 +211,7 @@ export default function HomePage() {
               transition={{ delay: 0.4 }}
               className="hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-3xl lg:text-4xl font-extrabold text-[var(--color-primary-700)] mb-1">{statsValues.courseModules}</div>
+              <div className="text-3xl lg:text-4xl @lg:text-5xl font-extrabold text-green-500 mb-1">{statsValues.courseModules}</div>
               <div className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-tertiary)]">Course Modules</div>
             </motion.div>
           </div>
