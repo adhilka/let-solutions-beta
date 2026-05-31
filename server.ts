@@ -78,6 +78,7 @@ async function startServer() {
           'Authorization': `Bearer ${GITHUB_TOKEN}`,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
+          'User-Agent': 'AI-Studio-Applet',
         },
         body: JSON.stringify({
           message: `Upload file ${uniqueName}`,

@@ -405,6 +405,11 @@ export default function AdminPostEditor() {
                                   onChange={e => handleUpdateAttachment(idx, 'url', e.target.value)}
                                   className="input w-full text-xs bg-slate-900 border-none px-3 py-1.5 font-mono focus:ring-0"
                                />
+                               {file.url && file.url.startsWith('data:') && (
+                                  <p className="text-[10px] text-yellow-400/80 mt-1 leading-normal font-sans">
+                                     ⚠️ Inline Base64 Data: GitHub credentials are not configured or failed on server, using local browser encoding fallback.
+                                  </p>
+                               )}
                             </div>
                             
                             {/* Inline file upload triggers */}
