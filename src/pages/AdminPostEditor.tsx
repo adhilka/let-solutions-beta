@@ -369,7 +369,7 @@ export default function AdminPostEditor() {
              </div>
              
              <p className="text-xs text-[var(--color-text-secondary)]">
-                Attach code bundles, schematics, cheat sheets, or manuals for students to source directly from this post.
+                Upload technical manuals, schematics, and files directly to the connected **GitHub repository** for high-speed delivery, or supply custom URL paths.
              </p>
 
              {formData.files.length === 0 ? (

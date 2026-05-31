@@ -36,7 +36,7 @@ export type CourseCategory =
   | 'laptop-chip-level'
   | 'mobile-chip-level'
   | 'hardware'
-  | 'software'
+  | 'electronics'
   | 'cctv'
   | 'networking'
   | 'ethical-hacking';

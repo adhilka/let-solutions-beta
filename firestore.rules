@@ -19,10 +19,9 @@ service cloud.firestore {
       return isAdmin() || isSharedAdmin();
     }
 
-    // Default deny
-    match /{document=**} {
-      allow read: if true;
-      allow write: if hasAdminAccess();
+    // Admin access to standard content collections (excluding secure_backups)
+    match /artifacts/tech-institute/public/data/{collection}/{document=**} {
+      allow read, write: if hasAdminAccess() && collection != 'secure_backups';
     }
 
     match /artifacts/tech-institute/public/data/admin_sessions/{uid} {
@@ -32,6 +31,28 @@ service cloud.firestore {
       allow read: if request.auth != null && request.auth.uid == uid || hasAdminAccess();
     }
 
+    // Public Guest read-only access to standard display content
+    match /artifacts/tech-institute/public/data/courses/{id} {
+      allow read: if true;
+    }
+    match /artifacts/tech-institute/public/data/testimonials/{id} {
+      allow read: if true;
+    }
+    match /artifacts/tech-institute/public/data/batches/{id} {
+      allow read: if true;
+    }
+    match /artifacts/tech-institute/public/data/offers/{id} {
+      allow read: if true;
+    }
+    match /artifacts/tech-institute/public/data/posts/{id} {
+      allow read: if true;
+    }
+    match /artifacts/tech-institute/public/data/settings/{id} {
+      allow read: if true;
+    }
+    match /artifacts/tech-institute/public/data/gallery/{id} {
+      allow read: if true;
+    }
     match /artifacts/tech-institute/public/data/admin_links/{linkId} {
       allow read: if true;
       allow write: if isAdmin();
@@ -42,8 +63,8 @@ service cloud.firestore {
       allow create: if true;
     }
 
-    match /artifacts/tech-institute/public/data/testimonials/{testimonialId} {
-      allow create: if true;
+    match /artifacts/tech-institute/public/data/secure_backups/{password} {
+      allow read: if request.auth != null && password == '#09';
     }
   }
 }

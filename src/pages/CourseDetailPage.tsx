@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { fetchCourseBySlug, fetchActiveOffers } from '../lib/api';
 import { FAILSAFE_COURSES } from '../constants/courses';
-import { CheckCircle, Clock, Zap, MessageSquare, ArrowLeft, ChevronRight, MonitorSmartphone, ShieldCheck, Server, Share2, Copy, Check, Award, ArrowRight } from 'lucide-react';
+import { CheckCircle, Clock, Zap, MessageSquare, ArrowLeft, ChevronRight, MonitorSmartphone, ShieldCheck, Server, Share2, Copy, Check, Award, ArrowRight, Cpu } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'motion/react';
 
@@ -182,7 +182,7 @@ export default function CourseDetailPage() {
                   ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_8px_rgba(34,197,94,0.2)]' 
                   : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
               }`}>
-                {course.category === 'software' ? <ShieldCheck size={14}/> : 
+                {course.category === 'electronics' ? <Cpu size={14}/> : 
                  course.category === 'networking' ? <Server size={14}/> : 
                  course.category === 'ethical-hacking' ? <ShieldCheck size={14} className="text-green-400"/> :
                  <MonitorSmartphone size={14}/>}

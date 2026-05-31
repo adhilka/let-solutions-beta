@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight, X, ZoomIn } from 'lucide-react';
+import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight, X, ZoomIn, Cpu } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent, fetchActiveOffers, fetchGalleryImages } from '../lib/api';
 import { Testimonial } from '../types';
@@ -311,7 +311,7 @@ export default function HomePage() {
                           ? 'text-green-600 bg-green-50/90 border-green-500/50 shadow-[0_0_10px_rgba(34,197,94,0.35)]' 
                           : 'text-slate-800'
                       }`}>
-                        {course.category === 'software' ? <ShieldCheck size={12} className="text-blue-600"/> : 
+                        {course.category === 'electronics' ? <Cpu size={12} className="text-blue-600"/> : 
                          course.category === 'networking' ? <Server size={12} className="text-blue-600"/> : 
                          course.category === 'ethical-hacking' ? <ShieldCheck size={12} className="text-green-600"/> : 
                          <MonitorSmartphone size={12} className="text-blue-600"/>} 

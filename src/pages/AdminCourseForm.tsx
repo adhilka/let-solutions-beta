@@ -167,12 +167,12 @@ export default function AdminCourseForm() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Category</label>
-                <select className="input" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
+                <select className="input" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value as any })}>
                   <option value="chip-level">Chip level</option>
                   <option value="laptop-chip-level">Laptop Chip-Level</option>
                   <option value="mobile-chip-level">Mobile Chip-Level</option>
                   <option value="hardware">Hardware</option>
-                  <option value="software">Software</option>
+                  <option value="electronics">Electronics</option>
                   <option value="cctv">CCTV</option>
                   <option value="networking">Networking</option>
                   <option value="ethical-hacking">Ethical Hacking</option>

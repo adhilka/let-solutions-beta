@@ -5,6 +5,9 @@ import compression from 'compression';
 import { createServer as createViteServer } from 'vite';
 import multer from 'multer';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 dotenv.config();
 
 // Github file upload settings
@@ -97,6 +100,158 @@ async function startServer() {
     } catch (error: any) {
       console.error('Upload Error:', error);
       res.status(500).json({ error: error.message || 'Failed to upload file to GitHub' });
+    }
+  });
+
+  // --- Maintenance & Security Endpoints ---
+
+  // Helper to dynamically extract passcode from local firestore.rules
+  function getSecurePasscode(): string {
+    try {
+      const rulesPath = path.join(process.cwd(), 'firestore.rules');
+      if (fs.existsSync(rulesPath)) {
+        const content = fs.readFileSync(rulesPath, 'utf-8');
+        // Looks for rules matching password == '#09'
+        const match = content.match(/password\s*==\s*['"]([^'"]+)['"]/);
+        if (match && match[1]) {
+          console.log(`[Backup System] Dynamically parsed rules passcode: "${match[1]}"`);
+          return match[1];
+        }
+      }
+    } catch (err) {
+      console.error('[Backup System] Error reading firestore.rules:', err);
+    }
+    return '#09'; // Fallback
+  }
+
+  let dbA_server: any = null;
+  let dbB_server: any = null;
+
+  function getServerDbA() {
+    if (dbA_server) return dbA_server;
+    try {
+      const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
+      if (fs.existsSync(configPath)) {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        const app = getApps().find(a => a.name === '[DEFAULT]') || initializeApp(config);
+        dbA_server = getFirestore(app);
+      }
+    } catch (err) {
+      console.error("[Backup System] Failed to initialize Server DB A:", err);
+    }
+    return dbA_server;
+  }
+
+  function getServerDbB() {
+    if (dbB_server) return dbB_server;
+    try {
+      const configPath = path.join(process.cwd(), 'firebase-applet-config-b.json');
+      if (fs.existsSync(configPath)) {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        const app = getApps().find(a => a.name === 'projectB_server') || initializeApp(config, 'projectB_server');
+        dbB_server = getFirestore(app);
+      }
+    } catch (err) {
+      console.warn("[Backup System] Project B config not found or failed to initialize.");
+    }
+    return dbB_server;
+  }
+
+  // Verify passcode endpoint
+  app.post('/api/admin/maintenance/verify', (req, res) => {
+    const { passcode } = req.body;
+    if (!passcode) {
+      return res.status(400).json({ error: 'Passcode is required.' });
+    }
+    const realPasscode = getSecurePasscode();
+    if (passcode === realPasscode) {
+      return res.json({ success: true });
+    } else {
+      return res.status(403).json({ error: 'Authentication Rejected: Access code incorrect.' });
+    }
+  });
+
+  // Secure backup downloader
+  app.post('/api/admin/maintenance/backup', async (req, res) => {
+    const { passcode } = req.body;
+    const realPasscode = getSecurePasscode();
+    if (passcode !== realPasscode) {
+      return res.status(403).json({ error: 'Authentication Rejected: Access code incorrect.' });
+    }
+
+    const collectionsToBackup = [
+      "courses",
+      "testimonials",
+      "batches",
+      "enquiries",
+      "offers",
+      "posts",
+      "settings",
+      "gallery",
+      "admin_sessions",
+      "admin_links"
+    ];
+
+    const dbA = getServerDbA();
+    const dbB = getServerDbB();
+
+    const backupPayload: any = {
+      meta: {
+        exportedAt: new Date().toISOString(),
+        totalCollectionsCount: collectionsToBackup.length,
+        projects: {
+          hasMirrorDb: !!dbB
+        }
+      },
+      server_a: {},
+      server_b: {}
+    };
+
+    if (!dbA) {
+      return res.status(500).json({ error: "Server Database A could not be initialized." });
+    }
+
+    try {
+      // Extract from Server A
+      for (const col of collectionsToBackup) {
+        try {
+          const snap = await getDocs(
+            collection(dbA, `artifacts/tech-institute/public/data/${col}`)
+          );
+          backupPayload.server_a[col] = snap.docs.map(doc => ({
+            _id: doc.id,
+            ...doc.data()
+          }));
+        } catch (colErr: any) {
+          console.error(`[Server A] Error backing up ${col}:`, colErr);
+          backupPayload.server_a[col] = { error: colErr.message || String(colErr) };
+        }
+      }
+
+      // Extract from Server B
+      if (dbB) {
+        for (const col of collectionsToBackup) {
+          try {
+            const snap = await getDocs(
+              collection(dbB, `artifacts/tech-institute/public/data/${col}`)
+            );
+            backupPayload.server_b[col] = snap.docs.map(doc => ({
+              _id: doc.id,
+              ...doc.data()
+            }));
+          } catch (colErr: any) {
+            console.error(`[Server B] Error backing up ${col}:`, colErr);
+            backupPayload.server_b[col] = { error: colErr.message || String(colErr) };
+          }
+        }
+      } else {
+        backupPayload.server_b = { status: "Server B is offline or not configured." };
+      }
+
+      res.json(backupPayload);
+    } catch (err: any) {
+      console.error("Backup extraction error:", err);
+      res.status(500).json({ error: err.message || "Failed to create complete backup." });
     }
   });
 

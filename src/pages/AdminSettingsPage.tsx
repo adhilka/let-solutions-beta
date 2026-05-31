@@ -10,7 +10,7 @@ import {
 import { dualWrite, dualDelete } from "../lib/firebase/dualWrite";
 import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationModal from "../components/ConfirmationModal";
-import { AlertTriangle, Trash2, Database, ShieldAlert, Image } from "lucide-react";
+import { AlertTriangle, Trash2, Database, ShieldAlert, Image, Download, ShieldCheck, Eye, EyeOff, Lock } from "lucide-react";
 import { FAILSAFE_SETTINGS } from "../constants/failsafe";
 
 export default function AdminSettingsPage() {
@@ -36,6 +36,34 @@ export default function AdminSettingsPage() {
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [faviconFile, setFaviconFile] = useState<File | null>(null);
+  
+  // High-Security Dual Database Export and Maintenance Access Control
+  const [backupPassword, setBackupPassword] = useState("");
+  const [showBackupPassword, setShowBackupPassword] = useState(false);
+  const [backupIsRunning, setBackupIsRunning] = useState(false);
+  const [backupStatusText, setBackupStatusText] = useState("");
+  const [backupError, setBackupError] = useState("");
+  const [isMaintenanceUnlocked, setIsMaintenanceUnlocked] = useState(false);
+  const [maintenancePasscode, setMaintenancePasscode] = useState("");
+
+  const verifySecurityPassword = async (pass: string = maintenancePasscode): Promise<boolean> => {
+    if (!pass) return false;
+    try {
+      const response = await fetch('/api/admin/maintenance/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passcode: pass })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return !!data.success;
+      }
+      return false;
+    } catch (err) {
+      console.error("Critical Security Authentication Rejected:", err);
+      return false;
+    }
+  };
   const [settings, setSettings] = useState<any>({
     branding: {
       instituteName: "Let Solutions",
@@ -291,6 +319,101 @@ export default function AdminSettingsPage() {
       alert("Failed to restore images");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleUnlockAndVerify = async () => {
+    if (!backupPassword) {
+      setBackupError("Please enter the security password to proceed.");
+      return;
+    }
+    setBackupError("");
+    setBackupIsRunning(true);
+    setBackupStatusText("Validating credentials against database rules...");
+    try {
+      const isOk = await verifySecurityPassword(backupPassword);
+      if (isOk) {
+        setIsMaintenanceUnlocked(true);
+        setMaintenancePasscode(backupPassword);
+        setBackupPassword("");
+        setBackupStatusText("");
+        setBackupError("");
+      } else {
+        setBackupError("Authentication Rejected: Access code incorrect. The FireDB rules strictly block unauthorized retrieval.");
+        setBackupStatusText("");
+      }
+    } catch (err) {
+      setBackupError("Service error during validation.");
+      setBackupStatusText("");
+    } finally {
+      setBackupIsRunning(false);
+    }
+  };
+
+  const handleDownloadAllData = async () => {
+    if (!maintenancePasscode) {
+      setBackupError("Security session expired or not authenticated.");
+      return;
+    }
+
+    setBackupError("");
+    setBackupIsRunning(true);
+    setBackupStatusText("Initiating secure master export on backend server...");
+
+    try {
+      const response = await fetch('/api/admin/maintenance/backup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passcode: maintenancePasscode })
+      });
+
+      if (!response.ok) {
+        let errMessage = "Server rejected backup request.";
+        try {
+          const errData = await response.json();
+          errMessage = errData.error || errMessage;
+        } catch (_) {}
+        throw new Error(errMessage);
+      }
+
+      const backupPayload = await response.json();
+
+      setBackupStatusText("Formatting database manifest and writing JSON archive...");
+
+      // Download
+      const jsonStr = JSON.stringify(backupPayload, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `TechInstitute_DatabaseMasterBackup_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      setBackupStatusText("");
+      setBackupPassword("");
+      
+      setModalConfig({
+        isOpen: true,
+        title: "Database Backup Completed",
+        message: "Successfully mirrored and extracted all active collections from both database servers. The complete backup, including global, home and about content sheets, has been saved to your local storage.",
+        confirmVariant: "success",
+        confirmText: "Acknowledge",
+        mode: "status",
+        onConfirm: () => {}
+      });
+    } catch (err: any) {
+      console.error("Backup authorization error:", err);
+      let errMsg = "Access Denied: Invalid security credentials or permission revoked.";
+      if (err.message) {
+        errMsg = `Execution Error: ${err.message}`;
+      }
+      setBackupError(errMsg);
+      setBackupStatusText("");
+    } finally {
+      setBackupIsRunning(false);
     }
   };
 
@@ -712,21 +835,94 @@ export default function AdminSettingsPage() {
               </div>
             )}
 
-            {activeTab === "maintenance" && (
-              <div className="space-y-10">
-                <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-6 flex flex-col md:flex-row gap-6 items-center">
-                  <div className="p-4 bg-red-500/20 text-red-500 rounded-2xl shrink-0">
-                    <ShieldAlert size={32} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white mb-1 uppercase tracking-tight">
-                      Privileged Operations
-                    </h3>
-                    <p className="text-red-400 text-sm font-medium leading-relaxed">
-                      Wipe operations are structural and irreversible. Permanent data removal 
-                      from the primary cluster will occur immediately.
+            {activeTab === "maintenance" && !isMaintenanceUnlocked && (
+              <div className="flex items-center justify-center py-12">
+                <div id="maintenance-lock-card" className="w-full max-w-md p-8 rounded-[2rem] border border-red-500/20 bg-black/40 shadow-2xl backdrop-blur-xl space-y-6">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="p-4 bg-red-500/10 text-red-500 rounded-3xl mb-4 border border-red-500/20">
+                      <Lock size={32} />
+                    </div>
+                    <h3 className="text-xl font-bold text-white uppercase tracking-tight">Security Checkpoint</h3>
+                    <p className="text-[var(--color-text-secondary)] text-xs mt-2 leading-relaxed text-center">
+                      Maintenance zone contains destructive controls and cluster export systems. Authenticate using the master security passcode from firestore.rules to unlock.
                     </p>
                   </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                        Cryptographic Passcode
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showBackupPassword ? "text" : "password"}
+                          value={backupPassword}
+                          onChange={(e) => setBackupPassword(e.target.value)}
+                          disabled={backupIsRunning}
+                          placeholder="Type security access password..."
+                          className="input w-full pr-10 font-mono tracking-wider text-white bg-black/60 border-white/10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowBackupPassword(!showBackupPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                        >
+                          {showBackupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {backupError && (
+                      <p className="text-red-400 text-xs font-semibold bg-red-500/10 p-3 rounded-xl border border-red-500/20 text-center">
+                        {backupError}
+                      </p>
+                    )}
+
+                    {backupStatusText && (
+                      <p className="text-blue-400 text-xs font-medium animate-pulse text-center">
+                        {backupStatusText}
+                      </p>
+                    )}
+                    
+                    <button
+                      onClick={handleUnlockAndVerify}
+                      disabled={backupIsRunning}
+                      className="btn-primary w-full py-3 shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed font-semibold uppercase tracking-widest text-xs"
+                    >
+                      <ShieldCheck size={16} />
+                      {backupIsRunning ? "Authorizing..." : "Unlock Systems"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "maintenance" && isMaintenanceUnlocked && (
+              <div className="space-y-10">
+                <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-6 flex flex-col md:flex-row gap-6 items-center justify-between">
+                  <div className="flex gap-6 items-center">
+                    <div className="p-4 bg-red-500/20 text-red-500 rounded-2xl shrink-0">
+                      <ShieldAlert size={32} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1 uppercase tracking-tight">
+                        Privileged Operations Room
+                      </h3>
+                      <p className="text-red-400 text-sm font-medium leading-relaxed">
+                        Wipe operations are structural and irreversible. Complete administrative access is currently verified.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsMaintenanceUnlocked(false);
+                      setMaintenancePasscode("");
+                      setBackupError("");
+                    }}
+                    className="px-6 py-2.5 bg-red-500/20 hover:bg-red-500/40 border border-red-500/30 font-bold text-red-400 rounded-xl text-xs uppercase tracking-widest"
+                  >
+                    Lock Sector
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
@@ -753,6 +949,19 @@ export default function AdminSettingsPage() {
                           confirmText: "Execute Wipe",
                           mode: "confirm",
                           onConfirm: async () => {
+                            const isVerified = await verifySecurityPassword();
+                            if (!isVerified) {
+                              setModalConfig({
+                                isOpen: true,
+                                title: "Authentication Failed",
+                                message: "We were unable to re-verify your passcode against central security rules.",
+                                confirmVariant: "danger",
+                                confirmText: "Close",
+                                mode: "status",
+                                onConfirm: () => {}
+                              });
+                              return;
+                            }
                             const res = await clearCollection("enquiries");
                             if (res) {
                               setModalConfig({
@@ -796,12 +1005,58 @@ export default function AdminSettingsPage() {
                           confirmVariant: "primary",
                           confirmText: "Sync Defaults",
                           mode: "confirm",
-                          onConfirm: handleRestoreDefaultImages,
+                          onConfirm: async () => {
+                            const isVerified = await verifySecurityPassword();
+                            if (!isVerified) {
+                              alert("Authentication Rejected: Access code incorrect.");
+                              return;
+                            }
+                            await handleRestoreDefaultImages();
+                          },
                         })
                       }
                       className="w-full py-3 bg-blue-500/10 text-blue-400 font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-blue-500/20 transition-all border border-blue-500/20"
                     >
                       Sync Defaults
+                    </button>
+                  </div>
+
+                  <div className="p-8 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-blue-500/50 transition-all group shadow-xl col-span-full">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-blue-500/10 text-blue-400 rounded-xl">
+                        <Download size={20} />
+                      </div>
+                      <h4 className="font-bold text-white uppercase tracking-tight">
+                        Encrypted Multi-Server JSON Backup
+                      </h4>
+                    </div>
+                    <p className="text-[var(--color-text-secondary)] text-xs mb-6 leading-relaxed">
+                      Download a single, combined, ultra-secure JSON package containing all dynamic collections (courses, testimonials, batches, enquiries, offers, posts, settings, gallery, leads, and analytics metadata) from both Project A and Project B database clusters. This includes local about, home, and global branding tables.
+                    </p>
+
+                    <div className="bg-green-500/10 p-4 rounded-2xl border border-green-500/20 mb-6 flex items-center gap-3">
+                      <ShieldCheck className="text-green-400 animate-pulse" size={20} />
+                      <p className="text-green-400 text-xs font-semibold">
+                        Secure Authentication Checked: Passcode verified against Firecentral security rules.
+                      </p>
+                    </div>
+
+                    {backupStatusText && (
+                      <div className="space-y-2 mb-4">
+                        <p className="text-blue-300 text-xs font-semibold animate-pulse flex items-center gap-2">
+                          <span className="inline-block w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></span>
+                          {backupStatusText}
+                        </p>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={handleDownloadAllData}
+                      disabled={backupIsRunning}
+                      className="btn-primary w-full shadow-lg relative flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ShieldCheck size={16} />
+                      {backupIsRunning ? "Executing Backup..." : "Validate & Download (JSON)"}
                     </button>
                   </div>
 
@@ -826,7 +1081,22 @@ export default function AdminSettingsPage() {
                           message:
                             "FINAL WARNING: Initiating global termination. All content structures will be destroyed.",
                           confirmVariant: "danger",
-                          onConfirm: handleClearAllData,
+                          onConfirm: async () => {
+                            const isVerified = await verifySecurityPassword();
+                            if (!isVerified) {
+                              setModalConfig({
+                                isOpen: true,
+                                title: "Authentication Failed",
+                                message: "We were unable to re-verify your passcode against central security rules.",
+                                confirmVariant: "danger",
+                                confirmText: "Close",
+                                mode: "status",
+                                onConfirm: () => {}
+                              });
+                              return;
+                            }
+                            await handleClearAllData();
+                          },
                         })
                       }
                       className="w-full py-4 bg-red-600 text-white font-extrabold rounded-2xl text-sm uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-900/20"

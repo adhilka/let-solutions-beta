@@ -2,7 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
-import { Bold, Italic, List, ListOrdered, Code, Quote, Undo, Redo, Link as LinkIcon, Image as ImageIcon, FileText } from 'lucide-react'
+import { Bold, Italic, List, ListOrdered, Code, Quote, Undo, Redo, Link as LinkIcon, Image as ImageIcon } from 'lucide-react'
 import { useState, useRef } from 'react'
 
 interface TipTapEditorProps {
@@ -12,7 +12,6 @@ interface TipTapEditorProps {
 
 export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
@@ -33,46 +32,6 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   if (!editor) {
     return null;
   }
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      const res = await fetch('/api/github/upload', {
-        method: 'POST',
-        body: formData
-      });
-      
-      const data = await res.json();
-      if (data.success && data.url) {
-        // insert structured link that looks like a file badge
-        editor.chain().focus().insertContent(`<a href="${data.url}" target="_blank" rel="noopener noreferrer" class="github-file-link"><span>📄</span> ${data.name}</a>&nbsp;`).run();
-      } else {
-        throw new Error(data.error || 'Server error or credentials unconfigured');
-      }
-    } catch (err) {
-      console.warn("Server-side GitHub upload failed, falling back to local Base64 URL:", err);
-      try {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          const base64Url = reader.result as string;
-          editor.chain().focus().insertContent(`<a href="${base64Url}" download="${file.name}" target="_blank" rel="noopener noreferrer" class="github-file-link"><span>📄</span> ${file.name} (Local Storage)</a>&nbsp;`).run();
-        };
-      } catch (fallbackErr) {
-        console.error("Local fallback failed:", fallbackErr);
-        alert('Upload failed');
-      }
-    } finally {
-      setIsUploading(false);
-      e.target.value = '';
-    }
-  };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -127,12 +86,8 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         <button type="button" onClick={() => imageInputRef.current?.click()} disabled={isUploading} className="p-1.5 px-2 rounded text-sm font-medium hover:bg-white/10 text-[var(--color-text-secondary)] flex items-center gap-1">
           <ImageIcon size={16} /> Image
         </button>
-        <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="p-1.5 px-2 rounded text-sm font-medium hover:bg-white/10 text-[var(--color-text-secondary)] flex items-center gap-1">
-          <FileText size={16} /> {isUploading ? 'Uploading...' : 'Attach File (GitHub)'}
-        </button>
         
         <input type="file" ref={imageInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
-        <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
         
         <div className="flex-1"></div>
         <button type="button" onClick={() => editor.chain().focus().undo().run()} className="p-1.5 rounded hover:bg-white/10 text-[var(--color-text-secondary)]">

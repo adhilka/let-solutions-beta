@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { MonitorSmartphone, ShieldCheck, Server, Filter, Clock, Zap, MessageSquare } from 'lucide-react';
+import { MonitorSmartphone, ShieldCheck, Server, Filter, Clock, Zap, MessageSquare, Cpu } from 'lucide-react';
 import { fetchActiveCourses, fetchActiveOffers } from '../lib/api';
 import { FAILSAFE_COURSES } from '../constants/courses';
 
@@ -135,7 +135,7 @@ export default function CoursesPage() {
                         ? 'badge-green !text-green-500 border-green-500/30' 
                         : 'badge-blue'
                     }`}>
-                      {course.category === 'software' ? <ShieldCheck size={12}/> : 
+                      {course.category === 'electronics' ? <Cpu size={12}/> : 
                        course.category === 'networking' ? <Server size={12}/> : 
                        course.category === 'ethical-hacking' ? <ShieldCheck size={12} className="text-green-500"/> : 
                        <MonitorSmartphone size={12}/>} 

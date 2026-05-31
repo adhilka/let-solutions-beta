@@ -23,7 +23,7 @@ export const FAILSAFE_COURSES = [
     duration: '6 Months',
     level: 'Intermediate',
     price: 0,
-    category: 'software',
+    category: 'ethical-hacking',
     badge: '',
     imageUrl: 'https://vitalskills.in/wp-content/uploads/2024/05/Ethical-Hacking.webp',
     isActive: true,
