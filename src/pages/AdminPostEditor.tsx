@@ -83,7 +83,10 @@ export default function AdminPostEditor() {
           postType: data.postType || (data.videoUrl ? 'video' : 'article'),
           videoUrl: data.videoUrl || '',
           files: initialFiles,
-          author: data.author || { name: 'Admin', role: 'Staff' }
+          author: {
+            name: data.author?.name || 'Admin',
+            role: data.author?.role || 'Staff'
+          }
         });
         return data;
       }
@@ -554,8 +557,8 @@ export default function AdminPostEditor() {
                      <input 
                         type="text" 
                         className="input w-full text-sm" 
-                        value={formData.author.name} 
-                        onChange={e => setFormData({ ...formData, author: { ...formData.author, name: e.target.value } })}
+                        value={formData.author?.name || ''} 
+                        onChange={e => setFormData({ ...formData, author: { name: e.target.value, role: formData.author?.role || 'Staff' } })}
                      />
                    </div>
                  </div>
