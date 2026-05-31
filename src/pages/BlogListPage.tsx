@@ -150,7 +150,7 @@ export default function BlogListPage() {
                       {post.author?.avatarUrl ? (
                         <img
                           src={post.author.avatarUrl}
-                          alt={post.author.name}
+                          alt={post.author?.name || "Admin"}
                           className="w-8 h-8 rounded-full border border-[var(--color-border)]"
                           referrerPolicy="no-referrer"
                         />

@@ -114,9 +114,10 @@ export default function AdminTestimonialsPage() {
   };
 
   const filteredTestimonials = testimonials.filter(t => {
-    const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          t.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          t.content.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!t) return false;
+    const matchesSearch = (t.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          (t.course || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (t.content || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     if (filter === 'all') return matchesSearch;
     if (filter === 'approved') return matchesSearch && t.approved;
@@ -177,16 +178,16 @@ export default function AdminTestimonialsPage() {
                   <div className="flex items-center">
                     {t.imageUrl ? (
                       <div className="relative">
-                        <img src={t.imageUrl} alt={t.name} className="w-12 h-12 rounded-2xl object-cover mr-4 border border-[var(--color-border)] shadow-lg" />
+                        <img src={t.imageUrl} alt={t.name || ""} className="w-12 h-12 rounded-2xl object-cover mr-4 border border-[var(--color-border)] shadow-lg" />
                         <div className="absolute inset-0 bg-black/10 rounded-2xl" />
                       </div>
                     ) : (
                       <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary-900)] border border-[var(--color-primary-800)] flex items-center justify-center text-[var(--color-primary-400)] font-black text-xl mr-4 shadow-lg uppercase">
-                        {t.name.charAt(0)}
+                        {(t.name || "T").charAt(0)}
                       </div>
                     )}
                     <div>
-                      <h3 className="font-extrabold text-white uppercase tracking-tight text-sm">{t.name}</h3>
+                      <h3 className="font-extrabold text-white uppercase tracking-tight text-sm">{t.name || "Anonymous"}</h3>
                       <p className="text-[10px] text-[var(--color-primary-400)] font-black uppercase tracking-widest mt-1">{t.course} {t.batch && `— ${t.batch}`}</p>
                     </div>
                   </div>

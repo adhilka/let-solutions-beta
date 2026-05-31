@@ -293,15 +293,16 @@ export default function BlogDetailPage() {
               ) : (
                 <div className="space-y-3">
                   {fileAttachments.map((file, idx) => {
-                    const isGit = isGitHubLink(file.url);
+                    if (!file) return null;
+                    const isGit = isGitHubLink(file.url || '');
                     return (
                       <a
                         key={idx}
-                        href={file.url}
+                        href={file.url || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group flex items-center justify-between p-3.5 bg-black/30 hover:bg-black/50 border border-[var(--color-border)] hover:border-white/20 rounded-xl transition-all"
-                        title={`Download ${file.name}`}
+                        title={`Download ${file.name || ''}`}
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           <div className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 ${
@@ -310,7 +311,7 @@ export default function BlogDetailPage() {
                             {isGit ? <Github size={18} /> : <FileIcon size={18} />}
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-xs uppercase tracking-tight text-white group-hover:text-[var(--color-primary-400)] transition-colors truncate max-w-[170px]" title={file.name}>
+                            <p className="font-bold text-xs uppercase tracking-tight text-white group-hover:text-[var(--color-primary-400)] transition-colors truncate max-w-[170px]" title={file.name || ''}>
                               {file.name || `Technical Sheet ${idx + 1}`}
                             </p>
                             <p className="text-[10px] text-[var(--color-text-tertiary)] font-mono truncate max-w-[170px] mt-0.5">

@@ -138,14 +138,14 @@ export default function TestimonialsPage() {
                 <p className="text-[var(--color-text-primary)] italic mb-6 leading-relaxed">"{t.content}"</p>
                 <div className="flex items-center">
                   {t.imageUrl ? (
-                    <img src={t.imageUrl} alt={t.name} className="w-12 h-12 rounded-full object-cover mr-4" />
+                    <img src={t.imageUrl} alt={t.name || ""} className="w-12 h-12 rounded-full object-cover mr-4" />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-[var(--color-primary-900)] flex items-center justify-center text-[var(--color-primary-400)] font-bold mr-4 flex shrink-0">
-                      <span className="mx-auto">{t.name.charAt(0)}</span>
+                      <span className="mx-auto">{(t.name || "T").charAt(0)}</span>
                     </div>
                   )}
                   <div>
-                    <h4 className="font-bold text-[var(--color-text-primary)]">{t.name}</h4>
+                    <h4 className="font-bold text-[var(--color-text-primary)]">{t.name || "Anonymous"}</h4>
                     <p className="text-sm text-[var(--color-primary-400)]">{t.course} {t.batch && <span className="text-[var(--color-text-tertiary)]">- Batch {t.batch}</span>}</p>
                     <div className="flex mt-1">
                       {[...Array(5)].map((_, i) => (

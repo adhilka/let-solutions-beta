@@ -146,20 +146,23 @@ export default function AboutPage() {
             <p className="text-[var(--color-text-secondary)]">Guided by experts committed to your success.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {about.leadership.map((member: any, i: number) => (
-              <div key={i} className="flex flex-col md:flex-row gap-6 items-center text-center md:text-left bg-[var(--color-surface-alt)] p-6 border border-[var(--color-border)] rounded-[var(--radius-xl)]">
-                <div className="w-32 h-32 bg-[var(--color-primary-100)] rounded-full shrink-0 overflow-hidden">
-                  {member.imageUrl ? (
-                    <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
-                  ) : null}
+            {about.leadership.map((member: any, i: number) => {
+              if (!member) return null;
+              return (
+                <div key={i} className="flex flex-col md:flex-row gap-6 items-center text-center md:text-left bg-[var(--color-surface-alt)] p-6 border border-[var(--color-border)] rounded-[var(--radius-xl)]">
+                  <div className="w-32 h-32 bg-[var(--color-primary-100)] rounded-full shrink-0 overflow-hidden">
+                    {member.imageUrl ? (
+                      <img src={member.imageUrl} alt={member.name || ""} className="w-full h-full object-cover" />
+                    ) : null}
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold">{member.name || ""}</h4>
+                    <div className="text-[var(--color-primary-600)] font-medium mb-3">{member.role || ""}</div>
+                    <p className="text-sm text-[var(--color-text-secondary)]">{member.bio || ""}</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xl font-bold">{member.name}</h4>
-                  <div className="text-[var(--color-primary-600)] font-medium mb-3">{member.role}</div>
-                  <p className="text-sm text-[var(--color-text-secondary)]">{member.bio}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
