@@ -119,7 +119,11 @@ export default function AdminCoursesPage() {
                         <span className="truncate">{course.title}</span>
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-sm"><span className="badge badge-blue">{course.category}</span></td>
+                    <td className="py-4 px-6 text-sm">
+                      <span className={`badge ${course.category === 'ethical-hacking' ? 'badge-green !text-green-500 border-green-500/20' : 'badge-blue'}`}>
+                        {course.category}
+                      </span>
+                    </td>
                     <td className="py-4 px-6 text-sm font-bold text-[var(--color-primary-400)] font-mono">₹{course.price}</td>
                     <td className="py-4 px-6">
                       <span className={`badge ${course.isActive ? 'badge-green' : 'badge-yellow'}`}>

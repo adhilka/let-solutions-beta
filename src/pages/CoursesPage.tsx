@@ -130,9 +130,14 @@ export default function CoursesPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute top-3 left-3 flex gap-2">
-                    <span className="badge badge-blue flex items-center gap-1">
+                    <span className={`badge flex items-center gap-1 ${
+                      course.category === 'ethical-hacking' 
+                        ? 'badge-green !text-green-500 border-green-500/30' 
+                        : 'badge-blue'
+                    }`}>
                       {course.category === 'software' ? <ShieldCheck size={12}/> : 
                        course.category === 'networking' ? <Server size={12}/> : 
+                       course.category === 'ethical-hacking' ? <ShieldCheck size={12} className="text-green-500"/> : 
                        <MonitorSmartphone size={12}/>} 
                       {course.category?.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                     </span>

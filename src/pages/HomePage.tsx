@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent, fetchActiveOffers } from '../lib/api';
+import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent, fetchActiveOffers, fetchGalleryImages } from '../lib/api';
 import { Testimonial } from '../types';
 import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import { dualWrite } from '../lib/firebase/dualWrite';
@@ -49,6 +49,11 @@ export default function HomePage() {
   const { data: offers } = useQuery({
     queryKey: ['active-offers-home'],
     queryFn: fetchActiveOffers
+  });
+
+  const { data: galleryImages } = useQuery({
+    queryKey: ['gallery-images-home'],
+    queryFn: fetchGalleryImages
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -126,6 +131,29 @@ export default function HomePage() {
   const heroSubtitle = homeContent?.hero?.subtitle || `Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.`;
   const heroDescription = homeContent?.hero?.description || tagline;
   const heroFeatures = homeContent?.hero?.features || ["100% Job Assistance", "Industry Experts", "Hands-on Labs"];
+
+  const fallbackImages = [
+    {
+      id: 'fallback-1',
+      imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+      title: 'Advanced Diagnostic Lab',
+      category: 'labs'
+    },
+    {
+      id: 'fallback-2',
+      imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+      title: 'Interactive Classroom',
+      category: 'classroom'
+    },
+    {
+      id: 'fallback-3',
+      imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+      title: 'Practical Placement Drive',
+      category: 'events'
+    }
+  ];
+
+  const stickyPhotos = galleryImages && galleryImages.length > 0 ? galleryImages.slice(0, 3) : fallbackImages;
 
   // Structured Data for Organization & WebSite
   const homeSchemas = [
@@ -277,9 +305,14 @@ export default function HomePage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute top-4 left-4 flex gap-2">
-                      <span className="glass-light backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-800 border border-white/40">
+                      <span className={`glass-light backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider border border-white/40 ${
+                        course.category === 'ethical-hacking' 
+                          ? 'text-green-600 bg-green-50/90 border-green-500/50 shadow-[0_0_10px_rgba(34,197,94,0.35)]' 
+                          : 'text-slate-800'
+                      }`}>
                         {course.category === 'software' ? <ShieldCheck size={12} className="text-blue-600"/> : 
                          course.category === 'networking' ? <Server size={12} className="text-blue-600"/> : 
+                         course.category === 'ethical-hacking' ? <ShieldCheck size={12} className="text-green-600"/> : 
                          <MonitorSmartphone size={12} className="text-blue-600"/>} 
                         {course.category?.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                       </span>
@@ -527,6 +560,87 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Sticky Notes Campus Highlights */}
+      <section className="py-16 md:py-24 bg-[var(--color-surface-alt)]/20 border-t border-[var(--color-border)] overflow-hidden relative">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-primary-500)]/40 to-transparent"></div>
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-primary-400) 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
+        <div className="container-wide px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <span className="badge badge-green mb-3">Snapped from our Labs</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight">Campus & Lab Highlights</h2>
+            <p className="text-[var(--color-text-secondary)] font-medium">Polaroid snapshots of students getting real hands-on experience in our micro-soldering labs, logic diagnostics seminars, and campus events.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 max-w-5xl mx-auto">
+            {stickyPhotos.map((img: any, idx: number) => {
+              const colors = [
+                'bg-amber-50 border-amber-200/60 shadow-[3px_12px_20px_rgba(217,119,6,0.15)]',
+                'bg-blue-50 border-blue-200/60 shadow-[3px_12px_20px_rgba(37,99,235,0.15)]',
+                'bg-emerald-50 border-emerald-200/60 shadow-[3px_12px_20px_rgba(16,185,129,0.15)]',
+              ];
+              const angles = [
+                'md:-rotate-3 md:translate-y-2',
+                'md:rotate-2 md:-translate-y-1',
+                'md:-rotate-1 md:translate-y-3'
+              ];
+              const chosenColor = colors[idx % colors.length];
+              const chosenAngle = angles[idx % angles.length];
+
+              return (
+                <motion.div
+                  key={img.id || idx}
+                  className={`relative p-5 pb-8 rounded-xl border ${chosenColor} ${chosenAngle} hover:rotate-0 hover:translate-y-0 hover:scale-105 active:scale-98 transition-all duration-300 group flex flex-col justify-start`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ delay: idx * 0.15 }}
+                >
+                  {/* Frosted tape at the top of the polaroid */}
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-7 bg-white/35 backdrop-blur-[2px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-white/25 -rotate-2 z-20 group-hover:bg-white/45 transition-colors"></div>
+                  
+                  {/* Push Pin effect style */}
+                  <div className="absolute top-1 left-4 w-2 h-2 rounded-full bg-red-500/80 shadow-inner z-20"></div>
+
+                  {/* Inner Polaroid Frame Image */}
+                  <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-inner overflow-hidden flex-grow group-hover:shadow-md transition-shadow">
+                    <div className="aspect-[4/3] bg-slate-100 overflow-hidden rounded relative">
+                      <img
+                        src={img.imageUrl}
+                        alt={img.title || 'Campus life snapshot'}
+                        className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-500 rounded"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute top-2 right-2 bg-black/55 backdrop-blur-sm text-[9px] text-white px-2 py-0.5 rounded uppercase tracking-wider font-extrabold z-10">
+                        {img.category || 'lab'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Polaroid caption */}
+                  <div className="mt-5 text-center px-2">
+                    <p className="text-base font-bold tracking-tight mb-1 text-slate-800 truncate">
+                      {img.title || 'Lab Practice'}
+                    </p>
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">
+                      # Let Solutions life
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link 
+              to="/gallery" 
+              className="inline-flex items-center gap-2 text-sm font-bold bg-[var(--color-primary-900)] text-[var(--color-primary-400)] px-6 py-3 rounded-xl hover:bg-[var(--color-primary-800)] hover:text-white transition-all hover:scale-102"
+            >
+              Explore Full Gallery <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* FEEDBACK MODAL */}
       {isModalOpen && (

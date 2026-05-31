@@ -177,9 +177,14 @@ export default function CourseDetailPage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="space-y-8"
             >
-              <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider rounded-full">
+              <span className={`inline-flex items-center gap-2 px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full border ${
+                course.category === 'ethical-hacking' 
+                  ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_8px_rgba(34,197,94,0.2)]' 
+                  : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+              }`}>
                 {course.category === 'software' ? <ShieldCheck size={14}/> : 
                  course.category === 'networking' ? <Server size={14}/> : 
+                 course.category === 'ethical-hacking' ? <ShieldCheck size={14} className="text-green-400"/> :
                  <MonitorSmartphone size={14}/>}
                 {course.category?.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
               </span>

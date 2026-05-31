@@ -67,6 +67,7 @@ export default function Footer() {
               <li><Link to="/courses?cat=software" className="text-blue-200 hover:text-white transition-colors text-sm">Software Training</Link></li>
               <li><Link to="/courses?cat=cctv" className="text-blue-200 hover:text-white transition-colors text-sm">CCTV Installation</Link></li>
               <li><Link to="/courses?cat=networking" className="text-blue-200 hover:text-white transition-colors text-sm">Networking</Link></li>
+              <li><Link to="/courses?cat=ethical-hacking" className="text-blue-200 hover:text-white transition-colors text-sm">Ethical Hacking</Link></li>
             </ul>
           </div>
 
@@ -104,12 +105,14 @@ export default function Footer() {
             
             {/* First one displayed singly and slightly larger */}
             <div className="w-full flex justify-center mb-8">
-              <img 
-                src="https://i.ibb.co/b5bf0s8L/1000110355-removebg-preview.png" 
-                alt="National Board Certificate" 
-                className="h-36 sm:h-48 md:h-56 lg:h-64 w-auto object-contain max-w-[98%] sm:max-w-[680px] md:max-w-[800px] brightness-0 invert" 
-                referrerPolicy="no-referrer"
-              />
+              <div className="bg-white p-5 sm:p-8 rounded-xl shadow-lg border border-white/20 max-w-[98%] sm:max-w-[720px] md:max-w-[850px] lg:max-w-[950px] flex items-center justify-center transition-all hover:shadow-xl hover:scale-[1.01]">
+                <img 
+                  src="https://i.ibb.co/b5bf0s8L/1000110355-removebg-preview.png" 
+                  alt="National Board Certificate" 
+                  className="h-36 sm:h-48 md:h-60 lg:h-72 xl:h-80 w-auto object-contain" 
+                  referrerPolicy="no-referrer"
+                />
+              </div>
             </div>
 
             {/* Other two side-by-side underneath */}

@@ -23,9 +23,9 @@ export default function InitialLoader() {
             className="absolute inset-0 flex items-center justify-center z-10"
           >
             <img 
-              src={settings?.branding?.faviconUrl || "https://i.ibb.co/DDmJMDzP/1000107715.png"} 
+              src="https://i.ibb.co/F44JTK54/1000107137.png" 
               alt="Icon" 
-              className="w-12 h-12 object-contain"
+              className="w-12 h-12 object-contain brightness-0 invert"
             />
           </motion.div>
  

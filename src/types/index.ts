@@ -38,7 +38,8 @@ export type CourseCategory =
   | 'hardware'
   | 'software'
   | 'cctv'
-  | 'networking';
+  | 'networking'
+  | 'ethical-hacking';
 
 export type BlogCategory =
   | 'hardware-tips'

@@ -178,10 +178,10 @@ export default function AdminGalleryPage() {
               </div>
               <div className="p-5">
                 <p className="font-bold text-white truncate text-sm uppercase tracking-tight">{img.title || 'Untitled Photo'}</p>
-                <p className="text-[10px] text-[var(--color-text-tertiary)] mt-2 uppercase font-extrabold tracking-widest flex items-center gap-2">
+                <div className="text-[10px] text-[var(--color-text-tertiary)] mt-2 uppercase font-extrabold tracking-widest flex items-center gap-2">
                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary-500)]" />
                    {new Date(img.createdAt).toLocaleDateString()}
-                </p>
+                </div>
               </div>
             </div>
           ))}

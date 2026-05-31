@@ -175,6 +175,7 @@ export default function AdminCourseForm() {
                   <option value="software">Software</option>
                   <option value="cctv">CCTV</option>
                   <option value="networking">Networking</option>
+                  <option value="ethical-hacking">Ethical Hacking</option>
                 </select>
               </div>
               <div>

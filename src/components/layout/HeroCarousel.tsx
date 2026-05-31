@@ -95,7 +95,7 @@ export default function HeroCarousel({ courses, admissionStatus }: HeroCarouselP
                   to="/courses" 
                   className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 text-white rounded-xl font-bold px-4 py-2.5 sm:px-6 sm:py-3 text-[10px] sm:text-xs md:text-sm transition-all hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap"
                 >
-                  View All Programs
+                  View All Courses
                 </Link>
               </div>
               
