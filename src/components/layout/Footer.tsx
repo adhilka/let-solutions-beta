@@ -61,13 +61,13 @@ export default function Footer() {
           <div>
             <h3 className="font-display font-bold text-lg mb-4 text-white">Our Courses</h3>
             <ul className="space-y-3">
-              <li><Link to="/courses?cat=laptop-chip-level" className="text-blue-200 hover:text-white transition-colors text-sm">Laptop Chip-Level</Link></li>
-              <li><Link to="/courses?cat=mobile-chip-level" className="text-blue-200 hover:text-white transition-colors text-sm">Mobile Chip-Level</Link></li>
-              <li><Link to="/courses?cat=hardware" className="text-blue-200 hover:text-white transition-colors text-sm">Hardware Setup</Link></li>
-              <li><Link to="/courses?cat=software" className="text-blue-200 hover:text-white transition-colors text-sm">Software Training</Link></li>
-              <li><Link to="/courses?cat=cctv" className="text-blue-200 hover:text-white transition-colors text-sm">CCTV Installation</Link></li>
-              <li><Link to="/courses?cat=networking" className="text-blue-200 hover:text-white transition-colors text-sm">Networking</Link></li>
+              <li><Link to="/courses?cat=laptop-chip-level" className="text-blue-200 hover:text-white transition-colors text-sm">Laptop chip Level</Link></li>
+              <li><Link to="/courses?cat=mobile-chip-level" className="text-blue-200 hover:text-white transition-colors text-sm">Mobile chip Level</Link></li>
+              <li><Link to="/courses?cat=computer-hardware" className="text-blue-200 hover:text-white transition-colors text-sm">Computer Hardware</Link></li>
+              <li><Link to="/courses?cat=electronics" className="text-blue-200 hover:text-white transition-colors text-sm">Electronics</Link></li>
               <li><Link to="/courses?cat=ethical-hacking" className="text-blue-200 hover:text-white transition-colors text-sm">Ethical Hacking</Link></li>
+              <li><Link to="/courses?cat=cctv" className="text-blue-200 hover:text-white transition-colors text-sm">Cctv</Link></li>
+              <li><Link to="/courses?cat=networking" className="text-blue-200 hover:text-white transition-colors text-sm">Networking</Link></li>
             </ul>
           </div>
 

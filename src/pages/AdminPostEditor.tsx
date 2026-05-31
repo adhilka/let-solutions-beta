@@ -120,32 +120,53 @@ export default function AdminPostEditor() {
 
     setUploadingIndex(index);
     try {
-      const { uploadToImgBB } = await import('../lib/imgbb');
-      const res = await uploadToImgBB(file);
-      handleUpdateAttachment(index, 'url', res.url);
-      if (!formData.files[index].name) {
-        handleUpdateAttachment(index, 'name', file.name.substring(0, 40));
+      const gitFormData = new FormData();
+      gitFormData.append('file', file);
+      
+      const response = await fetch('/api/github/upload', {
+        method: 'POST',
+        body: gitFormData
+      });
+      
+      const data = await response.json();
+      if (data.success && data.url) {
+        handleUpdateAttachment(index, 'url', data.url);
+        if (!formData.files[index].name) {
+          handleUpdateAttachment(index, 'name', data.name || file.name.substring(0, 40));
+        }
+      } else {
+        throw new Error(data.error || 'Server error or credentials unconfigured');
       }
-    } catch (err) {
-      console.error("Local/ImgBB upload failed, falling back to local encoding:", err);
+    } catch (githubErr) {
+      console.warn("GitHub upload failed, falling back to ImgBB upload:", githubErr);
       try {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          const base64Url = reader.result as string;
-          handleUpdateAttachment(index, 'url', base64Url);
-          // Wait, set name safely
-          setFormData(prev => {
-            const updated = [...prev.files];
-            if (!updated[index].name) {
-              updated[index].name = file.name.substring(0, 40);
-            }
-            return { ...prev, files: updated };
-          });
-        };
-      } catch (fallbackErr) {
-        console.error(fallbackErr);
-        alert("Upload failed.");
+        const { uploadToImgBB } = await import('../lib/imgbb');
+        const res = await uploadToImgBB(file);
+        handleUpdateAttachment(index, 'url', res.url);
+        if (!formData.files[index].name) {
+          handleUpdateAttachment(index, 'name', file.name.substring(0, 40));
+        }
+      } catch (err) {
+        console.error("Local/ImgBB upload failed, falling back to local encoding:", err);
+        try {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const base64Url = reader.result as string;
+            handleUpdateAttachment(index, 'url', base64Url);
+            // Wait, set name safely
+            setFormData(prev => {
+              const updated = [...prev.files];
+              if (!updated[index].name) {
+                updated[index].name = file.name.substring(0, 40);
+              }
+              return { ...prev, files: updated };
+            });
+          };
+        } catch (fallbackErr) {
+          console.error(fallbackErr);
+          alert("Upload failed.");
+        }
       }
     } finally {
       setUploadingIndex(null);
