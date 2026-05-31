@@ -11,13 +11,25 @@ import {
   FileText,
   Download,
   Github,
+  Video,
+  Play,
+  Share2,
+  Paperclip
 } from "lucide-react";
 import SEO from "../components/SEO";
+
+// Helper to parse YouTube ID safely
+function getYouTubeId(url?: string): string | null {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
 
 export default function BlogDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   
-  const isGitHubLink = (url?: string) => url?.includes('github.com');
+  const isGitHubLink = (url?: string) => url?.includes("github.com");
 
   const { data: post, isLoading } = useQuery({
     queryKey: ["post", slug],
@@ -32,8 +44,8 @@ export default function BlogDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+      <div className="min-h-[60vh] flex items-center justify-center bg-[var(--color-surface)]">
+        <Loader2 className="w-10 h-10 animate-spin text-[var(--color-primary-450)]" />
       </div>
     );
   }
@@ -42,13 +54,12 @@ export default function BlogDetailPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 bg-[var(--color-surface)]">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h1 className="text-4xl font-extrabold mb-4 text-white">Post Not Found</h1>
+          <h1 className="text-4xl font-extrabold mb-4 text-white uppercase italic">Post Not Found</h1>
           <p className="text-[var(--color-text-secondary)] mb-8 text-lg">
-            The article you are looking for does not exist or has been moved.
-            Explore our latest technical guides below.
+            The article or video guide you are looking for does not exist or has been archived. Check our other recent uploads.
           </p>
-          <Link to="/blog" className="btn-primary">
-            View All Posts
+          <Link to="/blog" className="btn-primary inline-block px-6 py-2.5 bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white font-bold uppercase text-xs tracking-widest rounded">
+            View All Guides
           </Link>
         </div>
 
@@ -57,27 +68,19 @@ export default function BlogDetailPage() {
             <Link
               key={p.id}
               to={`/blog/${p.slug}`}
-              className="group bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all"
+              className="group bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-3xl overflow-hidden hover:border-white/10 transition-all duration-300"
             >
               <div className="aspect-video relative overflow-hidden bg-black">
                 {p.coverImage && (
                   <img
                     src={p.coverImage}
                     alt={p.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
                   />
                 )}
               </div>
               <div className="p-6">
-                {p.isFile ? (
-                  <span className="flex items-center gap-1.5 text-[var(--color-primary-400)] font-bold bg-[var(--color-primary-950)] px-2 py-0.5 rounded text-[10px] uppercase mb-2 w-fit">
-                    <FileIcon size={12} /> File
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1.5 text-slate-400 font-bold bg-slate-900 px-2 py-0.5 rounded text-[10px] uppercase mb-2 w-fit">
-                    <FileText size={12} /> Post
-                  </span>
-                )}
                 <h3 className="font-bold text-lg mb-2 group-hover:text-[var(--color-primary-400)] transition-colors line-clamp-2 text-white">
                   {p.title}
                 </h3>
@@ -89,12 +92,23 @@ export default function BlogDetailPage() {
     );
   }
 
-  // Article Schema
+  // Extract files for backward-compatibility
+  const fileAttachments: { name: string; url: string }[] = [];
+  if (post.files && Array.isArray(post.files)) {
+    fileAttachments.push(...post.files);
+  } else if (post.downloadUrl) {
+    fileAttachments.push({ name: "Technical Resource", url: post.downloadUrl });
+  }
+
+  const isVideo = post.postType === "video" || !!post.videoUrl;
+  const youtubeId = isVideo ? getYouTubeId(post.videoUrl) : null;
+
+  // Article Schema for SEO
   const articleSchema = post ? {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
-    "image": post.coverImage,
+    "image": post.coverImage || (youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : ""),
     "author": {
       "@type": "Person",
       "name": post.author?.name || "Let Solutions"
@@ -107,8 +121,8 @@ export default function BlogDetailPage() {
         "url": "https://i.ibb.co/SXRGw6x8/logo.png"
       }
     },
-    "datePublished": post.publishedAt,
-    "description": post.excerpt || post.content.substring(0, 160)
+    "datePublished": post.publishedAt || post.createdAt,
+    "description": post.excerpt || post.content?.substring(0, 160).replace(/<[^>]*>/g, "")
   } : undefined;
 
   // Breadcrumb Schema
@@ -141,159 +155,229 @@ export default function BlogDetailPage() {
     <>
       <SEO
         title={post.title}
-        description={post.excerpt || post.content.substring(0, 160).replace(/<[^>]*>/g, '')}
-        keywords={`${post.title.toLowerCase()}, tech insight, let solutions blog, tirur technical institute news`}
+        description={post.excerpt || post.content?.substring(0, 160).replace(/<[^>]*>/g, "")}
+        keywords={`${post.title.toLowerCase()}, repair course malappuram, free guides let solutions, repair circuit files`}
         ogType="article"
-        ogImage={post.coverImage}
+        ogImage={post.coverImage || (youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : undefined)}
         canonical={`/blog/${post.slug}`}
         structuredData={[articleSchema, breadcrumbSchema].filter(Boolean) as object[]}
       />
 
-      <div className="bg-[var(--color-surface-alt)] border-b border-[var(--color-border)]">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
-          <Link to="/" className="hover:text-[var(--color-primary-400)]">
+      {/* Breadcrumb row */}
+      <div className="bg-[var(--color-surface-alt)] border-b border-[var(--color-border)] py-4">
+        <div className="max-w-7xl mx-auto px-4 flex items-center gap-2 text-xs text-[var(--color-text-secondary)] select-none">
+          <Link to="/" className="hover:text-[var(--color-primary-400)] transition-colors">
             Home
           </Link>
-          <ChevronRight size={14} />
-          <Link to="/blog" className="hover:text-[var(--color-primary-400)]">
+          <ChevronRight size={12} />
+          <Link to="/blog" className="hover:text-[var(--color-primary-400)] transition-colors">
             Blog
           </Link>
-          <ChevronRight size={14} />
-          <span className="text-white font-medium truncate">
+          <ChevronRight size={12} />
+          <span className="text-white font-medium truncate max-w-[200px]" title={post.title}>
             {post.title}
           </span>
         </div>
       </div>
 
-      <article className="max-w-4xl mx-auto px-4 py-12 md:py-20 bg-[var(--color-surface)]">
-        <header className="mb-12 text-center">
-          <div className="flex justify-center gap-2 mb-6">
-            {post.isFile ? (
-              <span className="flex items-center gap-2 text-[var(--color-primary-400)] font-bold bg-[var(--color-primary-950)] px-4 py-1.5 rounded-full text-xs uppercase tracking-wider border border-[var(--color-primary-900)]">
-                <FileIcon size={14} /> Resource File / Downloadable
-              </span>
-            ) : (
-              <span className="flex items-center gap-2 text-slate-400 font-bold bg-slate-900 px-4 py-1.5 rounded-full text-xs uppercase tracking-wider border border-slate-800">
-                <FileText size={14} /> Technical Article
-              </span>
+      <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
+        {/* Cinematic YouTube Player (Only for video guides) */}
+        {isVideo && youtubeId && (
+          <div className="mb-12 bg-black border border-rose-950/20 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+            <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-gradient-to-t from-rose-500 to-transparent" />
+            <div className="aspect-video w-full">
+              <iframe
+                title={`YouTube Player - ${post.title}`}
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&rel=0`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+          {/* Main Content Area */}
+          <article className="lg:col-span-8 space-y-8">
+            <header className="space-y-4 pb-6 border-b border-[var(--color-border)]">
+              <div className="flex gap-2">
+                {isVideo ? (
+                  <span className="flex items-center gap-1.5 text-rose-400 font-extrabold bg-rose-500/10 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider border border-rose-500/20">
+                    <Video size={12} /> Sourced Video Guide
+                  </span>
+                ) : fileAttachments.length > 0 ? (
+                  <span className="flex items-center gap-1.5 text-teal-400 font-extrabold bg-teal-500/10 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider border border-teal-500/20">
+                    <Paperclip size={12} /> Sourced Resources
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-blue-400 font-extrabold bg-blue-500/10 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider border border-blue-500/20">
+                    <FileText size={12} /> Tech Report
+                  </span>
+                )}
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight uppercase italic tracking-tight">
+                {post.title}
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-6 text-[var(--color-text-tertiary)] text-xs">
+                <div className="flex items-center gap-2">
+                  <Calendar size={14} />
+                  <span>
+                    {post.publishedAt
+                      ? typeof post.publishedAt === "string"
+                        ? new Date(post.publishedAt).toLocaleDateString(undefined, { dateStyle: "long" })
+                        : post.publishedAt.toDate?.()
+                          ? new Date(post.publishedAt.toDate()).toLocaleDateString(undefined, { dateStyle: "long" })
+                          : "Recently"
+                      : "Recently"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <User size={14} />
+                  <span className="font-semibold text-[var(--color-text-secondary)]">{post.author?.name || "Admin"}</span>
+                </div>
+              </div>
+            </header>
+
+            {/* Standard cover image ONLY if it is not a video post (as video features the prime player) */}
+            {!isVideo && post.coverImage && (
+              <div className="aspect-video rounded-[1.5rem] overflow-hidden shadow-2xl border border-[var(--color-border)] bg-slate-900">
+                <img
+                  src={post.coverImage}
+                  alt={post.title}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             )}
-          </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-8 leading-tight">
-            {post.title}
-          </h1>
-          <div className="flex items-center justify-center gap-6 text-[var(--color-text-tertiary)] text-sm">
-            <div className="flex items-center gap-2">
-              <Calendar size={16} />
-              <span>
-                {post.publishedAt
-                  ? typeof post.publishedAt === "string"
-                    ? new Date(post.publishedAt).toLocaleDateString(undefined, {
-                        dateStyle: "long",
-                      })
-                    : post.publishedAt.toDate?.()
-                      ? new Date(post.publishedAt.toDate()).toLocaleDateString(
-                          undefined,
-                          { dateStyle: "long" },
-                        )
-                      : "Recently"
-                  : "Recently"}
-              </span>
+
+            {/* Rich Markdown / TipTap HTML Body Container */}
+            <div className="relative">
+              <div
+                className="prose prose-invert prose-lg max-w-none tiptap select-text"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
             </div>
-            <div className="flex items-center gap-2">
-              <User size={16} />
-              <span>{post.author?.name || "Admin"}</span>
-            </div>
-          </div>
-        </header>
 
-        {post.coverImage && (
-          <div className="aspect-video rounded-[var(--radius-2xl)] overflow-hidden mb-12 shadow-2xl">
-            <img
-              src={post.coverImage}
-              alt={post.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
+            <footer className="pt-8 border-t border-[var(--color-border)] select-none">
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--color-primary-400)] hover:gap-3 transition-all"
+              >
+                <ArrowLeft size={16} />
+                Explore repair guides
+              </Link>
+            </footer>
+          </article>
 
-        <div
-          className="prose prose-invert prose-lg max-w-none tiptap"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
-
-        {post.isFile && post.downloadUrl && (
-          <div className="mt-12 p-8 bg-[var(--color-primary-950)] rounded-[var(--radius-2xl)] border border-[var(--color-primary-900)] flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[var(--color-primary-600)] text-white rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
-                {isGitHubLink(post.downloadUrl) ? <Github size={24} /> : <FileIcon size={24} />}
+          {/* Reference files and Side bar Desk */}
+          <aside className="lg:col-span-4 space-y-8">
+            {/* Download Files Widget */}
+            <div className="bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-2xl p-6 md:p-8 space-y-6">
+              <div className="pb-4 border-b border-[var(--color-border)]">
+                <span className="inline-block bg-[var(--color-primary-950)] text-[var(--color-primary-400)] px-2.5 py-1 rounded text-[8.5px] font-black uppercase tracking-widest border border-[var(--color-primary-900)] mb-3">
+                  Resource Desk
+                </span>
+                <h3 className="text-lg font-black uppercase tracking-tight text-white flex items-center gap-2">
+                  <Download size={18} className="text-[var(--color-primary-450)]" /> Included Materials
+                </h3>
               </div>
-              <div>
-                <h4 className="font-bold text-white uppercase tracking-tight">
-                  {isGitHubLink(post.downloadUrl) ? 'View Artifact on GitHub' : 'Download Resource'}
-                </h4>
-                <p className="text-sm text-[var(--color-primary-300)]">Access the full file for this technical resource.</p>
+
+              {fileAttachments.length === 0 ? (
+                <div className="py-6 text-center border border-dashed border-[var(--color-border)] rounded-xl">
+                  <Paperclip className="w-8 h-8 text-[var(--color-text-tertiary)] mx-auto mb-2 opacity-25" />
+                  <p className="text-xs text-[var(--color-text-secondary)] font-medium">No complementary files attached.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {fileAttachments.map((file, idx) => {
+                    const isGit = isGitHubLink(file.url);
+                    return (
+                      <a
+                        key={idx}
+                        href={file.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center justify-between p-3.5 bg-black/30 hover:bg-black/50 border border-[var(--color-border)] hover:border-white/20 rounded-xl transition-all"
+                        title={`Download ${file.name}`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 ${
+                            isGit ? "bg-slate-800 text-white border border-slate-700" : "bg-[var(--color-primary-950)] text-[var(--color-primary-400)] border border-[var(--color-primary-900)]"
+                          }`}>
+                            {isGit ? <Github size={18} /> : <FileIcon size={18} />}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-xs uppercase tracking-tight text-white group-hover:text-[var(--color-primary-400)] transition-colors truncate max-w-[170px]" title={file.name}>
+                              {file.name || `Technical Sheet ${idx + 1}`}
+                            </p>
+                            <p className="text-[10px] text-[var(--color-text-tertiary)] font-mono truncate max-w-[170px] mt-0.5">
+                              {isGit ? "github.com source" : "blob direct packet"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-[var(--color-text-tertiary)] group-hover:text-white transition-colors pl-2">
+                          <Download size={16} />
+                        </div>
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+              
+              <div className="pt-2">
+                <p className="text-[10px] text-[var(--color-text-tertiary)] leading-normal italic">
+                  Important: Always scan execution packages and files before running them on client terminals. Sourced by Let Solutions Tirur.
+                </p>
               </div>
             </div>
-            <a 
-              href={post.downloadUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="btn-primary flex items-center gap-2 px-8 py-3 bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] border-none shadow-md hover:shadow-lg transition-all"
-            >
-              {isGitHubLink(post.downloadUrl) ? <Github size={20} /> : <Download size={20} />}
-              {isGitHubLink(post.downloadUrl) ? 'View on GitHub' : 'Download Now'}
-            </a>
-          </div>
-        )}
 
-        <footer className="mt-16 pt-8 border-t border-[var(--color-border)]">
-          <Link
-            to="/blog"
-            className="inline-flex items-center gap-2 text-[var(--color-primary-400)] font-bold hover:gap-3 transition-all"
-          >
-            <ArrowLeft size={18} />
-            Back to Blog
-          </Link>
-        </footer>
-      </article>
-
-      {/* More Articles */}
-      {morePosts && morePosts.length > 1 && (
-        <section className="bg-[var(--color-surface-alt)] py-20 border-t border-[var(--color-border)]">
-          <div className="max-w-7xl mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-center text-white">
-              Recent Articles
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {morePosts
-                .filter((p: any) => p.slug !== post.slug)
-                .slice(0, 3)
-                .map((p: any) => (
-                  <Link
-                    key={p.id}
-                    to={`/blog/${p.slug}`}
-                    className="group bg-[var(--color-surface)] rounded-2xl overflow-hidden shadow-sm border border-[var(--color-border)] hover:shadow-md transition-all"
-                  >
-                    <div className="aspect-video bg-black">
-                      {p.coverImage && (
-                        <img
-                          src={p.coverImage}
-                          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                          alt={p.title}
-                        />
-                      )}
-                    </div>
-                    <div className="p-6">
-                      <h3 className="font-bold text-white group-hover:text-[var(--color-primary-400)] transition-colors line-clamp-2">
-                        {p.title}
-                      </h3>
-                    </div>
-                  </Link>
-                ))}
-            </div>
-          </div>
-        </section>
-      )}
+            {/* Other relevant posts/videos sidebar */}
+            {morePosts && morePosts.length > 1 && (
+              <div className="border border-[var(--color-border)] rounded-2xl p-6 space-y-6">
+                <h4 className="text-sm font-black uppercase tracking-widest text-[var(--color-text-secondary)]">Recent Guides</h4>
+                <div className="space-y-4">
+                  {morePosts
+                    .filter((p: any) => p.slug !== post.slug)
+                    .slice(0, 4)
+                    .map((p: any) => (
+                      <Link
+                        key={p.id}
+                        to={`/blog/${p.slug}`}
+                        className="group flex gap-3 items-center"
+                      >
+                        <div className="w-16 h-12 bg-black rounded-lg overflow-hidden shrink-0 border border-white/5 relative">
+                          {p.coverImage ? (
+                            <img
+                              src={p.coverImage}
+                              alt={p.title}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[var(--color-text-tertiary)]">
+                              {p.postType === "video" ? <Video size={14} /> : <FileText size={14} />}
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h5 className="font-extrabold text-xs uppercase tracking-tight text-white group-hover:text-[var(--color-primary-400)] transition-colors line-clamp-2 leading-tight">
+                            {p.title}
+                          </h5>
+                          <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase mt-1 block">
+                            {p.postType === "video" ? "Video tutorial" : "Technical article"}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                </div>
+              </div>
+            )}
+          </aside>
+        </div>
+      </div>
     </>
   );
 }

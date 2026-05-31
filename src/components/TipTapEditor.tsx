@@ -53,11 +53,21 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         // insert structured link that looks like a file badge
         editor.chain().focus().insertContent(`<a href="${data.url}" target="_blank" rel="noopener noreferrer" class="github-file-link"><span>📄</span> ${data.name}</a>&nbsp;`).run();
       } else {
-        alert(data.error || 'Upload failed');
+        throw new Error(data.error || 'Server error or credentials unconfigured');
       }
     } catch (err) {
-      console.error(err);
-      alert('Upload failed');
+      console.warn("Server-side GitHub upload failed, falling back to local Base64 URL:", err);
+      try {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const base64Url = reader.result as string;
+          editor.chain().focus().insertContent(`<a href="${base64Url}" download="${file.name}" target="_blank" rel="noopener noreferrer" class="github-file-link"><span>📄</span> ${file.name} (Local Storage)</a>&nbsp;`).run();
+        };
+      } catch (fallbackErr) {
+        console.error("Local fallback failed:", fallbackErr);
+        alert('Upload failed');
+      }
     } finally {
       setIsUploading(false);
       e.target.value = '';

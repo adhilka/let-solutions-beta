@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight } from 'lucide-react';
+import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight, X, ZoomIn } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent, fetchActiveOffers, fetchGalleryImages } from '../lib/api';
 import { Testimonial } from '../types';
@@ -20,6 +20,7 @@ export default function HomePage() {
   const { settings } = useGlobalSettings();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activePhoto, setActivePhoto] = useState<any>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -575,57 +576,100 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 max-w-5xl mx-auto">
             {stickyPhotos.map((img: any, idx: number) => {
               const colors = [
-                'bg-amber-50 border-amber-200/60 shadow-[3px_12px_20px_rgba(217,119,6,0.15)]',
-                'bg-blue-50 border-blue-200/60 shadow-[3px_12px_20px_rgba(37,99,235,0.15)]',
-                'bg-emerald-50 border-emerald-200/60 shadow-[3px_12px_20px_rgba(16,185,129,0.15)]',
+                'bg-[#faf8f5] border-[#e2ddd5]',
+                'bg-[#f5f8f5] border-[#dae3da]',
+                'bg-[#f5f7fa] border-[#dae0e8]'
               ];
               const angles = [
-                'md:-rotate-3 md:translate-y-2',
-                'md:rotate-2 md:-translate-y-1',
-                'md:-rotate-1 md:translate-y-3'
+                'md:-rotate-2 md:translate-y-1',
+                'md:rotate-3 md:-translate-y-1',
+                'md:-rotate-1 md:translate-y-2'
               ];
+              
+              const paperEffects = [
+                {
+                  clipPath: 'polygon(0% 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%)',
+                  flap: (
+                    <div 
+                      className="absolute bottom-0 right-0 w-4 h-4 bg-[#eae6dc] border-t border-l border-slate-300/40 shadow-[-1px_-1px_2px_rgba(0,0,0,0.08)] pointer-events-none z-20" 
+                      style={{ clipPath: 'polygon(100% 0%, 0% 100%, 0% 0%)' }} 
+                    />
+                  )
+                },
+                {
+                  clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 16px 100%, 0% calc(100% - 16px))',
+                  flap: (
+                    <div 
+                      className="absolute bottom-0 left-0 w-4 h-4 bg-[#e5e9e5] border-t border-r border-slate-300/40 shadow-[1px_-1px_2px_rgba(0,0,0,0.08)] pointer-events-none z-20" 
+                      style={{ clipPath: 'polygon(0% 0%, 100% 100%, 100% 0%)' }} 
+                    />
+                  )
+                },
+                {
+                  clipPath: 'polygon(1% 1%, 99% 0%, 99% 15%, 100% 35%, 99% 60%, 100% 85%, 98% 97%, 95% 96%, 91% 98%, 86% 96%, 81% 97%, 76% 95%, 72% 98%, 65% 96%, 58% 98%, 51% 95%, 45% 97%, 38% 95%, 32% 98%, 26% 96%, 19% 97%, 12% 95%, 6% 98%, 0% 96%, 1% 70%, 0% 40%, 1% 15%)',
+                  flap: null
+                }
+              ];
+
               const chosenColor = colors[idx % colors.length];
               const chosenAngle = angles[idx % angles.length];
+              const paperStyle = paperEffects[idx % paperEffects.length];
 
               return (
                 <motion.div
                   key={img.id || idx}
-                  className={`relative p-5 pb-8 rounded-xl border ${chosenColor} ${chosenAngle} hover:rotate-0 hover:translate-y-0 hover:scale-105 active:scale-98 transition-all duration-300 group flex flex-col justify-start`}
+                  className={`relative ${chosenAngle} hover:rotate-0 hover:translate-y-0 hover:scale-[1.03] active:scale-98 cursor-pointer transition-all duration-300 group flex flex-col justify-start filter drop-shadow-[0_8px_14px_rgba(0,0,0,0.06)] hover:drop-shadow-[0_15px_24px_rgba(0,0,0,0.11)]`}
+                  onClick={() => setActivePhoto(img)}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ delay: idx * 0.15 }}
                 >
-                  {/* Frosted tape at the top of the polaroid */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-7 bg-white/35 backdrop-blur-[2px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-white/25 -rotate-2 z-20 group-hover:bg-white/45 transition-colors"></div>
-                  
-                  {/* Push Pin effect style */}
-                  <div className="absolute top-1 left-4 w-2 h-2 rounded-full bg-red-500/80 shadow-inner z-20"></div>
+                  <div
+                    className={`relative p-3 pb-5 border rounded-sm ${chosenColor} flex flex-col justify-start flex-grow h-full`}
+                    style={{ clipPath: paperStyle.clipPath }}
+                  >
+                    {/* Subtle paper grain texture simulated via a soft highlight gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/[0.015] via-transparent to-white/[0.04] rounded-sm pointer-events-none" />
 
-                  {/* Inner Polaroid Frame Image */}
-                  <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-inner overflow-hidden flex-grow group-hover:shadow-md transition-shadow">
-                    <div className="aspect-[4/3] bg-slate-100 overflow-hidden rounded relative">
-                      <img
-                        src={img.imageUrl}
-                        alt={img.title || 'Campus life snapshot'}
-                        className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-500 rounded"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="absolute top-2 right-2 bg-black/55 backdrop-blur-sm text-[9px] text-white px-2 py-0.5 rounded uppercase tracking-wider font-extrabold z-10">
-                        {img.category || 'lab'}
+                    {/* Inner Polaroid Frame Image */}
+                    <div className="bg-white/90 p-1.5 rounded-sm border border-slate-200/50 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden flex-grow group-hover:shadow-sm transition-shadow">
+                      <div className="aspect-[4/3] bg-slate-100 overflow-hidden relative">
+                        <img
+                          src={img.imageUrl}
+                          alt={img.title || 'Campus life snapshot'}
+                          className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-500"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute top-1.5 right-1.5 bg-black/55 backdrop-blur-sm text-[8px] text-white px-1.5 py-0.5 rounded-sm uppercase tracking-wider font-extrabold z-10">
+                          {img.category || 'lab'}
+                        </div>
+
+                        {/* Tap to View Zoom Overlay */}
+                        <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
+                          <div className="bg-white/95 text-slate-800 px-3 py-1.5 rounded shadow-md flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                            <ZoomIn size={12} className="text-slate-800" />
+                            <span className="text-[9px] font-bold uppercase tracking-wider">Tap to view</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    {/* Polaroid caption - typewriter styled for authentic paper feel */}
+                    <div className="mt-4 text-center px-1">
+                      <p className="text-xs font-semibold tracking-tight text-slate-700 font-mono truncate">
+                        {img.title || 'Lab Practice'}
+                      </p>
+                    </div>
+
+                    {paperStyle.flap}
                   </div>
 
-                  {/* Polaroid caption */}
-                  <div className="mt-5 text-center px-2">
-                    <p className="text-base font-bold tracking-tight mb-1 text-slate-800 truncate">
-                      {img.title || 'Lab Practice'}
-                    </p>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">
-                      # Let Solutions life
-                    </span>
-                  </div>
+                  {/* Frosted tape at the top of the polaroid */}
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-white/30 backdrop-blur-[1px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] border border-white/20 -rotate-1 z-20 group-hover:bg-white/40 transition-colors pointer-events-none"></div>
+                  
+                  {/* Push Pin effect style */}
+                  <div className="absolute top-1 left-3 w-1.5 h-1.5 rounded-full bg-red-500/75 shadow-inner z-20 pointer-events-none"></div>
                 </motion.div>
               );
             })}
@@ -641,6 +685,64 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* PHOTO LIGHTBOX MODAL */}
+      <AnimatePresence>
+        {activePhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActivePhoto(null)}
+            className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 z-[110] backdrop-blur-md cursor-zoom-out animate-none"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setActivePhoto(null)}
+              className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 h-10 w-10 flex items-center justify-center rounded-full transition-all duration-200 z-[120]"
+              aria-label="Close image viewer"
+            >
+              <X size={20} />
+            </button>
+
+            {/* Photo Container */}
+            <motion.div
+              initial={{ scale: 0.9, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 10 }}
+              transition={{ type: "spring", damping: 28, stiffness: 350 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-[95%] max-h-[80vh] flex flex-col items-center justify-center"
+            >
+              <img
+                src={activePhoto.imageUrl}
+                alt={activePhoto.title || 'Campus highlight'}
+                className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10"
+                referrerPolicy="no-referrer"
+              />
+              
+              {/* Floating Caption Overlay or under-image subtitle */}
+              <div className="mt-4 text-center">
+                <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                  {activePhoto.title || 'Lab Practice Snapshot'}
+                </h3>
+                {activePhoto.category && (
+                  <span className="inline-block mt-1 text-[10px] text-white/50 bg-white/10 px-2.5 py-0.5 rounded-full uppercase tracking-widest font-extrabold">
+                    {activePhoto.category}
+                  </span>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Simple Dismiss Indicator */}
+            <div className="mt-6 text-center pointer-events-none select-none">
+              <p className="text-xs text-white/40 font-medium tracking-wide">
+                Tap anywhere to close
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* FEEDBACK MODAL */}
       {isModalOpen && (

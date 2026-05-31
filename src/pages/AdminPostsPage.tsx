@@ -1,10 +1,10 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getReadDb } from '../lib/firebase/loadBalancer';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 import { docToData } from '../lib/api';
-import { Edit2, Eye, EyeOff, Trash2, File as FileIcon, FileText, Github, Plus, Loader2 } from 'lucide-react';
+import { Edit2, Eye, EyeOff, Trash2, File as FileIcon, FileText, Github, Plus, Loader2, Video, Paperclip } from 'lucide-react';
 
 export default function AdminPostsPage() {
   const queryClient = useQueryClient();
@@ -15,12 +15,11 @@ export default function AdminPostsPage() {
     queryKey: ['admin-posts'],
     queryFn: async () => {
       const db = getReadDb();
-      // Fetch all posts without orderBy to ensure posts with missing fields show up
       const q = query(collection(db, 'artifacts/tech-institute/public/data/posts'));
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => docToData<any>(doc));
       
-      // Sort manually in memory
+      // Sort manually in memory by creation date
       return data.sort((a, b) => {
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -48,11 +47,11 @@ export default function AdminPostsPage() {
     <div className="space-y-8 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-extrabold text-white mb-2 uppercase italic tracking-tight italic">Blog Artifacts</h1>
-          <p className="text-[var(--color-text-secondary)] text-sm font-medium">Manage articles and news updates for the public cluster.</p>
+          <h1 className="text-3xl font-display font-extrabold text-white mb-2 uppercase italic tracking-tight">Blog Artifacts</h1>
+          <p className="text-[var(--color-text-secondary)] text-sm font-medium">Manage articles, design downloads, and YouTube embedded guides for the public site.</p>
         </div>
-        <Link to="/admin/posts/new" className="btn-primary flex items-center gap-2 shadow-xl shadow-blue-900/20">
-          <Plus size={18} /> New Article
+        <Link to="/admin/posts/new" className="btn-primary flex items-center gap-2 shadow-xl shadow-blue-900/20 text-xs font-bold uppercase tracking-widest px-4 py-2 bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white rounded">
+          <Plus size={18} /> New Post
         </Link>
       </div>
 
@@ -64,7 +63,7 @@ export default function AdminPostsPage() {
               <tr>
                 <th className="py-5 px-8 text-[10px] font-extrabold text-[var(--color-text-tertiary)] uppercase tracking-[0.2em]">Published</th>
                 <th className="py-5 px-8 text-[10px] font-extrabold text-[var(--color-text-tertiary)] uppercase tracking-[0.2em]">Post Title</th>
-                <th className="py-5 px-8 text-[10px] font-extrabold text-[var(--color-text-tertiary)] uppercase tracking-[0.2em]">Type Architecture</th>
+                <th className="py-5 px-8 text-[10px] font-extrabold text-[var(--color-text-tertiary)] uppercase tracking-[0.2em]">Format & Assets</th>
                 <th className="py-5 px-8 text-[10px] font-extrabold text-[var(--color-text-tertiary)] uppercase tracking-[0.2em]">Status Metric</th>
                 <th className="py-5 px-8 text-right text-[10px] font-extrabold text-[var(--color-text-tertiary)] uppercase tracking-[0.2em]">Actions</th>
               </tr>
@@ -74,15 +73,15 @@ export default function AdminPostsPage() {
                 <tr><td colSpan={5} className="py-20 text-center"><Loader2 className="animate-spin w-8 h-8 text-[var(--color-primary-400)] mx-auto" /></td></tr>
               ) : posts?.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-20 text-center text-[var(--color-text-secondary)]">
-                    <FileText className="w-12 h-12 mx-auto mb-4 opacity-10" />
-                    <p className="font-bold uppercase tracking-widest italic">No blog artifacts detected.</p>
-                  </td>
+                   <td colSpan={5} className="py-20 text-center text-[var(--color-text-secondary)]">
+                     <FileText className="w-12 h-12 mx-auto mb-4 opacity-10" />
+                     <p className="font-bold uppercase tracking-widest italic">No blog artifacts detected.</p>
+                   </td>
                 </tr>
               ) : (
                 posts?.map(post => (
                   <tr key={post.id} className="hover:bg-white/5 transition-colors group">
-                    <td className="py-6 px-8 text-xs font-mono text-white opacity-80 whitespace-nowrap uppercase tracking-tighter">
+                    <td className="py-6 px-8 text-xs font-mono text-white opacity-85 whitespace-nowrap uppercase tracking-tighter">
                       {post.publishedAt 
                         ? (typeof post.publishedAt === 'string' 
                             ? new Date(post.publishedAt).toLocaleDateString() 
@@ -99,14 +98,26 @@ export default function AdminPostsPage() {
                     </td>
                     <td className="py-6 px-8">
                       <div className="flex items-center gap-2">
-                        {post.isFile ? (
-                          <span className={`flex items-center gap-1.5 font-black px-2.5 py-1 rounded-lg text-[9px] uppercase tracking-widest ${isGitHubLink(post.downloadUrl) ? 'text-white bg-slate-800' : 'text-[var(--color-primary-400)] bg-[var(--color-primary-900)]'}`}>
-                            {isGitHubLink(post.downloadUrl) ? <Github size={12} /> : <FileIcon size={12} />}
-                            {isGitHubLink(post.downloadUrl) ? 'GitHub' : 'Binary'}
+                        {post.postType === 'video' ? (
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded bg-rose-500/10 text-rose-400 text-[9px] font-black uppercase tracking-widest border border-rose-500/20">
+                            <Video size={12} />
+                            Video guide
+                          </span>
+                        ) : post.files && post.files.length > 0 ? (
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded bg-teal-500/10 text-teal-400 text-[9px] font-black uppercase tracking-widest border border-teal-500/20">
+                            <Paperclip size={12} />
+                            Files ({post.files.length})
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1.5 text-[var(--color-text-tertiary)] font-black bg-white/5 px-2.5 py-1 rounded-lg text-[9px] uppercase tracking-widest border border-[var(--color-border)]">
-                            <FileText size={12} /> Narrative
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
+                            <FileText size={12} />
+                            Article
+                          </span>
+                        )}
+
+                        {post.postType !== 'video' && post.downloadUrl && (!post.files || post.files.length === 0) && (
+                          <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[8px] font-semibold uppercase tracking-wider">
+                            Legacy link
                           </span>
                         )}
                       </div>
@@ -151,13 +162,13 @@ export default function AdminPostsPage() {
             posts?.map(post => (
               <div key={post.id} className="p-6 space-y-4">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-grow">
                     <h3 className="font-extrabold text-white text-base leading-tight uppercase italic tracking-tight line-clamp-2">{post.title}</h3>
-                    <div className="flex items-center gap-3 mt-3">
+                    <div className="flex flex-wrap items-center gap-2.5 mt-3">
                        <span className={`px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${
-                          post.status === 'published' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-white/5 text-[var(--color-text-tertiary)]'
+                          post.status === 'published' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-white/5 text-[var(--color-text-tertiary)] border-[var(--color-border)]'
                        }`}>
-                         {post.status}
+                          {post.status}
                        </span>
                        <span className="text-[10px] text-[var(--color-text-tertiary)] font-mono font-bold uppercase tracking-tight">
                         {post.publishedAt 
@@ -170,6 +181,23 @@ export default function AdminPostsPage() {
                           : 'DRAFT'}
                        </span>
                     </div>
+                  </div>
+                  
+                  {/* File/Video badge indicators for mobile */}
+                  <div className="shrink-0 pt-1">
+                     {post.postType === 'video' ? (
+                       <span className="block p-1 bg-rose-500/10 text-rose-400 rounded-md border border-rose-500/20" title="Video Guide">
+                         <Video size={14} />
+                       </span>
+                     ) : post.files && post.files.length > 0 ? (
+                       <span className="block p-1 bg-teal-500/10 text-teal-400 rounded-md border border-teal-500/20" title="Resource Files Attached">
+                         <Paperclip size={14} />
+                       </span>
+                     ) : (
+                       <span className="block p-1 bg-blue-500/10 text-blue-400 rounded-md border border-blue-500/20" title="Technical Article">
+                         <FileText size={14} />
+                       </span>
+                     )}
                   </div>
                 </div>
                 
