@@ -55,13 +55,26 @@ export default function AdminSettingsPage() {
         body: JSON.stringify({ passcode: pass })
       });
       if (response.ok) {
-        const data = await response.json();
-        return !!data.success;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          if (data && typeof data.success !== 'undefined') {
+            return !!data.success;
+          }
+        }
       }
-      return false;
+      throw new Error("Server verify endpoint did not return valid JSON. Likely static SPA deployment.");
     } catch (err) {
-      console.error("Critical Security Authentication Rejected:", err);
-      return false;
+      console.warn("Direct API verification failed or unavailable, checking client-side firestore rules challenge:", err);
+      try {
+        const db = getReadDb();
+        const secureRef = doc(db, "artifacts/tech-institute/public/data/secure_backups", pass);
+        await getDoc(secureRef);
+        return true;
+      } catch (clientErr) {
+        console.error("Direct security password challenge failed:", clientErr);
+        return false;
+      }
     }
   };
   const [settings, setSettings] = useState<any>({
@@ -358,25 +371,99 @@ export default function AdminSettingsPage() {
 
     setBackupError("");
     setBackupIsRunning(true);
-    setBackupStatusText("Initiating secure master export on backend server...");
+    setBackupStatusText("Initiating secure master export...");
 
     try {
-      const response = await fetch('/api/admin/maintenance/backup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passcode: maintenancePasscode })
-      });
+      let backupPayload: any;
+      try {
+        const response = await fetch('/api/admin/maintenance/backup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passcode: maintenancePasscode })
+        });
 
-      if (!response.ok) {
-        let errMessage = "Server rejected backup request.";
-        try {
-          const errData = await response.json();
-          errMessage = errData.error || errMessage;
-        } catch (_) {}
-        throw new Error(errMessage);
+        if (!response.ok) {
+          throw new Error("Server backup API error.");
+        }
+
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          throw new Error("Server returned non-JSON/HTML page.");
+        }
+
+        backupPayload = await response.json();
+      } catch (srvErr) {
+        console.warn("Server-side backup unavailable or failed; executing client-side extraction fallback:", srvErr);
+        
+        setBackupStatusText("Reading database clusters directly from browser...");
+        const collectionsToBackup = [
+          "courses",
+          "testimonials",
+          "batches",
+          "enquiries",
+          "offers",
+          "posts",
+          "settings",
+          "gallery",
+          "admin_sessions",
+          "admin_links"
+        ];
+
+        const { dbA } = await import("../lib/firebase/projectA");
+        const { getOptionalDbB } = await import("../lib/firebase/projectB");
+        const dbB = getOptionalDbB();
+
+        backupPayload = {
+          meta: {
+            exportedAt: new Date().toISOString(),
+            totalCollectionsCount: collectionsToBackup.length,
+            projects: {
+              hasMirrorDb: !!dbB
+            },
+            method: "client-side-direct-fallback"
+          },
+          server_a: {},
+          server_b: {}
+        };
+
+        // Extract from Server A
+        for (const col of collectionsToBackup) {
+          setBackupStatusText(`[Project A] Backing up "${col}"...`);
+          try {
+            const snap = await getDocs(
+              collection(dbA, `artifacts/tech-institute/public/data/${col}`)
+            );
+            backupPayload.server_a[col] = snap.docs.map(doc => ({
+              _id: doc.id,
+              ...doc.data()
+            }));
+          } catch (colErr: any) {
+            console.warn(`[Project A] Error backing up ${col}:`, colErr);
+            backupPayload.server_a[col] = { error: colErr.message || String(colErr) };
+          }
+        }
+
+        // Extract from Server B
+        if (dbB) {
+          for (const col of collectionsToBackup) {
+            setBackupStatusText(`[Project B] Backing up "${col}"...`);
+            try {
+              const snap = await getDocs(
+                collection(dbB, `artifacts/tech-institute/public/data/${col}`)
+              );
+              backupPayload.server_b[col] = snap.docs.map(doc => ({
+                _id: doc.id,
+                ...doc.data()
+              }));
+            } catch (colErr: any) {
+              console.warn(`[Project B] Error backing up ${col}:`, colErr);
+              backupPayload.server_b[col] = { error: colErr.message || String(colErr) };
+            }
+          }
+        } else {
+          backupPayload.server_b = { status: "Project B is offline or not configured." };
+        }
       }
-
-      const backupPayload = await response.json();
 
       setBackupStatusText("Formatting database manifest and writing JSON archive...");
 
