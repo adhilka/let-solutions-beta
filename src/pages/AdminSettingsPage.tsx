@@ -12,9 +12,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { AlertTriangle, Trash2, Database, ShieldAlert, Image, Download, ShieldCheck, Eye, EyeOff, Lock } from "lucide-react";
 import { FAILSAFE_SETTINGS } from "../constants/failsafe";
+import { useAuth } from "../hooks/useAuth";
 
 export default function AdminSettingsPage() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("branding");
   const [isSaving, setIsSaving] = useState(false);
   const [modalConfig, setModalConfig] = useState<{
@@ -49,9 +51,21 @@ export default function AdminSettingsPage() {
   const verifySecurityPassword = async (pass: string = maintenancePasscode): Promise<boolean> => {
     if (!pass) return false;
     try {
+      let token = '';
+      if (user) {
+        try {
+          token = await user.getIdToken();
+        } catch (tokenErr) {
+          console.error("Failed to retrieve ID token for verify:", tokenErr);
+        }
+      }
+
       const response = await fetch('/api/admin/maintenance/verify', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ passcode: pass })
       });
       if (response.ok) {
@@ -383,9 +397,21 @@ export default function AdminSettingsPage() {
     try {
       let backupPayload: any;
       try {
+        let token = '';
+        if (user) {
+          try {
+            token = await user.getIdToken();
+          } catch (tokenErr) {
+            console.error("Failed to retrieve ID token for backup:", tokenErr);
+          }
+        }
+
         const response = await fetch('/api/admin/maintenance/backup', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ passcode: maintenancePasscode })
         });
 

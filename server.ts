@@ -11,10 +11,6 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 dotenv.config();
 
 // Github file upload settings
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_OWNER = process.env.GITHUB_OWNER;
-const GITHUB_REPO = process.env.GITHUB_REPO;
-
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
@@ -56,8 +52,32 @@ async function startServer() {
 
   // API route for GitHub upload
   app.post('/api/github/upload', upload.single('file'), async (req, res) => {
+    // 1. Enforce strict admin email authentication
+    const authStatus = await verifyAdminToken(req);
+    if (!authStatus.authorized) {
+      console.warn(`[GitHub Upload Rejected] Unauthorized: ${authStatus.reason}`);
+      return res.status(403).json({ error: `Unauthorized Access: ${authStatus.reason || 'Admin credentials required.'}` });
+    }
+
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    const GITHUB_OWNER = process.env.GITHUB_OWNER;
+    const GITHUB_REPO = process.env.GITHUB_REPO;
+
+    // Mask secret for secure debug/diagnostics
+    const maskedToken = GITHUB_TOKEN ? `${GITHUB_TOKEN.substring(0, 4)}...${GITHUB_TOKEN.substring(GITHUB_TOKEN.length - 4)}` : 'undefined';
+
+    console.log(`[GitHub Upload Request] received. Configured Owner: ${GITHUB_OWNER}, Repo: ${GITHUB_REPO}, Token: ${maskedToken}`);
+
     if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
-      return res.status(500).json({ error: 'GitHub credentials are not configured on the server.' });
+      const missingDetails = [];
+      if (!GITHUB_TOKEN) missingDetails.push("GITHUB_TOKEN");
+      if (!GITHUB_OWNER) missingDetails.push("GITHUB_OWNER");
+      if (!GITHUB_REPO) missingDetails.push("GITHUB_REPO");
+      
+      console.warn(`[GitHub Upload Request] Rejected: Missing environment variables: ${missingDetails.join(", ")}`);
+      return res.status(500).json({ 
+        error: `GitHub credentials are not configured on the server. Missing: ${missingDetails.join(", ")}` 
+      });
     }
 
     if (!req.file) {
@@ -66,13 +86,16 @@ async function startServer() {
 
     try {
       const { originalname, buffer } = req.file;
-      const fileExt = originalname.split('.').pop();
+      const fileExt = originalname.split('.').pop() || '';
       const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
       const filePath = `uploads/${uniqueName}`;
       
       const content = buffer.toString('base64');
+      const targetUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
       
-      const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, {
+      console.log(`[GitHub Upload Request] Sending PUT request to: ${targetUrl}`);
+      
+      const response = await fetch(targetUrl, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${GITHUB_TOKEN}`,
@@ -86,20 +109,31 @@ async function startServer() {
         }),
       });
 
+      console.log(`[GitHub Upload Response] Status: ${response.status} ${response.statusText}`);
+
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(`GitHub API Error: ${errData.message || response.statusText}`);
+        let errBody: any = {};
+        try {
+          errBody = await response.json();
+        } catch (_) {
+          errBody = { message: "Could not parse response JSON" };
+        }
+        console.error(`[GitHub Upload Error Detail] Status: ${response.status}, Reply:`, errBody);
+        throw new Error(`GitHub API Error: [Status ${response.status}] ${errBody.message || response.statusText}`);
       }
 
       const data = await response.json();
-      
-      // Get the download URL (raw GitHub user content URL or github pages URL depending on setup)
-      // Usually github responds with a download_url
-      const downloadUrl = data.content.download_url;
+      const downloadUrl = data.content?.download_url;
 
-      res.json({ success: true, url: downloadUrl, name: originalname });
+      if (!downloadUrl) {
+        console.warn(`[GitHub Upload Success] File added but no download_url in response. DataKeys:`, Object.keys(data));
+      } else {
+        console.log(`[GitHub Upload Success] File successfully uploaded to repository. URL: ${downloadUrl}`);
+      }
+
+      res.json({ success: true, url: downloadUrl || '', name: originalname });
     } catch (error: any) {
-      console.error('Upload Error:', error);
+      console.error('[GitHub Upload Handler Error]:', error);
       res.status(500).json({ error: error.message || 'Failed to upload file to GitHub' });
     }
   });
@@ -158,8 +192,111 @@ async function startServer() {
     return dbB_server;
   }
 
+  // Helper to verify Firebase Auth ID token and check if it belongs to an authorized administrator.
+  async function verifyAdminToken(req: express.Request): Promise<{ authorized: boolean; reason?: string }> {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return { authorized: false, reason: 'Missing or malformed Authorization header.' };
+    }
+
+    const idToken = authHeader.substring(7);
+    if (!idToken || idToken === 'undefined' || idToken === 'null' || idToken === '') {
+      return { authorized: false, reason: 'Empty token.' };
+    }
+
+    // Load API Key from project config
+    let apiKey = '';
+    try {
+      const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
+      if (fs.existsSync(configPath)) {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        apiKey = config.apiKey;
+      }
+    } catch (err) {
+      console.error('[Auth verification] Failed to read firebase config:', err);
+    }
+
+    if (!apiKey) {
+      return { authorized: false, reason: 'Server is missing Firebase API Key configuration.' };
+    }
+
+    try {
+      // Validate the ID token against Google Identity Toolkit API
+      const lookupUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`;
+      const verifyRes = await fetch(lookupUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken })
+      });
+
+      if (!verifyRes.ok) {
+        const errJson = await verifyRes.json().catch(() => ({}));
+        console.warn('[Auth verification] Google token verification rejected:', errJson);
+        return { authorized: false, reason: 'Token verification failed on Google servers.' };
+      }
+
+      const verifyData = await verifyRes.json();
+      const userObj = verifyData?.users?.[0];
+      if (!userObj) {
+        return { authorized: false, reason: 'No user profile found for provided token.' };
+      }
+
+      const email = userObj.email;
+      const emailVerified = userObj.emailVerified;
+      const uid = userObj.localId;
+
+      // Master admin emails
+      const ALLOWED_EMAILS = ['muhammedadhil856@gmail.com', 'sp.sanal3@gmail.com'];
+
+      if (email && ALLOWED_EMAILS.includes(email) && emailVerified) {
+        console.log(`[Auth verification] Successfully verified registered admin email: ${email}`);
+        return { authorized: true };
+      }
+
+      // Check if it's an anonymous session used in AI studio preview
+      if (uid) {
+        const db = getServerDbA();
+        if (db) {
+          const sessionSnapshotRes = await getDocs(
+            collection(db, 'artifacts/tech-institute/public/data/admin_sessions')
+          );
+          const sessionDoc = sessionSnapshotRes.docs.find(d => d.id === uid);
+          if (sessionDoc) {
+            const linkId = sessionDoc.data().linkId;
+            if (linkId) {
+              const linkDocRes = await getDocs(
+                collection(db, 'artifacts/tech-institute/public/data/admin_links')
+              );
+              const linkDoc = linkDocRes.docs.find(d => d.id === linkId);
+              if (linkDoc && linkDoc.data().expiresAt) {
+                const expiresVal = linkDoc.data().expiresAt;
+                const expiresDate = typeof expiresVal.toDate === 'function' ? expiresVal.toDate() : new Date(expiresVal);
+                if (expiresDate > new Date()) {
+                  console.log(`[Auth verification] Validating shared admin session in AI Studio environment for UID: ${uid}`);
+                  return { authorized: true };
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return { authorized: false, reason: `Email '${email || 'Anonymous'}' is not registered as an administrator.` };
+    } catch (e: any) {
+      console.error('[Auth verification] Error verifying token:', e);
+      return { authorized: false, reason: 'Internal exception during validation.' };
+    }
+  }
+
   // Verify passcode endpoint
-  app.post('/api/admin/maintenance/verify', (req, res) => {
+  app.post('/api/admin/maintenance/verify', async (req, res) => {
+    // Enforce strict admin email authentication
+    const authStatus = await verifyAdminToken(req);
+    if (!authStatus.authorized) {
+      console.warn(`[Maintenance Verify Rejected] Unauthorized: ${authStatus.reason}`);
+      return res.status(403).json({ error: `Unauthorized Access: ${authStatus.reason || 'Admin credentials required.'}` });
+    }
+
     const { passcode } = req.body;
     if (!passcode) {
       return res.status(400).json({ error: 'Passcode is required.' });
@@ -174,6 +311,13 @@ async function startServer() {
 
   // Secure backup downloader
   app.post('/api/admin/maintenance/backup', async (req, res) => {
+    // Enforce strict admin email authentication
+    const authStatus = await verifyAdminToken(req);
+    if (!authStatus.authorized) {
+      console.warn(`[Maintenance Backup Rejected] Unauthorized: ${authStatus.reason}`);
+      return res.status(403).json({ error: `Unauthorized Access: ${authStatus.reason || 'Admin credentials required.'}` });
+    }
+
     const { passcode } = req.body;
     const realPasscode = getSecurePasscode();
     if (passcode !== realPasscode) {

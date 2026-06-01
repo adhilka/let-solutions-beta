@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { useAuth } from '../hooks/useAuth';
 import { dualWrite } from '../lib/firebase/dualWrite';
 import TipTapEditor from '../components/TipTapEditor';
 import { 
@@ -31,6 +32,7 @@ interface FileAttachment {
 export default function AdminPostEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const isEdit = !!id;
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,8 +128,20 @@ export default function AdminPostEditor() {
       const gitFormData = new FormData();
       gitFormData.append('file', file);
       
+      let token = '';
+      if (user) {
+        try {
+          token = await user.getIdToken();
+        } catch (tokenErr) {
+          console.error("Failed to retrieve ID Token for GitHub upload:", tokenErr);
+        }
+      }
+      
       const response = await fetch('/api/github/upload', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: gitFormData
       });
       

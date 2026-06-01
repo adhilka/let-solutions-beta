@@ -127,7 +127,7 @@ export default function HomePage() {
     courseModules: '0'
   };
 
-  const heroImage = homeContent?.hero?.imageUrl || "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+  const heroImage = homeContent?.hero?.imageUrl || "https://i.ibb.co/YB04NqYj/1000107571.jpg";
   const heroTitle = homeContent?.hero?.title || "Master Chip-Level Engineering & Secure Your Future";
   const heroSubtitle = homeContent?.hero?.subtitle || `Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.`;
   const heroDescription = homeContent?.hero?.description || tagline;
@@ -135,22 +135,22 @@ export default function HomePage() {
 
   const fallbackImages = [
     {
-      id: 'fallback-1',
-      imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-      title: 'Advanced Diagnostic Lab',
-      category: 'labs'
+      id: "img-1780206547983",
+      imageUrl: "https://i.ibb.co/Qt6QbkH/1000110995.jpg",
+      title: "Seminars",
+      category: "events"
     },
     {
-      id: 'fallback-2',
-      imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-      title: 'Interactive Classroom',
-      category: 'classroom'
+      id: "img-1780206614339",
+      imageUrl: "https://i.ibb.co/7JpJDwzm/1000110997.jpg",
+      title: "Football Match",
+      category: "campus"
     },
     {
-      id: 'fallback-3',
-      imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-      title: 'Practical Placement Drive',
-      category: 'events'
+      id: "img-1780206885741",
+      imageUrl: "https://i.ibb.co/rKWt7ytR/1000110996.jpg",
+      title: "Football Match ",
+      category: "campus"
     }
   ];
 

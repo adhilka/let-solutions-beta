@@ -5,7 +5,7 @@ import { Image as ImageIcon, Maximize2, Loader2, Filter } from 'lucide-react';
 import SEO from '../components/SEO';
 import { motion, AnimatePresence } from 'motion/react';
 
-const CATEGORIES = ['All', 'Labs', 'Classroom', 'Events', 'Students'];
+const CATEGORIES = ['All', 'Labs', 'Classroom', 'Events', 'Campus', 'Students'];
 
 export default function GalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');

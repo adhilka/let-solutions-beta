@@ -1,105 +1,119 @@
 export const FAILSAFE_SETTINGS = {
   branding: {
-    instituteName: 'Let Solutions',
-    tagline: 'A Ray of Hope For Your Future',
-    logoUrl: 'https://i.ibb.co/SXRGw6x8/logo.png',
-    faviconUrl: 'https://i.ibb.co/DDmJMDzP/1000107715.png'
+    instituteName: "Let Solutions",
+    tagline: "A Ray of Hope For Your Future",
+    logoUrl: "https://i.ibb.co/hFMfzPgw/1000107136.png",
+    faviconUrl: "https://i.ibb.co/F44JTK54/1000107137.png"
   },
   contact: {
-    email: 'info@letsolutions.in',
-    phone: '+91 95628 54444',
-    whatsapp: '919562854444',
-    whatsappWelcomeMessage: 'Hello, I would like to know more about the courses at Let Solutions.',
-    address: '1st Floor, Bus Stand Building, Tirur, Malappuram (Dist), Kerala, India - 676101'
+    whatsappWelcomeMessage: "Hi, I'm interested in your courses. Can i get more information?",
+    email: "info@letsolutions.in",
+    address: "1st Floor, Bus Stand Building, Tirur, Malappuram (Dist), Kerala, India - 676101",
+    phone: "+91 95628 54444",
+    whatsapp: "919562854444"
   },
   stats: {
-    yearsExcellence: '10+',
-    studentsTrained: '5000+',
-    placementRate: '95%',
-    courseModules: '50+'
+    studentsTrained: "1000+",
+    yearsExcellence: "10+",
+    courseModules: "5+",
+    placementRate: "100%"
   },
   admissions: {
-    mode: 'auto',
-    manualText: 'Admission Open 2026-27'
+    mode: "auto",
+    manualText: "Admission Open 2024-25"
   },
   announcement: {
-    enabled: true,
-    text: '🎉 New Batches for Master Diploma in Chip-Level Engineering Starting Soon!'
+    text: "New batches starts soon for 2026-27 year",
+    enabled: true
   }
 };
 
 export const FAILSAFE_TESTIMONIALS = [
   {
-    id: 'failsafe-t1',
-    name: 'Muhammad Adhil',
-    course: 'Student',
-    rating: 5,
-    content: 'Good faculties',
-    imageUrl: '',
+    id: "feedback-1779120002709",
+    _id: "feedback-1779120002709",
+    name: "Muhammed Adhil K.A",
+    imageUrl: "https://i.ibb.co/zWDqpBpx/1000007756.jpg",
+    createdAt: "2026-05-18T16:00:02.709Z",
     approved: true,
+    course: "MDCE",
+    content: "The training was very practical and industry-oriented. I learned laptop chip level troubleshooting from basics to advanced in a clear and easy way. The faculty explained every section patiently with real-time board repair examples.",
+    rating: 5,
     isFeatured: true
   },
   {
-    id: 'failsafe-t2',
-    name: 'Muhammed Rishad',
-    course: 'MDCE Student',
-    rating: 5,
-    content: 'The chip-level engineering course at Let Solutions changed my career. The practical labs are excellent and the instructors are very helpful.',
-    imageUrl: '',
+    id: "feedback-1779120074401",
+    _id: "feedback-1779120074401",
+    imageUrl: "",
+    name: "Muhammed Rishad",
     approved: true,
+    course: "MDCE",
+    content: "I had a great learning experience here. The course structure is well organized and suitable even for beginners who want to become professional laptop technicians.",
+    createdAt: "2026-05-18T16:01:14.401Z",
+    rating: 5,
     isFeatured: true
   }
 ];
 
 export const FAILSAFE_OFFERS = [
   {
-    id: 'failsafe-offer-1',
-    headline: 'Early Enrollment Discount',
-    subtext: 'Get 20% off on all diploma courses if you register before the end of this month.',
-    badgeLabel: 'LIMITED',
-    ctaLabel: 'Enquire Now',
-    ctaHref: '/contact',
+    id: "offer-1779109317676",
+    _id: "offer-1779109317676",
     showOnAdmissions: true,
-    order: 1
+    headline: "10% Off on MDCE ",
+    subtext: "Grab the 20% off for Master Diploma In Chiplevel Engeneering",
+    imageUrl: "https://i.ibb.co/Q3M1vykp/1000107746.jpg",
+    order: 1,
+    ctaHref: "/courses/master-diploma-in-chiplevel-engeneering-",
+    badgeLabel: "LIMITED",
+    ctaLabel: "Claim Now",
+    discountedFee: "75500"
   }
 ];
 
 export const FAILSAFE_ABOUT = {
   hero: {
-    title: 'Empowering Future Technicians',
-    subtitle: 'At Let Solutions, we bridge the gap between ambition and career stability by offering industry-standard training.'
+    title: "Empowering Future Technicians",
+    subtitle: "At Let Solutions, we bridge the gap between ambition and career stability by offering industry-standard training."
   },
   story: {
-    title: 'Our Story',
+    title: "Our Story",
     content: [
-      'Founded with a vision to make high-end technical education accessible, Let Solutions has grown into a premier training institute in Tirur, Kerala.',
-      'We realized that many ambitious students lacked the financial resources to pursue specialized engineering degrees. Our short-term, high-impact curriculum is designed to transform these students into skilled professionals without the burden of excessive educational expenses.'
+      "LET SOLUTIONS is a professional technology training institute established in\n2012, focused on practical and career-oriented education in computer\nengineering, cybersecurity, and chip-level servicing. We specialize in providing hands-on training that helps students develop real-world technical skills required\r\nin today’s fast-growing technology industry.",
+      "Our training programs are designed for students, job seekers, and technology\nenthusiasts who want to build successful careers in areas such as ethical hacking, computer hardware, networking, laptop chip-level repair, smartphone servicing, and CCTV technology. With advanced lab facilities, experienced trainers, and practical-based learning\nmethods, LET SOLUTIONS aims to bridge the gap between theoretical education\nand industry requirements. We believe that true technical knowledge comes from\nhands-on experience, troubleshooting, and live project exposure.",
+      "One of our flagship programs is the Master Diploma in Computer Engineering\n(MDCE), which combines multiple technology domains into a single\ncomprehensive career-focused course. Since 2012, LET SOLUTIONS has been committed to building skilled, confident, and industry-ready technology professionals through quality technical education\nand practical training."
     ],
     images: [
-      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
     ]
   },
   vision: {
-    title: 'Our Vision',
-    content: 'To become the most trusted and accessible technical training institute, fostering a self-reliant generation equipped with the skills to thrive in the rapid digital transformation of the modern world.'
+    title: "Our Vision",
+    content: "To become a leading technology training institute in India by empowering\r\nstudents with practical skills in cybersecurity, computer hardware, chip-level\r\nengineering, and emerging technologies, creating industry-ready professionals\r\nfor the future"
   },
   mission: {
-    title: 'Our Mission',
-    content: 'To deliver practical, industry-aligned training bridging the gap between theoretical knowledge and real-world application, ensuring 100% employability for our graduates.'
+    title: "Our Mission",
+    content: "Our mission is to provide high-quality, practical-oriented technical education\nthrough real-time training, advanced lab facilities, and expert guidance. We aim\nto help students build successful careers in ethical hacking, laptop and mobile\nchip-level servicing, networking, and computer engineering with strong technical\nknowledge and hands-on experience."
   },
   leadership: [
     {
-      name: 'Sanal SP',
-      role: 'Academic Director',
-      bio: 'Driving academic excellence and industry-standard curriculum development.',
-      imageUrl: ''
+      name: "Sanal SP",
+      role: "Academic Director",
+      bio: "Driving academic excellence and industry-standard curriculum development.",
+      imageUrl: "https://i.ibb.co/JRY7Y43Y/1000110278.jpg"
     },
     {
-      name: 'Faisal KK',
-      role: 'Center Incharge',
-      bio: 'Ensuring state-of-the-art infrastructure and seamless student experiences.',
-      imageUrl: ''
+      name: "Faisal KK",
+      role: "Center Incharge",
+      bio: "Ensuring state-of-the-art infrastructure and seamless student experiences.",
+      imageUrl: "https://i.ibb.co/d4YPvL7F/1000110277.jpg"
+    },
+    {
+      name: "Murshida Farsana",
+      role: "Operation Executive",
+      bio: "Handles daily institute operations, coordination, administration, and smooth workflow management.",
+      imageUrl: "https://i.ibb.co/9m7nnggp/1000110279.jpg"
     }
   ]
 };

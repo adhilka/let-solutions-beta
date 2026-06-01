@@ -1,47 +1,89 @@
 export const FAILSAFE_COURSES = [
   {
-    id: 'failsafe-mdce',
-    title: 'Master Diploma In Chip-Level Engineering',
-    slug: 'mdce',
-    shortDescription: 'Comprehensive training in laptop, smartphone, tablet repair, CCTV & networking.',
-    description: 'Detailed training covering all aspects of chip-level engineering...',
-    duration: '12 Months',
-    level: 'All Levels',
-    price: 0, // Should be checked later or kept as 'Contact for details'
-    category: 'laptop-chip-level',
-    badge: 'Bestseller',
-    imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    id: "course_1778939423451",
+    _id: "course_1778939423451",
+    title: "Master Diploma In Chiplevel Engeneering ",
+    slug: "master-diploma-in-chiplevel-engeneering-",
+    shortDescription: "A ultimate course for your future. Apply now and secure your future with us.",
+    description: "Master advanced electronics repair and troubleshooting with hands-on training in SMD component identification and replacement, fault diagnosis, circuit tracing, BIOS programming, BGA rework and reballing, motherboard repair, schematic and boardview analysis, power section troubleshooting, laptop and desktop servicing, smartphone hardware repair, soldering techniques, IC testing, and advanced problem-finding methods. This industry-oriented course equips students with the practical skills required to diagnose and repair modern electronic devices at the component level.",
+    duration: "6 months or 12 months",
+    level: "All Levels",
+    price: 85000,
+    category: "chip-level",
+    badge: "",
+    imageUrl: "https://i.ibb.co/TDmbYZnm/1000110893.jpg",
     isActive: true,
-    order: 1
+    isPinned: true,
+    pinnedOfferId: "offer-1779109317676",
+    order: 1,
+    feeStructure: {
+      registrationFee: "750",
+      totalFee: "85000",
+      duration: "",
+      description: "Monthly Payment Option Available"
+    },
+    highlights: [
+      "Free Tool kit",
+      "Advanced Training ",
+      "Certificate on completion ",
+      "Well equipped lab"
+    ]
   },
   {
-    id: 'failsafe-cybersecurity',
-    title: 'Junior Penetration Tester (Cybersecurity)',
-    slug: 'cybersecurity',
-    shortDescription: 'Learn ethical hacking and security auditing using professional tools like Nmap and Metasploit.',
-    description: 'Deep dive into cybersecurity fundamentals...',
-    duration: '6 Months',
-    level: 'Intermediate',
-    price: 0,
-    category: 'ethical-hacking',
-    badge: '',
-    imageUrl: 'https://vitalskills.in/wp-content/uploads/2024/05/Ethical-Hacking.webp',
+    id: "course_1779199827272",
+    _id: "course_1779199827272",
+    title: "Junior Penetration Tester ",
+    slug: "junior-penetration-tester",
+    shortDescription: "Learn the fundamentals of ethical hacking and cybersecurity through hands-on training. ",
+    description: "Learn the fundamentals of ethical hacking and cybersecurity through hands-on training. This course covers network security, vulnerability assessment, web application testing, reconnaissance, and basic penetration testing techniques. Ideal for beginners looking to start a career in cybersecurity and understand how to identify and report security weaknesses responsibly.",
+    duration: "6 Months ",
+    level: "Intermediate",
+    price: 65000,
+    category: "ethical-hacking",
+    badge: "",
+    imageUrl: "https://i.ibb.co/WN5Svwf8/1000110894.jpg",
     isActive: true,
-    order: 2
+    isPinned: true,
+    pinnedOfferId: "",
+    order: 2,
+    feeStructure: {
+      registrationFee: "750",
+      totalFee: "65000",
+      duration: "",
+      description: "Monthly payment option available "
+    },
+    highlights: [
+      "Real world tests",
+      "Learn most of the tools",
+      "Full back support"
+    ]
   },
   {
-    id: 'failsafe-networking',
-    title: 'Hardware & Networking Pro',
-    slug: 'networking',
-    shortDescription: 'Complete guide to computer hardware, server administration, and network configuration.',
-    description: 'Master networking and hardware...',
-    duration: '4 Months',
-    level: 'Beginner',
-    price: 0,
-    category: 'networking',
-    badge: '',
-    imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    id: "course_1780214210468",
+    _id: "course_1780214210468",
+    title: "Electronics Technician",
+    slug: "electronics-technician",
+    shortDescription: "Learn about the fundamentals of electronics components and rules",
+    description: "Develop practical skills in electronic device assembly, testing, maintenance, and repair. Learn electronic components, circuit fundamentals, soldering, fault diagnosis, multimeter usage, power supply troubleshooting, PCB servicing, and preventive maintenance. This course prepares students for careers in electronics manufacturing, service centers, maintenance departments, and technical support roles.",
+    duration: "1 month",
+    level: "Advanced",
+    price: 25000,
+    category: "electronics",
+    badge: "",
+    imageUrl: "https://i.ibb.co/8LN1sq6Z/1000111030.png",
     isActive: true,
-    order: 3
+    isPinned: true,
+    pinnedOfferId: "",
+    order: 3,
+    feeStructure: {
+      registrationFee: "750",
+      totalFee: "25000",
+      duration: "",
+      description: ""
+    },
+    highlights: [
+      "Hands-on training",
+      "Updated syallabus"
+    ]
   }
 ];

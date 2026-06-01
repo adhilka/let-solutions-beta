@@ -1,14 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
+import { fetchCourseBySlug } from '../../lib/api';
+import { FAILSAFE_COURSES } from '../../constants/courses';
 
 export default function WhatsAppButton() {
   const { settings } = useGlobalSettings();
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  // Extract slug from path if the user is on a course details page
+  const courseMatch = location.pathname.match(/^\/courses\/([^/]+)$/);
+  const slug = courseMatch ? courseMatch[1] : null;
+
+  // Fetch course details if we are on a course details page
+  const { data: serverCourse } = useQuery({
+    queryKey: ['course', slug],
+    queryFn: () => fetchCourseBySlug(slug || ''),
+    enabled: !!slug
+  });
+
+  const activeCourse = serverCourse || (slug ? FAILSAFE_COURSES.find(c => c.slug === slug) : null);
+
   const whatsappNumber = settings?.contact?.whatsapp || "919562854444";
-  const welcomeMessage = settings?.contact?.whatsappWelcomeMessage || "Hello, I would like to know more about the courses at Let Solutions.";
+  let welcomeMessage = settings?.contact?.whatsappWelcomeMessage || "Hello, I would like to know more about the courses at Let Solutions.";
+
+  // If on a course page, dynamically include the course name in the message
+  if (activeCourse) {
+    welcomeMessage = `Hi, I am interested in the "${activeCourse.title}" course. Can I get more details?`;
+  } else if (slug) {
+    const readableSlug = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    welcomeMessage = `Hi, I am interested in the "${readableSlug}" course. Can I get more details?`;
+  }
+
   const encodedMessage = encodeURIComponent(welcomeMessage);
   const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodedMessage}`;
 
