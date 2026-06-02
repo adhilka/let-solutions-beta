@@ -1,0 +1,49 @@
+# Let Solutions Technical Institute
+
+Let Solutions is a premier technology training institute located in Tirur, Malappuram (Dist), Kerala, India. Established in 2012, the institute specializes in highly practical, career-oriented coaching in computer engineering, advanced chip-level hardware servicing, cybersecurity, and home/business automation systems.
+
+## Core Curricula & Training Programs
+
+* **Master Diploma In Chiplevel Engineering (MDCE)**
+  * **Short Description**: The premium flagship program covering advanced component-level servicing.
+  * **Detailed Modules**: Advanced electronics repair, SMD components, power section troubleshooting, circuit tracing, advanced fault diagnosis, BIOS programming, BGA rework & reballing, laptop/desktop motherboard diagnostics, and advanced smartphone hardware repair.
+  * **Duration**: 6 months or 12 months options.
+  * **Highlights**: Free toolkit, state-of-the-art laboratory access, 100% placement support, and structured completion certification.
+
+* **Junior Penetration Tester**
+  * **Short Description**: Fundamentals of ethical hacking and cyber defence.
+  * **Detailed Modules**: Network security, vulnerability assessment, web application testing, active and passive reconnaissance, and real-case penetration testing simulation.
+  * **Duration**: 6 months.
+
+* **Electronics Technician**
+  * **Short Description**: Practical foundational rules and board architecture of electronics components.
+  * **Detailed Modules**: Component assembly, multimeter testing, soldering/desoldering techniques, PCB fundamentals, power supply servicing, and preventive maintenance.
+  * **Duration**: 1 month.
+
+## Key Statistical Milestones
+
+* **Years of Excellence**: 10+ Years
+* **Students Trained**: 1000+ Skilled Graduates
+* **Core Course Modules**: 5+
+* **Placement Success**: 100% Practical Support
+
+## Organizational Contacts
+
+* **Website**: https://letsolutions.in/ (or https://let-solutions.in/)
+* **Email**: info@letsolutions.in
+* **Phone / WhatsApp**: +91 95628 54444 / +91 95628 54444 (919562854444)
+* **Physical Campus Address**: 1st Floor, Bus Stand Building, Tirur, Malappuram Dist, Kerala, India - 676101
+* **Active Coordinates**: Latitude: 10.9924, Longitude: 75.9248
+
+## Academic & Operation Leadership
+
+* **Sanal SP** - Academic Director
+* **Faisal KK** - Center Incharge
+* **Murshida Farsana** - Operations Executive
+
+## Secondary Navigation & Exploration Links
+
+* [Interactive Course Catalog](/courses) - View deep dives, syllabi, fee structure, and reservation portals.
+* [Student Gallery & Labs](/gallery) - Photo records of our state-of-the-art repair tools, classroom setups, and campus labs.
+* [Admissions Portal](/admissions) - Register online or request callback assistance from the counseling center.
+* [Contact Us](/contact) - Interactive location maps, contact details, and callback requests.
