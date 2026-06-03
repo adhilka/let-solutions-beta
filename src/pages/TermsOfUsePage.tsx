@@ -1,5 +1,5 @@
 import SEO from '../components/SEO';
-import { Scale, CheckCircle, AlertTriangle, HelpCircle } from 'lucide-react';
+import { Scale, CheckCircle, AlertTriangle, HelpCircle, Database } from 'lucide-react';
 
 export default function TermsOfUsePage() {
   return (
@@ -65,6 +65,18 @@ export default function TermsOfUsePage() {
             </div>
             <p className="text-[var(--color-text-secondary)]">
               The materials on Let Solutions' website are provided on an 'as is' basis. Let Solutions makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-blue-950/50 text-blue-400 rounded-lg flex items-center justify-center border border-blue-900/50">
+                <Database size={20} />
+              </div>
+              <h2 className="text-2xl font-bold text-white m-0">Data Hosting & Cloud Platforms</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)]">
+              All of-record application schemas, database entities, student contact data, registration form replies, and secure authentication structures are fully stored and backed up on secure Cloud systems managed by <strong>Google servers</strong>. This ensures high availability and enterprise-grade data security. However, please note that static media assets, user-submitted image resources, and external blogging articles/collateral may be hosted and served from third-party image hosts or CDNs. By accessing our services, you acknowledge and agree to this distribution configuration.
             </p>
           </section>
 

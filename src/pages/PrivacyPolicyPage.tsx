@@ -67,11 +67,16 @@ export default function PrivacyPolicyPage() {
               <div className="w-10 h-10 bg-green-950/50 text-green-400 rounded-lg flex items-center justify-center border border-green-900/50">
                 <Lock size={20} />
               </div>
-              <h2 className="text-2xl font-bold text-white m-0">Data Security</h2>
+              <h2 className="text-2xl font-bold text-white m-0">Data Security & Storage</h2>
             </div>
-            <p className="text-[var(--color-text-secondary)]">
-              We implement appropriate technical and organizational measures to safeguard your personal information against unauthorized access, alteration, disclosure, or destruction. We use industry-standard encryption for sensitive data handling.
-            </p>
+            <div className="text-[var(--color-text-secondary)] space-y-4">
+              <p>
+                We implement appropriate technical and organizational measures to safeguard your personal information against unauthorized access, alteration, disclosure, or destruction. We use industry-standard encryption for sensitive data handling.
+              </p>
+              <p>
+                <strong>Data Hosting Infrastructure:</strong> All core database records, student enrollment queries, contact details, of-record applications, and authentication data are securely stored and managed on cloud infrastructure hosted on <strong>Google servers</strong>. Multimedia assets, photo galleries, images, and static blog resources may be hosted and served from specific external content distribution network services for optimal performance.
+              </p>
+            </div>
           </section>
 
           <section className="mb-12">
