@@ -27,9 +27,18 @@ async function startServer() {
   // Essential for Cloud Run/Load Balancer to trust headers like X-Forwarded-For
   app.set('trust proxy', 1);
 
+  // --- Standard Middlewares ---
   app.use(compression());
   app.use(cors());
   app.use(express.json());
+
+  // Logging
+  app.use((req, res, next) => {
+    // Skip logging for health checks and pings to keep logs clean
+    if (req.url === '/api/health' || req.url === '/api/ping') return next();
+    console.log(`[Server] ${req.method} ${req.url}`);
+    next();
+  });
 
   // --- Enquiry Handler ---
   app.post('/api/enquiries', async (req, res) => {
@@ -534,6 +543,7 @@ async function startServer() {
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
+    console.log('[Server] Initializing Vite middleware (Development Mode)');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -541,11 +551,42 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath, { index: false }));
+    console.log(`[Server] Serving static files from: ${distPath} (Production Mode)`);
     
+    if (!fs.existsSync(distPath)) {
+      console.error(`[Server Error] dist directory not found at ${distPath}`);
+    } else {
+      console.log(`[Server] dist directory found with ${fs.readdirSync(distPath).length} items`);
+    }
+
+    // Serve static files from dist
+    app.use(express.static(distPath, { 
+      index: false,
+      fallthrough: true // Let it fall through to the catch-all for routes
+    }));
+    
+    // SPA Catch-all
     app.get('*', (req, res) => {
-      // For all other GET requests, serve index.html
-      res.sendFile(path.join(distPath, 'index.html'));
+      // Don't serve index.html for API requests
+      if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API route not found' });
+      }
+
+      // Don't serve index.html for asset-like requests that missed express.static
+      // This prevents the "MIME type text/html" error for missing scripts
+      const isAssetRequest = /\.(js|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|otf)$/.test(req.path);
+      if (isAssetRequest) {
+        console.warn(`[Server] Missing asset requested: ${req.path}`);
+        return res.status(404).send('Asset not found');
+      }
+
+      const indexPath = path.join(distPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        console.error(`[Server Error] index.html not found at ${indexPath}`);
+        res.status(500).send('Application build missing. Please run build.');
+      }
     });
   }
 
