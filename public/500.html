@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Server Error | Let Solutions</title>
+    <style>
+        :root {
+            --color-bg: #0b0f1a;
+            --color-error: #ef4444;
+            --color-text: #f8fafc;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container { max-width: 600px; padding: 20px; }
+        h1 { font-size: 6rem; margin: 0; color: var(--color-error); }
+        p { font-size: 1.25rem; opacity: 0.8; margin: 20px 0 40px; }
+        a {
+            background-color: #334155;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+        a:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>500</h1>
+        <h2>Internal Server Error</h2>
+        <p>Something went wrong on our end. We're working to fix it. Please try again later.</p>
+        <a href="/">Try Refreshing Home</a>
+    </div>
+</body>
+</html>

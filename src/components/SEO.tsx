@@ -37,7 +37,9 @@ export default function SEO({
   const metaKeywords = keywords ? `${keywords}, ${defaultKeywords}` : defaultKeywords;
   
   const baseUrl = 'https://letsolutions.in';
-  const fullCanonical = canonical ? (canonical.startsWith('http') ? canonical : `${baseUrl}${canonical}`) : baseUrl;
+  const fullCanonical = canonical ? (canonical.startsWith('http') ? canonical : `${baseUrl}${canonical}`) : `${baseUrl}${location.pathname}`;
+  
+  const fullOgImage = ogImage.startsWith('http') ? ogImage : `${baseUrl}${ogImage}`;
 
   const defaultStructuredData = {
     "@context": "https://schema.org",
@@ -87,7 +89,7 @@ export default function SEO({
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={metaDescription} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={fullOgImage} />
       <meta property="og:url" content={fullCanonical} />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content="en_IN" />
@@ -96,7 +98,7 @@ export default function SEO({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={fullOgImage} />
       <meta name="twitter:site" content="@letsolutions" />
 
       {/* Structured Data */}

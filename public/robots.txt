@@ -6,4 +6,4 @@ Disallow: /design-system
 Disallow: /admin-manual
 Disallow: /api/
 
-Sitemap: https://let-solutions.in/sitemap.xml
+Sitemap: https://letsolutions.in/sitemap.xml
