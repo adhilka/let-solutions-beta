@@ -311,7 +311,7 @@ async function startServer() {
       if (fs.existsSync(configPath)) {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
         const app = getApps().find(a => a.name === '[DEFAULT]') || initializeApp(config);
-        dbA_server = getFirestore(app);
+        dbA_server = getFirestore(app, config.firestoreDatabaseId);
       }
     } catch (err) {
       console.error("[Backup System] Failed to initialize Server DB A:", err);
@@ -326,7 +326,7 @@ async function startServer() {
       if (fs.existsSync(configPath)) {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
         const app = getApps().find(a => a.name === 'projectB_server') || initializeApp(config, 'projectB_server');
-        dbB_server = getFirestore(app);
+        dbB_server = getFirestore(app, config.firestoreDatabaseId);
       }
     } catch (err) {
       console.warn("[Backup System] Project B config not found or failed to initialize.");

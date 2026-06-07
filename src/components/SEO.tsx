@@ -18,7 +18,7 @@ export default function SEO({
   keywords,
   canonical, 
   ogType = 'website', 
-  ogImage = 'https://i.ibb.co/SXRGw6x8/logo.png',
+  ogImage = '/images/banner.jpg',
   structuredData,
   noindex = false
 }: SEOProps) {
@@ -44,8 +44,8 @@ export default function SEO({
     "@type": "EducationalOrganization",
     "name": "Let Solutions Technical Institute",
     "url": "https://letsolutions.in",
-    "logo": "https://i.ibb.co/SXRGw6x8/logo.png",
-    "image": "https://i.ibb.co/SXRGw6x8/logo.png",
+    "logo": "/images/banner.jpg",
+    "image": "/images/banner.jpg",
     "description": defaultDescription,
     "address": {
       "@type": "PostalAddress",
