@@ -33,6 +33,7 @@ async function startServer() {
 
   // --- Enquiry Handler ---
   app.post('/api/enquiries', async (req, res) => {
+    console.log('[Enquiry Service] Received new enquiry request');
     try {
       const enquiry = req.body;
       const newId = `enquiry-${Date.now()}`;
@@ -42,17 +43,25 @@ async function startServer() {
         submittedAt: enquiry.submittedAt || new Date().toISOString()
       };
 
-      // 1. Dual Write to Firestore
+      console.log(`[Enquiry Service] Payload prepared. ID: ${newId}`);
+
+      // 1. Write to Firestore
       const dbA = getServerDbA();
       const dbB = getServerDbB();
 
-      if (dbA) {
+      if (!dbA) {
+        console.error('[Enquiry Service] Primary database (dbA) could not be initialized');
+      } else {
+        console.log('[Enquiry Service] Writing to Primary DB...');
         await setDoc(doc(dbA, 'artifacts/tech-institute/public/data/enquiries', newId), payload);
+        console.log('[Enquiry Service] Write to Primary DB successful');
       }
 
       if (dbB) {
         try {
+          console.log('[Enquiry Service] Writing to Mirror DB...');
           await setDoc(doc(dbB, 'artifacts/tech-institute/public/data/enquiries', newId), payload);
+          console.log('[Enquiry Service] Write to Mirror DB successful');
         } catch (bErr) {
           console.warn('[Enquiry Service] Mirror DB write failed:', bErr);
         }
@@ -73,6 +82,7 @@ async function startServer() {
           if (settingsDoc.exists()) {
             const settingsData = settingsDoc.data();
             if (settingsData.email) {
+              console.log('[Enquiry Service] Using email settings from Firestore');
               emailConfig = {
                 smtpHost: settingsData.email.smtpHost || emailConfig.smtpHost,
                 smtpPort: settingsData.email.smtpPort || emailConfig.smtpPort,
@@ -80,6 +90,8 @@ async function startServer() {
                 smtpPass: settingsData.email.smtpPass || emailConfig.smtpPass,
                 notificationEmail: settingsData.email.notificationEmail || emailConfig.notificationEmail,
               };
+            } else {
+              console.log('[Enquiry Service] No email settings in Firestore, using environment variables');
             }
           }
         } catch (settingsErr) {
@@ -89,6 +101,7 @@ async function startServer() {
 
       // 3. Send Email Notification
       if (emailConfig.smtpUser && emailConfig.smtpPass) {
+        console.log('[Enquiry Service] Attempting to send email via SMTP...');
         const transporter = nodemailer.createTransport({
           host: emailConfig.smtpHost,
           port: parseInt(emailConfig.smtpPort),
@@ -144,7 +157,7 @@ async function startServer() {
       res.status(200).json({ success: true, message: 'Enquiry processed successfully' });
     } catch (error: any) {
       console.error('[Enquiry Service Error]:', error);
-      res.status(500).json({ error: 'Failed to process enquiry' });
+      res.status(500).json({ error: error.message || 'Failed to process enquiry' });
     }
   });
 

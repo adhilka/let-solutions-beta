@@ -39,14 +39,15 @@ export default function ContactPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit enquiry');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown server error' }));
+        throw new Error(errorData.error || 'Failed to submit enquiry');
       }
 
       alert('Thank you for contacting us! We will get back to you shortly.');
       setFormData({ name: '', phone: '', email: '', courseInterested: '', message: '' });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting enquiry:', error);
-      alert('Failed to submit enquiry. Please try again.');
+      alert(`Submission Failed: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
