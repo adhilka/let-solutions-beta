@@ -181,6 +181,7 @@ export default function HomePage() {
           : coursesData.slice(0, 3)
         }
         admissionStatus={admissionStatus} 
+        heroSettings={homeContent?.hero}
       />
 
 

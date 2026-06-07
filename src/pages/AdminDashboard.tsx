@@ -141,7 +141,11 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td className="py-4 px-4 text-xs text-[var(--color-text-tertiary)]">
-                      {new Date(enquiry.submittedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })}
+                      {(() => {
+                        if (!enquiry.submittedAt) return 'N/A';
+                        const date = enquiry.submittedAt?.toDate ? enquiry.submittedAt.toDate() : new Date(enquiry.submittedAt);
+                        return isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
+                      })()}
                     </td>
                   </tr>
                 ))}

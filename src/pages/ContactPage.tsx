@@ -8,6 +8,8 @@ import { FAILSAFE_COURSES } from '../constants/courses';
 
 import SEO from '../components/SEO';
 
+import { serverTimestamp } from 'firebase/firestore';
+
 export default function ContactPage() {
   const { data: coursesDataRaw, isLoading: isCoursesLoading } = useQuery({
     queryKey: ['active-courses-dropdown'],
@@ -30,30 +32,25 @@ export default function ContactPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/enquiries', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const enquiryId = `enq-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      
+      const payload = {
+        ...formData,
+        status: 'new',
+        submittedAt: serverTimestamp()
+      };
 
-      const result = await response.json().catch(() => ({ success: false, error: 'Unknown server error' }));
+      await dualWrite(
+        ['artifacts', 'tech-institute', 'public', 'data', 'enquiries', enquiryId],
+        payload
+      );
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to submit enquiry');
-      }
-
-      if (result.emailStatus && !result.emailStatus.sent) {
-        alert(`Inquiry recorded, but email notification failed: ${result.emailStatus.error}\n\nPlease check Admin -> Settings -> Email configuration.`);
-      } else {
-        alert('Thank you for contacting us! Your enquiry has been received and we will get back to you shortly.');
-      }
+      alert('Thank you for contacting us! Your enquiry has been received and we will get back to you shortly.');
       
       setFormData({ name: '', phone: '', email: '', courseInterested: '', message: '' });
     } catch (error: any) {
       console.error('Error submitting enquiry:', error);
-      alert(`Submission Failed: ${error.message}`);
+      alert(`Submission Failed: ${error.message || 'Could not connect to database'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -189,10 +186,9 @@ export default function ContactPage() {
               </form>
             </div>
             
-            {/* Map */}
             <div className="h-[400px] w-full bg-gray-200 rounded-[var(--radius-2xl)] overflow-hidden shadow-[var(--shadow-card)] border border-[var(--color-border)] flex items-center justify-center">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.63!2d75.922!3d10.990!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b16555555555%3A0xc000000000000000!2sLet%20Solutions!5e0!3m2!1sen!2sin!4v1625555555555!5m2!1sen!2sin" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.592476569651!2d75.92160917451996!3d10.990391054707647!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b194d221658b%3A0x673c683885d53959!2sLet%20Solutions!5e0!3m2!1sen!2sin!4v1714495555555!5m2!1sen!2sin" 
                 className="w-full h-full border-0"
                 allowFullScreen={true} 
                 loading="lazy"
@@ -215,7 +211,7 @@ export default function ContactPage() {
                   Kerala, India - 676101
                 </p>
                 <div className="mt-4">
-                    <a href="https://maps.app.goo.gl/ea72pp63CzXkSybo8" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--color-primary-400)] hover:underline flex items-center gap-1">
+                    <a href="https://maps.app.goo.gl/uAYNiZd6QwKG49iL9" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[var(--color-primary-400)] hover:underline flex items-center gap-1">
                         View on Google Maps
                     </a>
                 </div>

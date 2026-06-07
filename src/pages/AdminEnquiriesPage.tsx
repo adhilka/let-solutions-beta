@@ -53,7 +53,11 @@ export default function AdminEnquiriesPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-bold text-lg text-white">{enq.name}</h3>
                   <span className="text-sm text-[var(--color-text-tertiary)]">
-                    {enq.submittedAt?.toDate?.() ? new Date(enq.submittedAt.toDate()).toLocaleDateString() : 'N/A'}
+                    {(() => {
+                      if (!enq.submittedAt) return 'N/A';
+                      const date = enq.submittedAt?.toDate ? enq.submittedAt.toDate() : new Date(enq.submittedAt);
+                      return isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString();
+                    })()}
                   </span>
                   {getStatusBadge(enq.status)}
                 </div>

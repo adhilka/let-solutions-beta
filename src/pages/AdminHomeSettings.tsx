@@ -16,6 +16,7 @@ export default function AdminHomeSettings() {
       subtitle: 'Equip yourself with industry-standard training in Laptop, Smartphone, and Tablet repair alongside networking and CCTV modules.',
       description: '',
       bgType: 'photo',
+      displayMode: 'dynamic', // dynamic, static, or hybrid
       imageUrl: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       features: ['100% Job Assistance', 'Industry Experts', 'Hands-on Labs']
     }
@@ -36,6 +37,7 @@ export default function AdminHomeSettings() {
             hero: {
               ...DEFAULT_HOME_DATA.hero,
               ...(data.hero || {}),
+              displayMode: data.hero?.displayMode || DEFAULT_HOME_DATA.hero.displayMode,
               features: Array.isArray(data.hero?.features) ? data.hero.features : DEFAULT_HOME_DATA.hero.features
             }
           });
@@ -130,6 +132,38 @@ export default function AdminHomeSettings() {
           </h2>
           
           <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3 uppercase tracking-wider">Hero Display Mode</label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setHomeData({ ...homeData, hero: { ...homeData.hero, displayMode: 'dynamic' } })}
+                  className={`p-4 rounded-xl border-2 transition-all text-left ${homeData.hero.displayMode === 'dynamic' ? 'border-[var(--color-primary-600)] bg-[var(--color-primary-900)]/30 text-white' : 'border-[var(--color-border)] text-[var(--color-text-tertiary)] hover:border-[var(--color-primary-800)]'}`}
+                >
+                  <div className="font-bold mb-1">Dynamic Carousel</div>
+                  <div className="text-xs opacity-70">Cycles through your pinned courses automatically.</div>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setHomeData({ ...homeData, hero: { ...homeData.hero, displayMode: 'static' } })}
+                  className={`p-4 rounded-xl border-2 transition-all text-left ${homeData.hero.displayMode === 'static' ? 'border-[var(--color-primary-600)] bg-[var(--color-primary-900)]/30 text-white' : 'border-[var(--color-border)] text-[var(--color-text-tertiary)] hover:border-[var(--color-primary-800)]'}`}
+                >
+                  <div className="font-bold mb-1">Static Custom Hero</div>
+                  <div className="text-xs opacity-70">Shows only the one custom slide defined below.</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setHomeData({ ...homeData, hero: { ...homeData.hero, displayMode: 'hybrid' } })}
+                  className={`p-4 rounded-xl border-2 transition-all text-left ${homeData.hero.displayMode === 'hybrid' ? 'border-[var(--color-primary-600)] bg-[var(--color-primary-900)]/30 text-white' : 'border-[var(--color-border)] text-[var(--color-text-tertiary)] hover:border-[var(--color-primary-800)]'}`}
+                >
+                  <div className="font-bold mb-1">Hybrid Mode</div>
+                  <div className="text-xs opacity-70">Static custom slide first, then cycles through courses.</div>
+                </button>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Headline</label>
               <input 
