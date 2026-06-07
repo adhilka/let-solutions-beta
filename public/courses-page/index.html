@@ -8,6 +8,7 @@
     <title>Technical Training Courses | Let Solutions Engineering Institute</title>
     <meta name="description" content="Explore our technical repair and engineering courses in Tirur, Kerala. Professional training in Smartphone Repair, Laptop Chip-level Repair, CCTV, Networking, and more.">
     <link rel="canonical" href="https://letsolutions.in/courses" />
+    <link rel="shortcut icon" href="/fast-assets/favicon.ico" />
     
     <!-- Open Graph -->
     <meta property="og:title" content="Technical Training Courses | Let Solutions Engineering Institute" />
@@ -16,14 +17,19 @@
     <meta property="og:url" content="https://letsolutions.in/courses-page/" />
     <meta property="og:type" content="website" />
 
-    <!-- Redirect to React Route -->
-    <meta http-equiv="refresh" content="0; url=/courses">
+    <!-- Redirect to React Route with delay for SEO crawlers -->
+    <meta http-equiv="refresh" content="5; url=/courses">
     <script type="text/javascript">
-        window.location.href = "/courses"
+        setTimeout(function() {
+            window.location.href = "/courses";
+        }, 5000);
     </script>
 </head>
-<body>
-    <h1>Let Solutions Courses</h1>
-    <p>Redirecting to our courses page... If not redirected, <a href="/courses">click here</a>.</p>
+<body style="background: #0b0f1a; color: #f8fafc; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center;">
+    <div>
+        <h1>Let Solutions Courses</h1>
+        <p>Comprehensive training in smartphone, laptop, and electronic repair.</p>
+        <p>Redirecting to our courses page... If not redirected, <a href="/courses" style="color: #3b82f6;">click here</a>.</p>
+    </div>
 </body>
 </html>

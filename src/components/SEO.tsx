@@ -82,6 +82,7 @@ export default function SEO({
       <meta name="description" content={metaDescription} />
       <meta name="keywords" content={metaKeywords} />
       <link rel="canonical" href={fullCanonical} />
+      <link rel="shortcut icon" href="/fast-assets/favicon.ico" />
       {isForcedNoIndex && <meta name="robots" content="noindex, nofollow" />}
       {!isForcedNoIndex && <meta name="robots" content="index, follow" />}
 
