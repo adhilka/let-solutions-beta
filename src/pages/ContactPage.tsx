@@ -38,12 +38,18 @@ export default function ContactPage() {
         body: JSON.stringify(formData),
       });
 
+      const result = await response.json().catch(() => ({ success: false, error: 'Unknown server error' }));
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown server error' }));
-        throw new Error(errorData.error || 'Failed to submit enquiry');
+        throw new Error(result.error || 'Failed to submit enquiry');
       }
 
-      alert('Thank you for contacting us! We will get back to you shortly.');
+      if (result.emailStatus && !result.emailStatus.sent) {
+        alert(`Inquiry recorded, but email notification failed: ${result.emailStatus.error}\n\nPlease check Admin -> Settings -> Email configuration.`);
+      } else {
+        alert('Thank you for contacting us! Your enquiry has been received and we will get back to you shortly.');
+      }
+      
       setFormData({ name: '', phone: '', email: '', courseInterested: '', message: '' });
     } catch (error: any) {
       console.error('Error submitting enquiry:', error);

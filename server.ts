@@ -100,61 +100,77 @@ async function startServer() {
       }
 
       // 3. Send Email Notification
+      let emailResult = { sent: false, error: null as string | null };
       if (emailConfig.smtpUser && emailConfig.smtpPass) {
         console.log('[Enquiry Service] Attempting to send email via SMTP...');
-        const transporter = nodemailer.createTransport({
-          host: emailConfig.smtpHost,
-          port: parseInt(emailConfig.smtpPort),
-          secure: emailConfig.smtpPort === '465',
-          auth: {
-            user: emailConfig.smtpUser,
-            pass: emailConfig.smtpPass,
-          },
-        });
+        try {
+          const transporter = nodemailer.createTransport({
+            host: emailConfig.smtpHost,
+            port: parseInt(emailConfig.smtpPort),
+            secure: String(emailConfig.smtpPort) === '465',
+            auth: {
+              user: emailConfig.smtpUser,
+              pass: emailConfig.smtpPass,
+            },
+            // Add a timeout
+            connectionTimeout: 10000, 
+            greetingTimeout: 10000,
+          });
 
-        const mailOptions = {
-          from: `"Let Solutions Website" <${emailConfig.smtpUser}>`,
-          to: emailConfig.notificationEmail,
-          subject: `New Technical Institute Enquiry: ${payload.name}`,
-          html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-              <h2 style="color: #0f172a; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">New Website Enquiry</h2>
-              <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 10px; font-weight: bold; width: 30%; color: #64748b;">Full Name</td>
-                  <td style="padding: 10px; color: #0f172a;">${payload.name}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; font-weight: bold; color: #64748b;">Phone</td>
-                  <td style="padding: 10px; color: #0f172a;">${payload.phone}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; font-weight: bold; color: #64748b;">Email</td>
-                  <td style="padding: 10px; color: #0f172a;">${payload.email || 'Not provided'}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; font-weight: bold; color: #64748b;">Course</td>
-                  <td style="padding: 10px; color: #0f172a; font-weight: bold;">${payload.courseInterested}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; font-weight: bold; color: #64748b; vertical-align: top;">Message</td>
-                  <td style="padding: 10px; color: #0f172a;">${payload.message || 'No message provided'}</td>
-                </tr>
-              </table>
-              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
-                This enquiry was submitted on ${new Date(payload.submittedAt).toLocaleString()}
+          const mailOptions = {
+            from: `"Let Solutions Website" <${emailConfig.smtpUser}>`,
+            to: emailConfig.notificationEmail,
+            replyTo: payload.email || emailConfig.smtpUser,
+            subject: `New Technical Institute Enquiry: ${payload.name}`,
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <h2 style="color: #0f172a; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">New Website Enquiry</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 10px; font-weight: bold; width: 30%; color: #64748b;">Full Name</td>
+                    <td style="padding: 10px; color: #0f172a;">${payload.name}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px; font-weight: bold; color: #64748b;">Phone</td>
+                    <td style="padding: 10px; color: #0f172a;">${payload.phone}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px; font-weight: bold; color: #64748b;">Email</td>
+                    <td style="padding: 10px; color: #0f172a;">${payload.email || 'Not provided'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px; font-weight: bold; color: #64748b;">Course</td>
+                    <td style="padding: 10px; color: #0f172a; font-weight: bold;">${payload.courseInterested}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px; font-weight: bold; color: #64748b; vertical-align: top;">Message</td>
+                    <td style="padding: 10px; color: #0f172a;">${payload.message || 'No message provided'}</td>
+                  </tr>
+                </table>
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+                  This enquiry was submitted on ${new Date(payload.submittedAt).toLocaleString()}
+                </div>
               </div>
-            </div>
-          `,
-        };
+            `,
+          };
 
-        await transporter.sendMail(mailOptions);
-        console.log(`[Enquiry Service] Email notification sent to ${emailConfig.notificationEmail}`);
+          await transporter.sendMail(mailOptions);
+          console.log(`[Enquiry Service] Email notification sent to ${emailConfig.notificationEmail}`);
+          emailResult.sent = true;
+        } catch (mailErr: any) {
+          console.error('[Enquiry Service] SMTP send failed:', mailErr);
+          emailResult.error = mailErr.message || 'SMTP Error';
+        }
       } else {
-        console.warn('[Enquiry Service] SMTP credentials not configured (neither Firestore nor Env). Email notification skipped.');
+        console.warn('[Enquiry Service] SMTP credentials not configured. Email notification skipped.');
+        emailResult.error = 'SMTP credentials not configured in Admin panel Settings.';
       }
 
-      res.status(200).json({ success: true, message: 'Enquiry processed successfully' });
+      res.status(200).json({ 
+        success: true, 
+        message: 'Enquiry processed successfully',
+        emailStatus: emailResult
+      });
     } catch (error: any) {
       console.error('[Enquiry Service Error]:', error);
       res.status(500).json({ error: error.message || 'Failed to process enquiry' });
