@@ -393,8 +393,10 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { index: false }));
+    
     app.get('*', (req, res) => {
+      // For all other GET requests, serve index.html
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }

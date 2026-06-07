@@ -13,21 +13,13 @@ import { FAILSAFE_TESTIMONIALS } from '../constants/failsafe';
 import { motion, AnimatePresence } from 'motion/react';
 
 import SEO from '../components/SEO';
-import InitialLoader from '../components/layout/InitialLoader';
 import HeroCarousel from '../components/layout/HeroCarousel';
 
 export default function HomePage() {
   const { settings } = useGlobalSettings();
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activePhoto, setActivePhoto] = useState<any>(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsInitialLoading(false);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -175,10 +167,6 @@ export default function HomePage() {
 
   return (
     <>
-      <AnimatePresence>
-        {isInitialLoading && <InitialLoader key="loader" />}
-      </AnimatePresence>
-      
       <SEO 
         title="Let Solutions | #1 Technical Training Institute in Tirur, Kerala"
         description="Master Smartphone Repairing, Laptop Chip-Level Engineering, Networking & CCTV at Let Solutions. Tirur's leading technical institute with 100% placement assistance."

@@ -1,8 +1,11 @@
 import { HelmetProvider } from 'react-helmet-async';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { AnimatePresence } from 'motion/react';
 import { Layout } from './components/layout/Layout';
 import AdminLayout from './components/layout/AdminLayout';
+import InitialLoader from './components/layout/InitialLoader';
 
 // Import pages
 import HomePage from './pages/HomePage';
@@ -42,16 +45,30 @@ import { AuthProvider } from './hooks/useAuth';
 const queryClient = new QueryClient();
 
 export default function App() {
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  useEffect(() => {
+    // Global initial loading timer
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 2800);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <AnimatePresence>
+            {isInitialLoading && <InitialLoader key="app-loader" />}
+          </AnimatePresence>
           <BrowserRouter>
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<HomePage />} />
                 <Route path="courses" element={<CoursesPage />} />
+                <Route path="course" element={<Navigate to="/courses" replace />} />
                 <Route path="courses/:slug" element={<CourseDetailPage />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="contact" element={<ContactPage />} />
