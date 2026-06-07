@@ -32,7 +32,6 @@ export default function Navbar() {
     { label: 'Blog', href: '/blog' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
-    { label: 'Admin', href: '/admin' },
   ];
 
   const logoUrl = settings?.branding?.logoUrl || "https://i.ibb.co/DDmJMDzP/1000107715.png";

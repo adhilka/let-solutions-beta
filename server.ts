@@ -59,24 +59,18 @@ async function startServer() {
       return res.status(403).json({ error: `Unauthorized Access: ${authStatus.reason || 'Admin credentials required.'}` });
     }
 
-    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    const GITHUB_OWNER = process.env.GITHUB_OWNER;
-    const GITHUB_REPO = process.env.GITHUB_REPO;
-
-    // Mask secret for secure debug/diagnostics
-    const maskedToken = GITHUB_TOKEN ? `${GITHUB_TOKEN.substring(0, 4)}...${GITHUB_TOKEN.substring(GITHUB_TOKEN.length - 4)}` : 'undefined';
-
-    console.log(`[GitHub Upload Request] received. Configured Owner: ${GITHUB_OWNER}, Repo: ${GITHUB_REPO}, Token: ${maskedToken}`);
+    const GITHUB_TOKEN = process.env.VITE_GITHUB_TOKEN;
+    const GITHUB_OWNER = process.env.VITE_GITHUB_OWNER;
+    const GITHUB_REPO = process.env.VITE_GITHUB_REPO;
 
     if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
       const missingDetails = [];
-      if (!GITHUB_TOKEN) missingDetails.push("GITHUB_TOKEN");
-      if (!GITHUB_OWNER) missingDetails.push("GITHUB_OWNER");
-      if (!GITHUB_REPO) missingDetails.push("GITHUB_REPO");
+      if (!GITHUB_TOKEN) missingDetails.push("VITE_GITHUB_TOKEN");
+      if (!GITHUB_OWNER) missingDetails.push("VITE_GITHUB_OWNER");
+      if (!GITHUB_REPO) missingDetails.push("VITE_GITHUB_REPO");
       
-      console.warn(`[GitHub Upload Request] Rejected: Missing environment variables: ${missingDetails.join(", ")}`);
       return res.status(500).json({ 
-        error: `GitHub credentials are not configured on the server. Missing: ${missingDetails.join(", ")}` 
+        error: `GitHub registration is incomplete. Please check server environment variables.` 
       });
     }
 
@@ -92,8 +86,6 @@ async function startServer() {
       
       const content = buffer.toString('base64');
       const targetUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
-      
-      console.log(`[GitHub Upload Request] Sending PUT request to: ${targetUrl}`);
       
       const response = await fetch(targetUrl, {
         method: 'PUT',
@@ -112,14 +104,8 @@ async function startServer() {
       console.log(`[GitHub Upload Response] Status: ${response.status} ${response.statusText}`);
 
       if (!response.ok) {
-        let errBody: any = {};
-        try {
-          errBody = await response.json();
-        } catch (_) {
-          errBody = { message: "Could not parse response JSON" };
-        }
-        console.error(`[GitHub Upload Error Detail] Status: ${response.status}, Reply:`, errBody);
-        throw new Error(`GitHub API Error: [Status ${response.status}] ${errBody.message || response.statusText}`);
+        console.error(`[GitHub Upload Error] Status: ${response.status}`);
+        throw new Error(`GitHub Service Error: Could not complete upload.`);
       }
 
       const data = await response.json();
@@ -149,7 +135,6 @@ async function startServer() {
         // Looks for rules matching password == '#09'
         const match = content.match(/password\s*==\s*['"]([^'"]+)['"]/);
         if (match && match[1]) {
-          console.log(`[Backup System] Dynamically parsed rules passcode: "${match[1]}"`);
           return match[1];
         }
       }
@@ -249,7 +234,6 @@ async function startServer() {
       const ALLOWED_EMAILS = ['muhammedadhil856@gmail.com', 'sp.sanal3@gmail.com'];
 
       if (email && ALLOWED_EMAILS.includes(email) && emailVerified) {
-        console.log(`[Auth verification] Successfully verified registered admin email: ${email}`);
         return { authorized: true };
       }
 
