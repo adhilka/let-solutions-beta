@@ -127,6 +127,13 @@ export default function AdminSettingsPage() {
       enabled: true,
       text: "🎉 New Batches for Master Diploma in Chip-Level Engineering Starting Soon!",
     },
+    email: {
+      smtpHost: "smtp.gmail.com",
+      smtpPort: "587",
+      smtpUser: "",
+      smtpPass: "",
+      notificationEmail: "enquiries@letsolutions.in",
+    },
   });
 
   useEffect(() => {
@@ -214,11 +221,12 @@ export default function AdminSettingsPage() {
   const tabs = [
     { id: "branding", label: "1. Branding" },
     { id: "contact", label: "2. Contact" },
-    { id: "stats", label: "3. Stats" },
-    { id: "admissions", label: "4. Admissions" },
-    { id: "announcement", label: "5. Announcement" },
-    { id: "access", label: "6. Access Control" },
-    { id: "maintenance", label: "7. Maintenance" },
+    { id: "email_service", label: "3. Email Service" },
+    { id: "stats", label: "4. Stats" },
+    { id: "admissions", label: "5. Admissions" },
+    { id: "announcement", label: "6. Announcement" },
+    { id: "access", label: "7. Access Control" },
+    { id: "maintenance", label: "8. Maintenance" },
   ];
 
   const clearCollection = async (collectionPath: string) => {
@@ -724,6 +732,99 @@ export default function AdminSettingsPage() {
                       updateSetting("contact", "address", e.target.value)
                     }
                   ></textarea>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "email_service" && (
+              <div className="space-y-6">
+                <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl mb-6">
+                  <p className="text-blue-400 text-xs font-medium">
+                    <ShieldCheck className="inline-block mr-2" size={14} />
+                    These credentials are saved securely in your private database and are only accessed by the server. They are never exposed to the public.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    SMTP Host
+                  </label>
+                  <input
+                    type="text"
+                    className="input font-mono"
+                    placeholder="e.g. smtp.gmail.com"
+                    value={settings.email?.smtpHost || ""}
+                    onChange={(e) =>
+                      updateSetting("email", "smtpHost", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    SMTP Port
+                  </label>
+                  <input
+                    type="text"
+                    className="input font-mono"
+                    placeholder="587 or 465"
+                    value={settings.email?.smtpPort || ""}
+                    onChange={(e) =>
+                      updateSetting("email", "smtpPort", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    SMTP Username / Email
+                  </label>
+                  <input
+                    type="email"
+                    className="input font-mono"
+                    placeholder="your-email@gmail.com"
+                    value={settings.email?.smtpUser || ""}
+                    onChange={(e) =>
+                      updateSetting("email", "smtpUser", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    SMTP Password / App Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showBackupPassword ? "text" : "password"}
+                      className="input font-mono"
+                      placeholder="Your SMTP password"
+                      value={settings.email?.smtpPass || ""}
+                      onChange={(e) =>
+                        updateSetting("email", "smtpPass", e.target.value)
+                      }
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowBackupPassword(!showBackupPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    >
+                      {showBackupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                  <p className="mt-2 text-[10px] text-[var(--color-text-tertiary)] font-bold uppercase tracking-widest">
+                    For Gmail, use an "App Password" generated from your Google Account settings.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-widest">
+                    Notification Target Email
+                  </label>
+                  <input
+                    type="email"
+                    className="input font-mono"
+                    placeholder="enquiries@letsolutions.in"
+                    value={settings.email?.notificationEmail || ""}
+                    onChange={(e) =>
+                      updateSetting("email", "notificationEmail", e.target.value)
+                    }
+                  />
                 </div>
               </div>
             )}

@@ -30,12 +30,18 @@ export default function ContactPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const newId = `enquiry-${Date.now()}`;
-      await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'enquiries', newId], {
-        ...formData,
-        status: 'new',
-        submittedAt: new Date().toISOString()
+      const response = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit enquiry');
+      }
+
       alert('Thank you for contacting us! We will get back to you shortly.');
       setFormData({ name: '', phone: '', email: '', courseInterested: '', message: '' });
     } catch (error) {

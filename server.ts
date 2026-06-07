@@ -7,7 +7,7 @@ import multer from 'multer';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
 dotenv.config();
 
 // Github file upload settings
@@ -17,6 +17,8 @@ const upload = multer({
     fileSize: 20 * 1024 * 1024, // 20 MB limit
   },
 });
+
+import nodemailer from 'nodemailer';
 
 async function startServer() {
   const app = express();
@@ -28,6 +30,123 @@ async function startServer() {
   app.use(compression());
   app.use(cors());
   app.use(express.json());
+
+  // --- Enquiry Handler ---
+  app.post('/api/enquiries', async (req, res) => {
+    try {
+      const enquiry = req.body;
+      const newId = `enquiry-${Date.now()}`;
+      const payload = {
+        ...enquiry,
+        status: enquiry.status || 'new',
+        submittedAt: enquiry.submittedAt || new Date().toISOString()
+      };
+
+      // 1. Dual Write to Firestore
+      const dbA = getServerDbA();
+      const dbB = getServerDbB();
+
+      if (dbA) {
+        await setDoc(doc(dbA, 'artifacts/tech-institute/public/data/enquiries', newId), payload);
+      }
+
+      if (dbB) {
+        try {
+          await setDoc(doc(dbB, 'artifacts/tech-institute/public/data/enquiries', newId), payload);
+        } catch (bErr) {
+          console.warn('[Enquiry Service] Mirror DB write failed:', bErr);
+        }
+      }
+
+      // 2. Fetch Email Settings from Firestore (A is primary)
+      let emailConfig: any = {
+        smtpHost: process.env.SMTP_HOST || 'smtp.gmail.com',
+        smtpPort: process.env.SMTP_PORT || '587',
+        smtpUser: process.env.SMTP_USER,
+        smtpPass: process.env.SMTP_PASS,
+        notificationEmail: process.env.NOTIFICATION_EMAIL || 'enquiries@letsolutions.in'
+      };
+
+      if (dbA) {
+        try {
+          const settingsDoc = await getDoc(doc(dbA, "artifacts/tech-institute/public/data/settings", "global"));
+          if (settingsDoc.exists()) {
+            const settingsData = settingsDoc.data();
+            if (settingsData.email) {
+              emailConfig = {
+                smtpHost: settingsData.email.smtpHost || emailConfig.smtpHost,
+                smtpPort: settingsData.email.smtpPort || emailConfig.smtpPort,
+                smtpUser: settingsData.email.smtpUser || emailConfig.smtpUser,
+                smtpPass: settingsData.email.smtpPass || emailConfig.smtpPass,
+                notificationEmail: settingsData.email.notificationEmail || emailConfig.notificationEmail,
+              };
+            }
+          }
+        } catch (settingsErr) {
+          console.warn('[Enquiry Service] Could not fetch settings from Firestore, using env fallback:', settingsErr);
+        }
+      }
+
+      // 3. Send Email Notification
+      if (emailConfig.smtpUser && emailConfig.smtpPass) {
+        const transporter = nodemailer.createTransport({
+          host: emailConfig.smtpHost,
+          port: parseInt(emailConfig.smtpPort),
+          secure: emailConfig.smtpPort === '465',
+          auth: {
+            user: emailConfig.smtpUser,
+            pass: emailConfig.smtpPass,
+          },
+        });
+
+        const mailOptions = {
+          from: `"Let Solutions Website" <${emailConfig.smtpUser}>`,
+          to: emailConfig.notificationEmail,
+          subject: `New Technical Institute Enquiry: ${payload.name}`,
+          html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+              <h2 style="color: #0f172a; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">New Website Enquiry</h2>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; width: 30%; color: #64748b;">Full Name</td>
+                  <td style="padding: 10px; color: #0f172a;">${payload.name}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; color: #64748b;">Phone</td>
+                  <td style="padding: 10px; color: #0f172a;">${payload.phone}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; color: #64748b;">Email</td>
+                  <td style="padding: 10px; color: #0f172a;">${payload.email || 'Not provided'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; color: #64748b;">Course</td>
+                  <td style="padding: 10px; color: #0f172a; font-weight: bold;">${payload.courseInterested}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; color: #64748b; vertical-align: top;">Message</td>
+                  <td style="padding: 10px; color: #0f172a;">${payload.message || 'No message provided'}</td>
+                </tr>
+              </table>
+              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+                This enquiry was submitted on ${new Date(payload.submittedAt).toLocaleString()}
+              </div>
+            </div>
+          `,
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log(`[Enquiry Service] Email notification sent to ${emailConfig.notificationEmail}`);
+      } else {
+        console.warn('[Enquiry Service] SMTP credentials not configured (neither Firestore nor Env). Email notification skipped.');
+      }
+
+      res.status(200).json({ success: true, message: 'Enquiry processed successfully' });
+    } catch (error: any) {
+      console.error('[Enquiry Service Error]:', error);
+      res.status(500).json({ error: 'Failed to process enquiry' });
+    }
+  });
 
   // Health check endpoint for Load Balancer
   app.get('/api/health', (req, res) => {
