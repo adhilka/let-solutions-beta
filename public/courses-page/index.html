@@ -6,18 +6,77 @@
     
     <!-- SEO Meta Tags -->
     <title>Technical Training Courses | Let Solutions Engineering Institute</title>
-    <meta name="description" content="Explore our technical repair and engineering courses in Tirur, Kerala. Professional training in Smartphone Repair, Laptop Chip-level Repair, CCTV, Networking, and more.">
+    <meta name="description" content="Explore our technical repair and engineering courses in Tirur. Master Diploma in Computer Engineering, Ethical Hacking, and electronics repair.">
     <link rel="canonical" href="https://letsolutions.in/courses" />
     <link rel="shortcut icon" href="/fast-assets/favicon.ico" />
     
     <!-- Open Graph -->
     <meta property="og:title" content="Technical Training Courses | Let Solutions Engineering Institute" />
-    <meta property="og:description" content="Master high-demand technical skills with 100% practical training. Join our expert-led batches today." />
+    <meta property="og:description" content="Master high-demand technical skills with 100% practical training. Enroll in our industry-standard courses." />
     <meta property="og:image" content="https://letsolutions.in/images/banner.jpg" />
     <meta property="og:url" content="https://letsolutions.in/courses-page/" />
     <meta property="og:type" content="website" />
 
-    <!-- Redirect to React Route with delay for SEO crawlers -->
+    <style>
+        :root {
+            --color-bg: #0b0f1a;
+            --color-card: #161c2d;
+            --color-primary: #3b82f6;
+            --color-text: #f8fafc;
+            --color-text-dim: #94a3b8;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header { margin-bottom: 40px; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #fff; }
+        .subtitle { font-size: 1.2rem; color: var(--color-primary); font-weight: 500; }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .course-card {
+            background: var(--color-card);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .course-card h2 { margin-top: 0; color: #fff; font-size: 1.25rem; }
+        .course-card p { color: var(--color-text-dim); font-size: 0.95rem; }
+        .course-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        .redirect-notice {
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        a { color: var(--color-primary); text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+
+    <!-- Redirect logic -->
     <meta http-equiv="refresh" content="5; url=/courses">
     <script type="text/javascript">
         setTimeout(function() {
@@ -25,11 +84,46 @@
         }, 5000);
     </script>
 </head>
-<body style="background: #0b0f1a; color: #f8fafc; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center;">
-    <div>
-        <h1>Let Solutions Courses</h1>
-        <p>Comprehensive training in smartphone, laptop, and electronic repair.</p>
-        <p>Redirecting to our courses page... If not redirected, <a href="/courses" style="color: #3b82f6;">click here</a>.</p>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Our Courses</h1>
+            <p class="subtitle">Future-Proof Your Technical Career</p>
+        </header>
+
+        <div class="grid">
+            <div class="course-card">
+                <h2>Master Diploma In Chiplevel Engeneering</h2>
+                <p>Advanced electronics repair and troubleshooting with hands-on training in SMD component identification, BGA rework, and schematic analysis.</p>
+                <div class="course-meta">
+                    <span>6-12 Months</span>
+                    <span>All Levels</span>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <h2>Junior Penetration Tester</h2>
+                <p>Learn the fundamentals of ethical hacking and cybersecurity through network security, vulnerability assessment, and web application testing.</p>
+                <div class="course-meta">
+                    <span>6 Months</span>
+                    <span>Intermediate</span>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <h2>Electronics Technician</h2>
+                <p>Develop practical skills in electronic device assembly, testing, maintenance, and repair with multimeter and PCB servicing.</p>
+                <div class="course-meta">
+                    <span>1 Month</span>
+                    <span>Advanced</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="redirect-notice">
+            <p>You are being redirected to our dynamic course catalog in 5 seconds...</p>
+            <p>If not redirected, <a href="/courses">click here to view all courses</a>.</p>
+        </div>
     </div>
 </body>
 </html>

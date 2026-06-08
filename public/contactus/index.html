@@ -6,18 +6,71 @@
     
     <!-- SEO Meta Tags -->
     <title>Contact Us | Let Solutions Technical Training Institute</title>
-    <meta name="description" content="Contact Let Solutions in Tirur, Kerala for chip-level engineering, smartphone repair courses, and technical training. Reach us via phone, email, or visit our lab.">
+    <meta name="description" content="Get in touch with Let Solutions in Tirur, Kerala. Professional training in Laptop, Smartphone, and Tablet repair with networking and CCTV modules.">
     <link rel="canonical" href="https://letsolutions.in/contact" />
     <link rel="shortcut icon" href="/fast-assets/favicon.ico" />
     
     <!-- Open Graph -->
     <meta property="og:title" content="Contact Us | Let Solutions Technical Training Institute" />
-    <meta property="og:description" content="Get in touch with Kerala's leading technical institute. Expert training in electronics repair and networking." />
+    <meta property="og:description" content="Reach the experts in technical repair training. Visit our labs in Tirur or contact us via phone or WhatsApp." />
     <meta property="og:image" content="https://letsolutions.in/images/banner.jpg" />
     <meta property="og:url" content="https://letsolutions.in/contactus/" />
     <meta property="og:type" content="website" />
 
-    <!-- Redirect to React Route with delay for SEO crawlers -->
+    <style>
+        :root {
+            --color-bg: #0b0f1a;
+            --color-card: #161c2d;
+            --color-primary: #3b82f6;
+            --color-text: #f8fafc;
+            --color-text-dim: #94a3b8;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header { margin-bottom: 40px; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #fff; }
+        .subtitle { font-size: 1.2rem; color: var(--color-primary); font-weight: 500; }
+        .section {
+            background: var(--color-card);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .section h2 { margin-top: 0; color: var(--color-primary); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .contact-item { margin-bottom: 15px; }
+        .contact-label { font-weight: bold; color: var(--color-text-dim); display: block; font-size: 0.8rem; margin-bottom: 4px; }
+        .contact-value { font-size: 1.1rem; color: #fff; }
+        .redirect-notice {
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        a { color: var(--color-primary); text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+
+    <!-- Redirect logic -->
     <meta http-equiv="refresh" content="5; url=/contact">
     <script type="text/javascript">
         setTimeout(function() {
@@ -25,11 +78,36 @@
         }, 5000);
     </script>
 </head>
-<body style="background: #0b0f1a; color: #f8fafc; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center;">
-    <div>
-        <h1>Contact Let Solutions</h1>
-        <p>Visit our technical repair and engineering labs in Tirur.</p>
-        <p>Redirecting to our contact page... If not redirected, <a href="/contact" style="color: #3b82f6;">click here</a>.</p>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Contact Us</h1>
+            <p class="subtitle">Get in Touch with Let Solutions</p>
+        </header>
+
+        <div class="section">
+            <h2>Location</h2>
+            <p class="contact-value">1st Floor, Bus Stand Building, Tirur, Malappuram (Dist), Kerala, India - 676101</p>
+        </div>
+
+        <div class="section">
+            <h2>Direct Contact</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <span class="contact-label">Phone & WhatsApp</span>
+                    <span class="contact-value">+91 95628 54444</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Email Address</span>
+                    <span class="contact-value">info@letsolutions.in</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="redirect-notice">
+            <p>You are being redirected to our interactive contact page in 5 seconds...</p>
+            <p>If not redirected, <a href="/contact">click here to contact us</a>.</p>
+        </div>
     </div>
 </body>
 </html>
