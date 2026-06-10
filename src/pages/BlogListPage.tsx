@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchLatestPosts } from "../lib/api";
-import { FileText, Github, Video, Paperclip, Play } from "lucide-react";
+import { FileText, Github, Video, Paperclip, Play, Tag, Search, X } from "lucide-react";
 import SEO from "../components/SEO";
+import { motion, AnimatePresence } from "motion/react";
 
 // Helper to parse YouTube ID safely
 function getYouTubeId(url?: string): string | null {
@@ -13,10 +15,30 @@ function getYouTubeId(url?: string): string | null {
 }
 
 export default function BlogListPage() {
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   const { data: posts, isLoading } = useQuery({
     queryKey: ["latest-posts"],
     queryFn: fetchLatestPosts,
   });
+
+  const categories = [
+    { id: "all", label: "All" },
+    { id: "repairing", label: "Repairing" }
+  ];
+
+  const filteredPosts = posts?.filter((post: any) => {
+    const matchesCategory = activeCategory === "all" || post.category === activeCategory;
+    const searchLower = searchQuery.toLowerCase();
+    const matchesSearch = !searchQuery || 
+      post.title?.toLowerCase().includes(searchLower) || 
+      post.excerpt?.toLowerCase().includes(searchLower) ||
+      post.content?.toLowerCase().includes(searchLower);
+    
+    return matchesCategory && matchesSearch;
+  }) || [];
 
   const getCardImage = (post: any) => {
     if (post.coverImage) return post.coverImage;
@@ -73,21 +95,81 @@ export default function BlogListPage() {
               Lab Resources
             </span>
           </h1>
-          <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto md:mx-0 font-medium leading-relaxed">
-            Watch repair tutorials sourced from our channel, download technical circuit diagrams, 
-            and browse logic guides handcrafted by Tirur's top trainers.
-          </p>
         </div>
       </div>
 
       <div className="container-wide px-4 sm:px-6 lg:px-8 py-16">
+        {/* Category Filter & Search Bar */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border ${
+                  activeCategory === cat.id
+                    ? "bg-[var(--color-primary-600)] text-white border-[var(--color-primary-500)] shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                    : "bg-[var(--color-surface-alt)] text-[var(--color-text-tertiary)] border-[var(--color-border)] hover:border-white/20 hover:text-white"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative h-10 flex items-center">
+            <AnimatePresence mode="wait">
+              {!isSearchOpen ? (
+                <motion.button
+                  key="search-btn"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={() => setIsSearchOpen(true)}
+                  className="w-10 h-10 rounded-full bg-[var(--color-surface-alt)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-text-tertiary)] hover:border-white/20 hover:text-white transition-all shadow-lg"
+                >
+                  <Search size={18} />
+                </motion.button>
+              ) : (
+                <motion.div
+                  key="search-input"
+                  initial={{ width: 40, opacity: 0 }}
+                  animate={{ width: 280, opacity: 1 }}
+                  exit={{ width: 40, opacity: 0 }}
+                  className="relative flex items-center"
+                >
+                  <Search size={16} className="absolute left-3.5 text-[var(--color-text-tertiary)]" />
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Search for blogs and repair videos"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onBlur={() => !searchQuery && setIsSearchOpen(false)}
+                    className="w-full h-10 pl-10 pr-10 bg-[var(--color-surface-alt)] border border-[var(--color-primary-600)]/50 rounded-full text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-600)] shadow-[0_0_20px_rgba(59,130,246,0.15)]"
+                  />
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setIsSearchOpen(false);
+                    }}
+                    className="absolute right-3 text-[var(--color-text-tertiary)] hover:text-white transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
         {isLoading ? (
           <div className="text-center py-20 font-medium text-slate-500">
             Scanning archives, loading posts...
           </div>
-        ) : posts && posts.length > 0 ? (
+        ) : filteredPosts && filteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post: any) => {
+            {filteredPosts.map((post: any) => {
               const coverUrl = getCardImage(post);
               const isVideo = post.postType === "video";
               const filesCount = post.files ? post.files.length : (post.downloadUrl ? 1 : 0);
@@ -121,13 +203,9 @@ export default function BlogListPage() {
                         <span className="flex items-center gap-1 font-bold px-2.5 py-0.5 rounded text-[10px] uppercase tracking-wider text-rose-450 bg-rose-500/10 border border-rose-500/20">
                           <Video size={10} /> Video tutorial
                         </span>
-                      ) : filesCount > 0 ? (
-                        <span className="flex items-center gap-1 font-bold px-2.5 py-0.5 rounded text-[10px] uppercase tracking-wider text-teal-400 bg-teal-500/10 border border-teal-500/20">
-                          <Paperclip size={10} /> Resource Guide
-                        </span>
                       ) : (
                         <span className="flex items-center gap-1 font-bold px-2.5 py-0.5 rounded text-[10px] uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20">
-                          <FileText size={10} /> Technical Article
+                          <FileText size={10} /> {post.category || 'Article'}
                         </span>
                       )}
                       
