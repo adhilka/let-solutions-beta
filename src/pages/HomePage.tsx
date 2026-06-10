@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, ShieldCheck, Award, Tv, MonitorSmartphone, Server, Quote, Star, PenLine, XCircle, Clock, Zap, ChevronRight, X, ZoomIn, Cpu } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent, fetchActiveOffers, fetchGalleryImages } from '../lib/api';
+import { fetchFeaturedTestimonials, fetchActiveCourses, fetchHomeContent, fetchActiveOffers, fetchGalleryImages, fetchLatestPosts } from '../lib/api';
 import { Testimonial } from '../types';
 import { useGlobalSettings } from '../hooks/useGlobalSettings';
 import { dualWrite } from '../lib/firebase/dualWrite';
@@ -48,6 +48,13 @@ export default function HomePage() {
     queryKey: ['gallery-images-home'],
     queryFn: fetchGalleryImages
   });
+
+  const { data: latestPosts } = useQuery({
+    queryKey: ['latest-posts-home'],
+    queryFn: fetchLatestPosts
+  });
+
+  const recentPosts = latestPosts?.slice(0, 2) || [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -672,6 +679,69 @@ export default function HomePage() {
               Explore Full Gallery <ArrowRight size={16} />
             </Link>
           </div>
+
+          {/* Recent Blog Posts Integration */}
+          {recentPosts.length > 0 && (
+            <div className="mt-24 pt-16 border-t border-white/5">
+              <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                <div className="text-center md:text-left">
+                  <h3 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Recent Articles & Guides</h3>
+                </div>
+                <Link to="/blog" className="text-sm font-bold text-[var(--color-primary-400)] hover:text-[var(--color-primary-300)] flex items-center gap-1 group transition-all">
+                  Visit Library <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                {recentPosts.map((post: any, idx: number) => (
+                  <motion.div
+                    key={post.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1 }}
+                  >
+                    <Link 
+                      to={`/blog/${post.slug}`}
+                      className="group block bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden hover:border-[var(--color-primary-600)]/50 transition-all duration-500 shadow-2xl hover:shadow-[var(--color-primary-900)]/20"
+                    >
+                      <div className="flex flex-col sm:flex-row h-full">
+                        <div className="sm:w-2/5 relative aspect-video sm:aspect-auto overflow-hidden bg-black">
+                          <img 
+                            src={post.coverImage || (post.postType === 'video' ? `https://img.youtube.com/vi/${post.videoUrl?.split('v=')[1]?.split('&')[0] || post.videoUrl?.split('/').pop()}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=500&q=80')} 
+                            alt={post.title}
+                            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div className="absolute top-3 left-3">
+                            <span className="px-2 py-1 bg-black/80 backdrop-blur-md rounded text-[9px] font-extrabold text-white uppercase tracking-wider border border-white/20">
+                              {post.category || post.postType || 'Tech'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="sm:w-3/5 p-6 flex flex-col justify-center bg-gradient-to-br from-white/[0.02] to-transparent">
+                          <h4 className="text-lg font-bold text-white mb-2 line-clamp-2 leading-tight group-hover:text-[var(--color-primary-400)] transition-colors">
+                            {post.title}
+                          </h4>
+                          <p className="text-xs text-[var(--color-text-secondary)] line-clamp-2 mb-4 font-medium leading-relaxed">
+                            {post.excerpt || post.content?.replace(/<[^>]*>/g, '').slice(0, 100) + '...'}
+                          </p>
+                          <div className="flex items-center justify-between mt-auto">
+                            <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-widest">
+                              {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
+                            </span>
+                            <div className="w-7 h-7 rounded-full bg-[var(--color-primary-900)] flex items-center justify-center text-[var(--color-primary-400)] transform group-hover:rotate-45 transition-transform">
+                              <ArrowRight size={14} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

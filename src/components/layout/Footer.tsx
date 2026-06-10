@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Instagram, Linkedin, Facebook, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail, Instagram, Facebook, Youtube } from 'lucide-react';
 import { useGlobalSettings } from '../../hooks/useGlobalSettings';
 
 export default function Footer() {
@@ -32,14 +32,11 @@ export default function Footer() {
               <a href="https://www.instagram.com/letsolutionstirur?igsh=d285MjcybDk0YWtw" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-blue-400 flex items-center justify-center hover:bg-blue-600 hover:border-transparent transition-all text-white">
                 <Instagram size={18} />
               </a>
-              <a href="#" className="w-9 h-9 rounded-full border border-blue-400 flex items-center justify-center hover:bg-blue-600 hover:border-transparent transition-all text-white">
+              <a href="https://www.facebook.com/letsolutionstirur/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-blue-400 flex items-center justify-center hover:bg-blue-600 hover:border-transparent transition-all text-white">
                 <Facebook size={18} />
               </a>
-              <a href="#" className="w-9 h-9 rounded-full border border-blue-400 flex items-center justify-center hover:bg-blue-600 hover:border-transparent transition-all text-white">
+              <a href="https://youtube.com/@letsolutions223" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-blue-400 flex items-center justify-center hover:bg-blue-600 hover:border-transparent transition-all text-white">
                 <Youtube size={18} />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-full border border-blue-400 flex items-center justify-center hover:bg-blue-600 hover:border-transparent transition-all text-white">
-                <Linkedin size={18} />
               </a>
             </div>
           </div>

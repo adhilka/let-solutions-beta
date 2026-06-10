@@ -14,20 +14,13 @@ import {
   Type, 
   Link as LinkIcon, 
   AlertCircle, 
-  Plus, 
+   Plus, 
   Video, 
-  Trash2, 
-  Paperclip, 
   Loader2 
 } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { docToData } from '../lib/api';
-
-interface FileAttachment {
-  name: string;
-  url: string;
-}
 
 export default function AdminPostEditor() {
   const { id } = useParams();
@@ -37,19 +30,16 @@ export default function AdminPostEditor() {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
     status: 'draft',
-    downloadUrl: '',
     content: '',
     excerpt: '',
     coverImage: '',
     postType: 'article', // 'article' | 'video'
     videoUrl: '',
-    files: [] as FileAttachment[],
     author: {
       name: 'Admin',
       role: 'Staff'
@@ -66,25 +56,15 @@ export default function AdminPostEditor() {
       if (d.exists()) {
         const data = docToData<any>(d);
         
-        // Backward-compatibility: if legacy files format is missing but downloadUrl exists
-        let initialFiles: FileAttachment[] = [];
-        if (data.files && Array.isArray(data.files)) {
-          initialFiles = data.files;
-        } else if (data.downloadUrl) {
-          initialFiles = [{ name: 'Technical Material', url: data.downloadUrl }];
-        }
-
         setFormData({
           title: data.title || '',
           slug: data.slug || '',
           status: data.status || 'draft',
-          downloadUrl: data.downloadUrl || '',
           content: data.content || '',
           excerpt: data.excerpt || '',
           coverImage: data.coverImage || '',
           postType: data.postType || (data.videoUrl ? 'video' : 'article'),
           videoUrl: data.videoUrl || '',
-          files: initialFiles,
           author: {
             name: data.author?.name || 'Admin',
             role: data.author?.role || 'Staff'
@@ -96,99 +76,6 @@ export default function AdminPostEditor() {
     },
     enabled: isEdit
   });
-
-  const handleAddAttachment = () => {
-    setFormData(prev => ({
-      ...prev,
-      files: [...prev.files, { name: '', url: '' }]
-    }));
-  };
-
-  const handleRemoveAttachment = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      files: prev.files.filter((_, idx) => idx !== index)
-    }));
-  };
-
-  const handleUpdateAttachment = (index: number, key: 'name' | 'url', value: string) => {
-    setFormData(prev => {
-      const updatedFiles = [...prev.files];
-      updatedFiles[index] = { ...updatedFiles[index], [key]: value };
-      return { ...prev, files: updatedFiles };
-    });
-  };
-
-  const handleAttachmentFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingIndex(index);
-    try {
-      const gitFormData = new FormData();
-      gitFormData.append('file', file);
-      
-      let token = '';
-      if (user) {
-        try {
-          token = await user.getIdToken();
-        } catch (tokenErr) {
-          console.error("Failed to retrieve ID Token for GitHub upload:", tokenErr);
-        }
-      }
-      
-      const response = await fetch('/api/github/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: gitFormData
-      });
-      
-      const data = await response.json();
-      if (data.success && data.url) {
-        handleUpdateAttachment(index, 'url', data.url);
-        if (!formData.files[index].name) {
-          handleUpdateAttachment(index, 'name', data.name || file.name.substring(0, 40));
-        }
-      } else {
-        throw new Error(data.error || 'Server error or credentials unconfigured');
-      }
-    } catch (githubErr) {
-      console.warn("GitHub upload failed, falling back to ImgBB upload:", githubErr);
-      try {
-        const { uploadToImgBB } = await import('../lib/imgbb');
-        const res = await uploadToImgBB(file);
-        handleUpdateAttachment(index, 'url', res.url);
-        if (!formData.files[index].name) {
-          handleUpdateAttachment(index, 'name', file.name.substring(0, 40));
-        }
-      } catch (err) {
-        console.error("Local/ImgBB upload failed, falling back to local encoding:", err);
-        try {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const base64Url = reader.result as string;
-            handleUpdateAttachment(index, 'url', base64Url);
-            // Wait, set name safely
-            setFormData(prev => {
-              const updated = [...prev.files];
-              if (!updated[index].name) {
-                updated[index].name = file.name.substring(0, 40);
-              }
-              return { ...prev, files: updated };
-            });
-          };
-        } catch (fallbackErr) {
-          console.error(fallbackErr);
-          alert("Upload failed.");
-        }
-      }
-    } finally {
-      setUploadingIndex(null);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -206,13 +93,8 @@ export default function AdminPostEditor() {
       const docId = id || `post_${Date.now()}`;
       const now = new Date().toISOString();
       
-      // Make sure downstream backward compatibility is maintained
-      const primaryDownloadUrl = formData.files.length > 0 ? formData.files[0].url : formData.downloadUrl;
-
       const payload: any = {
         ...formData,
-        downloadUrl: primaryDownloadUrl,
-        isFile: formData.files.length > 0,
         coverImage: finalCoverImage,
         updatedAt: now
       };
@@ -367,105 +249,10 @@ export default function AdminPostEditor() {
                  />
                </div>
              </form>
-          </div>
-
-          {/* Interactive downloadable attachments list redone */}
-          <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] border border-[var(--color-border)] p-6 md:p-8 space-y-4">
-             <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border)]">
-                <div className="flex items-center gap-2">
-                   <Paperclip size={18} className="text-[var(--color-primary-450)]" />
-                   <h3 className="font-bold text-[var(--color-text-primary)] uppercase tracking-tight text-sm">Downloadable Resource Files ({formData.files.length})</h3>
-                </div>
-                <button
-                   type="button"
-                   onClick={handleAddAttachment}
-                   className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-[var(--color-primary-400)] hover:text-[var(--color-primary-500)] transition-colors"
-                >
-                   <Plus size={14} /> Add File Row
-                </button>
-             </div>
-             
-             <p className="text-xs text-[var(--color-text-secondary)]">
-                Upload technical manuals, schematics, and files directly to the connected **GitHub repository** for high-speed delivery, or supply custom URL paths.
-             </p>
-
-             {formData.files.length === 0 ? (
-                <div className="border border-dashed border-[var(--color-border)] rounded-xl py-8 text-center text-slate-500 text-xs font-medium">
-                   No files attached. Click "Add File Row" to link materials to this guide.
-                </div>
-             ) : (
-                <div className="space-y-3">
-                   {formData.files.map((file, idx) => (
-                      <div key={idx} className="flex flex-col sm:flex-row gap-3 p-3 bg-black/20 border border-[var(--color-border)] rounded-xl relative group">
-                         {/* Name Input */}
-                         <div className="flex-1 min-w-0">
-                            <label className="block text-[9px] uppercase font-bold tracking-wider text-slate-500 mb-1">Label Name</label>
-                            <input
-                               type="text"
-                               required
-                               placeholder="e.g. Schematics, Part list code"
-                               value={file.name}
-                               onChange={e => handleUpdateAttachment(idx, 'name', e.target.value)}
-                               className="input w-full text-xs bg-slate-900 border-none px-3 py-1.5 focus:ring-0"
-                            />
-                         </div>
-
-                         {/* URL Input with Inline Uploader */}
-                         <div className="flex-1 min-w-0 flex gap-2 items-end">
-                            <div className="flex-grow min-w-0">
-                               <label className="block text-[9px] uppercase font-bold tracking-wider text-slate-500 mb-1">File URL Link / Blob Path</label>
-                               <input
-                                  type="text"
-                                  required
-                                  placeholder="Paste Link or click Upload Right ↓"
-                                  value={file.url}
-                                  onChange={e => handleUpdateAttachment(idx, 'url', e.target.value)}
-                                  className="input w-full text-xs bg-slate-900 border-none px-3 py-1.5 font-mono focus:ring-0"
-                               />
-                               {file.url && file.url.startsWith('data:') && (
-                                  <p className="text-[10px] text-yellow-400/80 mt-1 leading-normal font-sans">
-                                     ⚠️ Inline Base64 Data: GitHub credentials are not configured or failed on server, using local browser encoding fallback.
-                                  </p>
-                               )}
-                            </div>
-                            
-                            {/* Inline file upload triggers */}
-                            <div className="relative shrink-0">
-                               <label className="cursor-pointer flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-white rounded p-2 h-8 w-8 text-xs border border-white/5 transition-all">
-                                  {uploadingIndex === idx ? (
-                                     <Loader2 size={14} className="animate-spin text-[var(--color-primary-400)]" />
-                                  ) : (
-                                     <Paperclip size={14} />
-                                  )}
-                                  <input
-                                     type="file"
-                                     className="absolute inset-0 opacity-0 cursor-pointer hidden"
-                                     disabled={uploadingIndex !== null}
-                                     onChange={e => handleAttachmentFileUpload(e, idx)}
-                                  />
-                               </label>
-                            </div>
-                         </div>
-
-                         {/* Delete Row button */}
-                         <div className="flex items-end justify-end shrink-0 sm:pb-1">
-                            <button
-                               type="button"
-                               onClick={() => handleRemoveAttachment(idx)}
-                               className="p-1.5 text-red-400 hover:bg-red-500/10 rounded transition-colors self-end"
-                               title="Remove Document"
-                            >
-                               <Trash2 size={16} />
-                            </button>
-                         </div>
-                      </div>
-                   ))}
-                </div>
-             )}
-          </div>
-
-          {/* Excerpt/Summary */}
-          <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] border border-[var(--color-border)] p-6 md:p-8">
+           </div>
+ 
+           {/* Excerpt/Summary */}
+           <div className="bg-[var(--color-surface-alt)] rounded-[var(--radius-xl)] border border-[var(--color-border)] p-6 md:p-8">
             <div className="flex items-center gap-2 mb-4">
               <FileText size={18} className="text-blue-500" />
               <h3 className="font-bold text-[var(--color-text-primary)]">Short Excerpt</h3>

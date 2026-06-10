@@ -7,14 +7,10 @@ import {
   User,
   ArrowLeft,
   Loader2,
-  File as FileIcon,
   FileText,
-  Download,
-  Github,
   Video,
   Play,
-  Share2,
-  Paperclip
+  Share2
 } from "lucide-react";
 import SEO from "../components/SEO";
 
@@ -90,14 +86,6 @@ export default function BlogDetailPage() {
         </div>
       </div>
     );
-  }
-
-  // Extract files for backward-compatibility
-  const fileAttachments: { name: string; url: string }[] = [];
-  if (post.files && Array.isArray(post.files)) {
-    fileAttachments.push(...post.files);
-  } else if (post.downloadUrl) {
-    fileAttachments.push({ name: "Technical Resource", url: post.downloadUrl });
   }
 
   const isVideo = post.postType === "video" || !!post.videoUrl;
@@ -206,10 +194,6 @@ export default function BlogDetailPage() {
                   <span className="flex items-center gap-1.5 text-rose-400 font-extrabold bg-rose-500/10 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider border border-rose-500/20">
                     <Video size={12} /> Sourced Video Guide
                   </span>
-                ) : fileAttachments.length > 0 ? (
-                  <span className="flex items-center gap-1.5 text-teal-400 font-extrabold bg-teal-500/10 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider border border-teal-500/20">
-                    <Paperclip size={12} /> Sourced Resources
-                  </span>
                 ) : (
                   <span className="flex items-center gap-1.5 text-blue-400 font-extrabold bg-blue-500/10 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider border border-blue-500/20">
                     <FileText size={12} /> Tech Report
@@ -272,69 +256,8 @@ export default function BlogDetailPage() {
             </footer>
           </article>
 
-          {/* Reference files and Side bar Desk */}
+          {/* Related posts Side bar Desk */}
           <aside className="lg:col-span-4 space-y-8">
-            {/* Download Files Widget */}
-            <div className="bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-2xl p-6 md:p-8 space-y-6">
-              <div className="pb-4 border-b border-[var(--color-border)]">
-                <span className="inline-block bg-[var(--color-primary-950)] text-[var(--color-primary-400)] px-2.5 py-1 rounded text-[8.5px] font-black uppercase tracking-widest border border-[var(--color-primary-900)] mb-3">
-                  Resource Desk
-                </span>
-                <h3 className="text-lg font-black uppercase tracking-tight text-white flex items-center gap-2">
-                  <Download size={18} className="text-[var(--color-primary-450)]" /> Included Materials
-                </h3>
-              </div>
-
-              {fileAttachments.length === 0 ? (
-                <div className="py-6 text-center border border-dashed border-[var(--color-border)] rounded-xl">
-                  <Paperclip className="w-8 h-8 text-[var(--color-text-tertiary)] mx-auto mb-2 opacity-25" />
-                  <p className="text-xs text-[var(--color-text-secondary)] font-medium">No complementary files attached.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {fileAttachments.map((file, idx) => {
-                    if (!file) return null;
-                    const isGit = isGitHubLink(file.url || '');
-                    return (
-                      <a
-                        key={idx}
-                        href={file.url || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center justify-between p-3.5 bg-black/30 hover:bg-black/50 border border-[var(--color-border)] hover:border-white/20 rounded-xl transition-all"
-                        title={`Download ${file.name || ''}`}
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 ${
-                            isGit ? "bg-slate-800 text-white border border-slate-700" : "bg-[var(--color-primary-950)] text-[var(--color-primary-400)] border border-[var(--color-primary-900)]"
-                          }`}>
-                            {isGit ? <Github size={18} /> : <FileIcon size={18} />}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-bold text-xs uppercase tracking-tight text-white group-hover:text-[var(--color-primary-400)] transition-colors truncate max-w-[170px]" title={file.name || ''}>
-                              {file.name || `Technical Sheet ${idx + 1}`}
-                            </p>
-                            <p className="text-[10px] text-[var(--color-text-tertiary)] font-mono truncate max-w-[170px] mt-0.5">
-                              {isGit ? "github.com source" : "blob direct packet"}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-[var(--color-text-tertiary)] group-hover:text-white transition-colors pl-2">
-                          <Download size={16} />
-                        </div>
-                      </a>
-                    );
-                  })}
-                </div>
-              )}
-              
-              <div className="pt-2">
-                <p className="text-[10px] text-[var(--color-text-tertiary)] leading-normal italic">
-                  Important: Always scan execution packages and files before running them on client terminals. Sourced by Let Solutions Tirur.
-                </p>
-              </div>
-            </div>
-
             {/* Other relevant posts/videos sidebar */}
             {morePosts && morePosts.length > 1 && (
               <div className="border border-[var(--color-border)] rounded-2xl p-6 space-y-6">
