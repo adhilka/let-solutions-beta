@@ -304,7 +304,7 @@ export default function AdminPostEditor() {
                     <label className="block text-xs font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Primary Category</label>
                     <select 
                        className="input w-full" 
-                       value={formData.category} 
+                       value={formData.category || 'all'} 
                        onChange={e => setFormData({ ...formData, category: e.target.value })}
                     >
                       <option value="all">All</option>

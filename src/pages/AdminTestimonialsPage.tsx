@@ -15,13 +15,13 @@ export default function AdminTestimonialsPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     course: '',
     batch: '',
     rating: 5,
     content: '',
-    videoUrl: '',
     imageUrl: ''
   });
 
@@ -85,6 +85,14 @@ export default function AdminTestimonialsPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      let finalImageUrl = formData.imageUrl;
+
+      if (imageFile) {
+        const { uploadToImgBB } = await import('../lib/imgbb');
+        const res = await uploadToImgBB(imageFile);
+        finalImageUrl = res.url;
+      }
+
       const newId = `testimonial-${Date.now()}`;
       const testimonialData = {
         name: formData.name,
@@ -92,8 +100,7 @@ export default function AdminTestimonialsPage() {
         batch: formData.batch,
         rating: formData.rating,
         content: formData.content,
-        videoUrl: formData.videoUrl,
-        imageUrl: formData.imageUrl,
+        imageUrl: finalImageUrl,
         approved: true,
         isFeatured: false,
         createdAt: new Date().toISOString()
@@ -104,7 +111,8 @@ export default function AdminTestimonialsPage() {
       queryClient.invalidateQueries({ queryKey: ['featured-testimonials'] });
       queryClient.invalidateQueries({ queryKey: ['all-testimonials'] });
       setIsModalOpen(false);
-      setFormData({ name: '', course: '', batch: '', rating: 5, content: '', videoUrl: '', imageUrl: '' });
+      setFormData({ name: '', course: '', batch: '', rating: 5, content: '', imageUrl: '' });
+      setImageFile(null);
     } catch (error) {
       console.error('Error adding testimonial:', error);
       alert('Failed to add feedback');
@@ -325,26 +333,34 @@ export default function AdminTestimonialsPage() {
                 ></textarea>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 <div>
-                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Profile Portrait URL</label>
-                  <input
-                    type="url"
-                    value={formData.imageUrl}
-                    onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="input w-full font-mono text-xs"
-                    placeholder="https://..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Video Stream Link</label>
-                  <input
-                    type="url"
-                    value={formData.videoUrl}
-                    onChange={e => setFormData({ ...formData, videoUrl: e.target.value })}
-                    className="input w-full font-mono text-xs"
-                    placeholder="YouTube/Drive link..."
-                  />
+                  <label className="block text-[10px] font-extrabold text-[var(--color-text-secondary)] mb-2 uppercase tracking-[0.2em]">Profile Picture</label>
+                  <div className="relative aspect-square w-32 bg-[var(--color-surface)] rounded-2xl border-2 border-dashed border-[var(--color-border)] overflow-hidden flex flex-col items-center justify-center transition-all hover:border-[var(--color-primary-600)]">
+                    {imageFile || formData.imageUrl ? (
+                      <>
+                        <img 
+                          src={imageFile ? URL.createObjectURL(imageFile) : formData.imageUrl} 
+                          className="w-full h-full object-cover" 
+                          alt="Profile Preview" 
+                        />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <span className="text-[8px] font-black uppercase text-white shadow-sm">Change</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center p-2">
+                        <Plus size={16} className="text-[var(--color-text-tertiary)] mx-auto mb-1" />
+                        <p className="text-[8px] text-[var(--color-text-tertiary)] font-bold uppercase">Upload</p>
+                      </div>
+                    )}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={e => setImageFile(e.target.files?.[0] || null)} 
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                  </div>
                 </div>
               </div>
 
