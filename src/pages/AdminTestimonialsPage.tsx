@@ -15,6 +15,7 @@ export default function AdminTestimonialsPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -81,6 +82,27 @@ export default function AdminTestimonialsPage() {
     }
   };
 
+  const handleEdit = (t: Testimonial) => {
+    setEditingId(t.id || null);
+    setFormData({
+      name: t.name,
+      course: t.course,
+      batch: t.batch || '',
+      rating: t.rating,
+      content: t.content,
+      imageUrl: t.imageUrl || ''
+    });
+    setImageFile(null);
+    setIsModalOpen(true);
+  };
+
+  const openAddModal = () => {
+    setEditingId(null);
+    setFormData({ name: '', course: '', batch: '', rating: 5, content: '', imageUrl: '' });
+    setImageFile(null);
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -93,8 +115,8 @@ export default function AdminTestimonialsPage() {
         finalImageUrl = res.url;
       }
 
-      const newId = `testimonial-${Date.now()}`;
-      const testimonialData = {
+      const idToUse = editingId || `testimonial-${Date.now()}`;
+      const testimonialData: any = {
         name: formData.name,
         course: formData.course,
         batch: formData.batch,
@@ -105,17 +127,33 @@ export default function AdminTestimonialsPage() {
         isFeatured: false,
         createdAt: new Date().toISOString()
       };
-      await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'testimonials', newId], testimonialData);
+
+      if (editingId) {
+        const current = testimonials.find(t => t.id === editingId);
+        if (current) {
+          testimonialData.approved = current.approved;
+          testimonialData.isFeatured = current.isFeatured;
+          testimonialData.createdAt = current.createdAt;
+        }
+      }
+
+      await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'testimonials', idToUse], testimonialData);
       
-      setTestimonials(prev => [{ id: newId, ...testimonialData } as Testimonial, ...prev]);
+      if (editingId) {
+        setTestimonials(prev => prev.map(t => t.id === idToUse ? { ...t, ...testimonialData } : t));
+      } else {
+        setTestimonials(prev => [{ id: idToUse, ...testimonialData } as Testimonial, ...prev]);
+      }
+
       queryClient.invalidateQueries({ queryKey: ['featured-testimonials'] });
       queryClient.invalidateQueries({ queryKey: ['all-testimonials'] });
       setIsModalOpen(false);
       setFormData({ name: '', course: '', batch: '', rating: 5, content: '', imageUrl: '' });
       setImageFile(null);
+      setEditingId(null);
     } catch (error) {
-      console.error('Error adding testimonial:', error);
-      alert('Failed to add feedback');
+      console.error('Error saving testimonial:', error);
+      alert('Failed to save feedback');
     } finally {
       setIsSubmitting(false);
     }
@@ -141,7 +179,7 @@ export default function AdminTestimonialsPage() {
           <p className="mt-1 text-sm text-[var(--color-text-secondary)] font-medium">Manage student reviews and video testimonials</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={openAddModal}
           className="btn-primary flex items-center gap-2 shadow-xl shadow-blue-900/20"
         >
           <Plus size={18} /> Add Feedback
@@ -236,6 +274,7 @@ export default function AdminTestimonialsPage() {
                 </div>
                 <div className="flex space-x-2 opacity-50 group-hover:opacity-100 transition-opacity">
                   <button 
+                    onClick={() => handleEdit(t)}
                     className="p-2 text-white bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     title="Edit"
                   >
@@ -266,8 +305,16 @@ export default function AdminTestimonialsPage() {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
           <div className="bg-[var(--color-surface-alt)] rounded-[2.5rem] shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[var(--color-border)] animate-scale-up">
             <div className="flex justify-between items-center p-8 border-b border-[var(--color-border)] bg-black/20">
-              <h2 className="text-2xl font-extrabold text-white uppercase italic tracking-tight">Manual Input Feedback</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-white bg-white/5 p-2 rounded-full border border-[var(--color-border)] transition-all">
+              <h2 className="text-2xl font-extrabold text-white uppercase italic tracking-tight">
+                {editingId ? 'Edit Student Feedback' : 'Manual Input Feedback'}
+              </h2>
+              <button 
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingId(null);
+                }} 
+                className="text-[var(--color-text-tertiary)] hover:text-white bg-white/5 p-2 rounded-full border border-[var(--color-border)] transition-all"
+              >
                 <XCircle size={24} />
               </button>
             </div>
@@ -378,7 +425,7 @@ export default function AdminTestimonialsPage() {
                   className="btn-primary px-10 shadow-xl shadow-blue-900/40"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Processing...' : 'Deploy Feedback'}
+                  {isSubmitting ? 'Processing...' : (editingId ? 'Update Feedback' : 'Deploy Feedback')}
                 </button>
               </div>
             </form>
