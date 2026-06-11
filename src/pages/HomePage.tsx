@@ -37,7 +37,22 @@ export default function HomePage() {
     initialData: FAILSAFE_TESTIMONIALS as any
   });
 
-  const feedbacks = (feedbacksData && feedbacksData.length > 0) ? feedbacksData : FAILSAFE_TESTIMONIALS;
+  const feedbacks = (() => {
+    const rawFeedbacks = (feedbacksData && feedbacksData.length > 0) ? feedbacksData : FAILSAFE_TESTIMONIALS;
+    return [...rawFeedbacks].sort((a, b) => {
+      // First priority: Presence of profile picture
+      const hasImageA = !!a.imageUrl;
+      const hasImageB = !!b.imageUrl;
+      if (hasImageA !== hasImageB) {
+        return hasImageA ? -1 : 1;
+      }
+
+      // Second priority: Recency
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
+  })();
 
   const { data: offers } = useQuery({
     queryKey: ['active-offers-home'],

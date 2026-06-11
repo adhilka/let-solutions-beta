@@ -35,7 +35,7 @@ export default function AdminPostEditor() {
     title: '',
     slug: '',
     status: 'draft',
-    category: 'repairing',
+    category: 'all',
     content: '',
     excerpt: '',
     coverImage: '',
@@ -61,7 +61,7 @@ export default function AdminPostEditor() {
           title: data.title || '',
           slug: data.slug || '',
           status: data.status || 'draft',
-          category: data.category || 'repairing',
+          category: data.category || 'all',
           content: data.content || '',
           excerpt: data.excerpt || '',
           coverImage: data.coverImage || '',
@@ -307,6 +307,7 @@ export default function AdminPostEditor() {
                        value={formData.category} 
                        onChange={e => setFormData({ ...formData, category: e.target.value })}
                     >
+                      <option value="all">All</option>
                       <option value="repairing">Repairing</option>
                     </select>
                   </div>

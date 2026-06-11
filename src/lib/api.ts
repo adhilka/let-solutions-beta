@@ -161,12 +161,25 @@ export async function fetchFeaturedTestimonials() {
     return await withFailover(async (db) => {
       const q = query(
         collection(db, 'artifacts/tech-institute/public/data/testimonials'), 
-        where('approved', '==', true),
-        orderBy('createdAt', 'desc'),
-        limit(6)
+        where('approved', '==', true)
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => docToData<any>(doc));
+      const data = snapshot.docs.map(doc => docToData<any>(doc));
+      
+      // Sort in JS to prioritize pictured testimonials and latest first
+      return data.sort((a, b) => {
+        // First priority: Presence of profile picture
+        const hasImageA = !!a.imageUrl;
+        const hasImageB = !!b.imageUrl;
+        if (hasImageA !== hasImageB) {
+          return hasImageA ? -1 : 1;
+        }
+
+        // Second priority: Recency
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      }).slice(0, 10); // Take top 10 for home page slider
     });
   } catch (err) {
     console.error("Error fetching testimonials:", err);

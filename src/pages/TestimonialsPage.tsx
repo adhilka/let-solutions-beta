@@ -29,12 +29,37 @@ export default function TestimonialsPage() {
       const db = getReadDb();
       const q = query(
         collection(db, 'artifacts/tech-institute/public/data/testimonials'),
-        where('approved', '==', true),
-        orderBy('createdAt', 'desc')
+        where('approved', '==', true)
       );
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Testimonial));
-      setTestimonials(data.length > 0 ? data : FAILSAFE_TESTIMONIALS as Testimonial[]);
+      
+      const sortedData = data.sort((a, b) => {
+        // First priority: Presence of profile picture
+        const hasImageA = !!a.imageUrl;
+        const hasImageB = !!b.imageUrl;
+        if (hasImageA !== hasImageB) {
+          return hasImageA ? -1 : 1;
+        }
+
+        // Second priority: Recency
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      const sortFailsafe = (items: any[]) => items.sort((a, b) => {
+        const hasImageA = !!a.imageUrl;
+        const hasImageB = !!b.imageUrl;
+        if (hasImageA !== hasImageB) {
+          return hasImageA ? -1 : 1;
+        }
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      setTestimonials(sortedData.length > 0 ? sortedData : sortFailsafe([...FAILSAFE_TESTIMONIALS]));
     } catch (error) {
       console.error('Error fetching testimonials:', error);
     } finally {

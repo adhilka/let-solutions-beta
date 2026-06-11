@@ -42,6 +42,7 @@ export type CourseCategory =
   | 'ethical-hacking';
 
 export type BlogCategory =
+  | 'all'
   | 'repairing'
   | 'hardware-tips'
   | 'software-guides'
