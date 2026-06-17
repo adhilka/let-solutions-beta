@@ -4,6 +4,7 @@ Disallow: /login
 Disallow: /status
 Disallow: /design-system
 Disallow: /admin-manual
+Disallow: /servizio/
 Disallow: /api/
 
 Sitemap: https://letsolutions.in/sitemap.xml

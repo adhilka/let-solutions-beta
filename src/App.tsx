@@ -33,6 +33,7 @@ import AdminOffersPage from './pages/AdminOffersPage';
 import AdminGalleryPage from './pages/AdminGalleryPage';
 import AdminAboutPage from './pages/AdminAboutPage';
 import AdminHomeSettings from './pages/AdminHomeSettings';
+import StockManagementPage from './pages/StockManagementPage';
 import LoginPage from './pages/LoginPage';
 import DesignSystemPage from './pages/DesignSystemPage';
 import AdminDocumentationPage from './pages/AdminDocumentationPage';
@@ -106,6 +107,11 @@ export default function App() {
                   <Route path="offers" element={<AdminOffersPage />} />
                   <Route path="settings" element={<AdminSettingsPage />} />
                 </Route>
+              </Route>
+
+              {/* Stock Management Service */}
+              <Route path="/servizio" element={<AdminRoute />}>
+                <Route path="stocks" element={<StockManagementPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

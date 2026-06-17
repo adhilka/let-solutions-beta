@@ -286,3 +286,19 @@ export async function fetchGalleryImages() {
     return [];
   }
 }
+
+export async function fetchAllStocks() {
+  try {
+    return await withFailover(async (db) => {
+      const q = query(
+        collection(db, 'artifacts/tech-institute/public/data/stocks'),
+        orderBy('name', 'asc')
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => docToData<any>(doc));
+    });
+  } catch (err) {
+    console.error("Error fetching all stocks:", err);
+    return [];
+  }
+}

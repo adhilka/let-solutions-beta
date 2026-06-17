@@ -10,6 +10,7 @@ interface SEOProps {
   ogImage?: string;
   structuredData?: object | object[];
   noindex?: boolean;
+  nofollow?: boolean;
 }
 
 export default function SEO({ 
@@ -20,14 +21,16 @@ export default function SEO({
   ogType = 'website', 
   ogImage = '/images/banner.jpg',
   structuredData,
-  noindex = false
+  noindex = false,
+  nofollow = false
 }: SEOProps) {
   const location = useLocation();
   const siteName = 'Let Solutions';
   
   // Forced noindex for protected paths
-  const protectedPaths = ['/admin', '/login', '/status', '/design-system', '/admin-manual'];
+  const protectedPaths = ['/admin', '/login', '/status', '/design-system', '/admin-manual', '/servizio'];
   const isForcedNoIndex = noindex || protectedPaths.some(path => location.pathname.startsWith(path));
+  const isForcedNoFollow = nofollow || protectedPaths.some(path => location.pathname.startsWith(path));
   const fullTitle = title ? (title.includes(siteName) ? title : `${title} | ${siteName}`) : `Let Solutions | Top Technical Institute in Tirur, Kerala`;
   const defaultDescription = 'Let Solutions is the premier technical institute in Tirur, Kerala, offering expert courses in smartphone repair, laptop chip-level training, networking, and CCTV systems.';
   const metaDescription = description || defaultDescription;
@@ -83,8 +86,7 @@ export default function SEO({
       <meta name="keywords" content={metaKeywords} />
       <link rel="canonical" href={fullCanonical} />
       <link rel="shortcut icon" href="/fast-assets/favicon.ico" />
-      {isForcedNoIndex && <meta name="robots" content="noindex, nofollow" />}
-      {!isForcedNoIndex && <meta name="robots" content="index, follow" />}
+      <meta name="robots" content={`${isForcedNoIndex ? 'noindex' : 'index'}, ${isForcedNoFollow ? 'nofollow' : 'follow'}`} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />

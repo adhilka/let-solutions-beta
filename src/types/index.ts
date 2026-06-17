@@ -57,6 +57,17 @@ export type PostStatus     = 'draft' | 'published' | 'archived';
 export type OfferType      = 'admission' | 'discount' | 'batch' | 'notice';
 export type GalleryCategory = 'lab' | 'events' | 'students' | 'certificates' | 'other';
 
+export type StockCategory = 'ic' | 'mosfet';
+
+export interface StockItem {
+  id?: string;
+  name: string;
+  quantity: number;
+  boardNumber?: string;
+  category: StockCategory;
+  lastUpdated: string;
+}
+
 export interface Testimonial {
   id?: string;
   name: string;
