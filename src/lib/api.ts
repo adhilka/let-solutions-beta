@@ -302,3 +302,20 @@ export async function fetchAllStocks() {
     return [];
   }
 }
+
+export async function fetchStockHistory() {
+  try {
+    return await withFailover(async (db) => {
+      const q = query(
+        collection(db, 'artifacts/tech-institute/public/data/stock_history'),
+        orderBy('timestamp', 'desc'),
+        limit(100)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => docToData<any>(doc));
+    });
+  } catch (err) {
+    console.error("Error fetching stock history:", err);
+    return [];
+  }
+}

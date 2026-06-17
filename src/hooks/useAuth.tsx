@@ -10,11 +10,12 @@ import {
 import { authA } from '../lib/firebase/projectA';
 import { getReadDb } from '../lib/firebase/loadBalancer';
 import { dualWrite } from '../lib/firebase/dualWrite';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
+  isStockAdmin: boolean;
   loading: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
@@ -22,10 +23,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ALLOWED_EMAILS = ['muhammedadhil856@gmail.com', 'sp.sanal3@gmail.com'];
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isStockAdmin, setIsStockAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSharedAdmin, setIsSharedAdmin] = useState(false);
 
@@ -85,13 +86,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       try {
         if (!user && token) {
-          // Sign in anonymously to assume the session
           const cred = await signInAnonymously(authA);
           await handleAdminToken(cred.user);
         } else if (user) {
           await handleAdminToken(user);
+
+          // Dynamic Role Detection based on Firestore Permissions
+          const db = getFirestore();
+          
+          const [adminRes, stockRes] = await Promise.allSettled([
+            getDoc(doc(db, 'artifacts/tech-institute/public/roles/admin', 'check')),
+            getDoc(doc(db, 'artifacts/tech-institute/public/roles/stock', 'check'))
+          ]);
+
+          setIsAdmin(adminRes.status === 'fulfilled');
+          setIsStockAdmin(stockRes.status === 'fulfilled');
         } else {
           setIsSharedAdmin(false);
+          setIsAdmin(false);
+          setIsStockAdmin(false);
         }
       } catch (e) {
         console.error("Error setting up session admin token:", e);
@@ -112,10 +125,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signOut(authA);
   };
 
-  const isAdmin = (user?.email && ALLOWED_EMAILS.includes(user.email) && user?.emailVerified) || isSharedAdmin;
+  const finalIsAdmin = isAdmin || isSharedAdmin;
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin: finalIsAdmin, isStockAdmin, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

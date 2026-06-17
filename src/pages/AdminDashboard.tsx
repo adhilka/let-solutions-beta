@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Users, BookOpen, MessageSquare, Award, Plus, FileText, Settings, Layout, ExternalLink } from 'lucide-react';
+import { Users, BookOpen, MessageSquare, Award, Plus, FileText, Settings, Layout, ExternalLink, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchDashboardStats, fetchRecentEnquiries } from '../lib/api';
+import { useAuth } from '../hooks/useAuth';
 
 export default function AdminDashboard() {
+  const { isStockAdmin } = useAuth();
   const [stats, setStats] = useState({
     courses: 0,
     enquiries: 0,
@@ -110,10 +112,12 @@ export default function AdminDashboard() {
                 <Settings size={20} className="mb-2 text-slate-400 group-hover:rotate-45 transition-transform" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">Settings</span>
              </Link>
-             <Link to="/servizio/stocks" className="flex flex-col items-center justify-center p-4 bg-black rounded-2xl hover:bg-blue-950/30 transition group border border-white/5">
-                <Package size={20} className="mb-2 text-blue-400 group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">Stock Inventory</span>
-             </Link>
+             {isStockAdmin && (
+               <Link to="/servizio/stocks" className="flex flex-col items-center justify-center p-4 bg-black rounded-2xl hover:bg-blue-950/30 transition group border border-white/5">
+                  <Package size={20} className="mb-2 text-blue-400 group-hover:scale-110 transition-transform" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">Stock Inventory</span>
+               </Link>
+             )}
              <Link to="/" className="flex flex-col items-center justify-center p-4 bg-black rounded-2xl hover:bg-green-950/30 transition group border border-white/5">
                 <ExternalLink size={20} className="mb-2 text-green-500 group-hover:scale-110 transition-transform" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">Live Site</span>

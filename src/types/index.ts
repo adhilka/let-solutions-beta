@@ -59,6 +59,15 @@ export type GalleryCategory = 'lab' | 'events' | 'students' | 'certificates' | '
 
 export type StockCategory = 'ic' | 'mosfet';
 
+export interface StockHistory {
+  id?: string;
+  stockId: string;
+  stockName: string;
+  personName: string;
+  change: number;
+  timestamp: string;
+}
+
 export interface StockItem {
   id?: string;
   name: string;
