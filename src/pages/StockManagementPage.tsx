@@ -9,7 +9,7 @@ import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 import { StockItem, StockCategory, StockHistory } from '../types';
 import { useAuth } from '../hooks/useAuth';
 
-const ALLOWED_EMAIL = 'muhammedadhil856@gmail.com';
+const ALLOWED_EMAILS = ['muhammedadhil856@gmail.com', 'serviziotirur@gmail.com'];
 
 export default function StockManagementPage() {
   const { user, loading, logout } = useAuth();
@@ -37,7 +37,7 @@ export default function StockManagementPage() {
       if (!user) {
         // Not logged in at all
         navigate('/admin/login');
-      } else if (user.email !== ALLOWED_EMAIL) {
+      } else if (!ALLOWED_EMAILS.includes(user.email || '')) {
         // Logged in but wrong account
         alert('Access Denied: You do not have permission to access the Stock Vault.');
         logout();
@@ -212,7 +212,7 @@ export default function StockManagementPage() {
     return matchesSearch && matchesCategory;
   }) || [];
 
-  if (!user || user.email !== ALLOWED_EMAIL) {
+  if (!user || !ALLOWED_EMAILS.includes(user.email || '')) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
         <div className="text-center">

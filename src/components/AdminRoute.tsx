@@ -18,6 +18,10 @@ export default function AdminRoute() {
     return <Navigate to="/" replace />;
   }
 
+  if (user?.email === 'serviziotirur@gmail.com') {
+    return <Navigate to="/" replace />;
+  }
+
   if (!user || !isAdmin) {
     return <Navigate to="/admin/login" replace />;
   }
