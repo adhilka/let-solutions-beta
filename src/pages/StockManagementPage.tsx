@@ -9,8 +9,10 @@ import { dualWrite, dualDelete } from '../lib/firebase/dualWrite';
 import { StockItem, StockCategory, StockHistory } from '../types';
 import { useAuth } from '../hooks/useAuth';
 
+const ALLOWED_EMAIL = 'muhammedadhil856@gmail.com';
+
 export default function StockManagementPage() {
-  const { user, isStockAdmin, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,13 +24,20 @@ export default function StockManagementPage() {
   const [editingItem, setEditingItem] = useState<StockItem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Security Check is now primarily handled by StockRoute component
-  // but we keep a local check for added safety if page stays open
+  // Security Check: Seperate login/access check
   useEffect(() => {
-    if (user && !isStockAdmin) {
-      navigate('/servizio/login');
+    // Domain-based security restriction
+    if (window.location.hostname === 'letsolutions.in') {
+      navigate('/', { replace: true });
+      return;
     }
-  }, [user, isStockAdmin, navigate]);
+
+    if (user && user.email !== ALLOWED_EMAIL) {
+      alert('Access Denied: You do not have permission to access the Stock Vault.');
+      logout();
+      navigate('/login');
+    }
+  }, [user, navigate, logout]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -196,7 +205,7 @@ export default function StockManagementPage() {
     return matchesSearch && matchesCategory;
   }) || [];
 
-  if (!user || !isStockAdmin) {
+  if (!user || user.email !== ALLOWED_EMAIL) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
         <div className="text-center">

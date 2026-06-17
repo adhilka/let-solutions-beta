@@ -35,13 +35,11 @@ import AdminAboutPage from './pages/AdminAboutPage';
 import AdminHomeSettings from './pages/AdminHomeSettings';
 import StockManagementPage from './pages/StockManagementPage';
 import LoginPage from './pages/LoginPage';
-import StockLoginPage from './pages/StockLoginPage';
 import DesignSystemPage from './pages/DesignSystemPage';
 import AdminDocumentationPage from './pages/AdminDocumentationPage';
 import SystemStatusPage from './pages/SystemStatusPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AdminRoute from './components/AdminRoute';
-import StockRoute from './components/StockRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './hooks/useAuth';
 
@@ -112,8 +110,7 @@ export default function App() {
               </Route>
 
               {/* Stock Management Service */}
-              <Route path="/servizio/login" element={<StockLoginPage />} />
-              <Route path="/servizio" element={<StockRoute />}>
+              <Route path="/servizio" element={<AdminRoute />}>
                 <Route path="stocks" element={<StockManagementPage />} />
               </Route>
             </Routes>

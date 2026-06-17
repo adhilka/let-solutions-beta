@@ -4,15 +4,8 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null && 
              request.auth.token != null &&
-             request.auth.token.email_verified == true &&
-             request.auth.token.email.lower() in ['sp.sanal3@gmail.com', 'muhammedadhil856@gmail.com'];
-    }
-
-    function isStockAdmin() {
-      return request.auth != null && 
-             request.auth.token != null &&
-             request.auth.token.email_verified == true &&
-             request.auth.token.email.lower() in ['muhammedadhil856@gmail.com', 'serviziotirur@gmail.com'];
+             request.auth.token.email in ['muhammedadhil856@gmail.com', 'sp.sanal3@gmail.com'] && 
+             request.auth.token.email_verified == true;
     }
 
     function isSharedAdmin() {
@@ -26,26 +19,9 @@ service cloud.firestore {
       return isAdmin() || isSharedAdmin();
     }
 
-    // Admin access to standard content collections (excluding secure_backups and stocks)
+    // Admin access to standard content collections (excluding secure_backups)
     match /artifacts/tech-institute/public/data/{collection}/{document=**} {
-      allow read: if collection != 'secure_backups';
-      allow write: if hasAdminAccess() && collection != 'secure_backups' && collection != 'stocks' && collection != 'stock_history';
-    }
-
-    // Stock Management Protection
-    match /artifacts/tech-institute/public/data/stocks/{id} {
-      allow read, write: if isStockAdmin();
-    }
-    match /artifacts/tech-institute/public/data/stock_history/{id} {
-      allow read, write: if isStockAdmin();
-    }
-
-    // Role detection documents (checks permission via path access)
-    match /artifacts/tech-institute/public/roles/admin/check {
-      allow read: if isAdmin();
-    }
-    match /artifacts/tech-institute/public/roles/stock/check {
-      allow read: if isStockAdmin();
+      allow read, write: if hasAdminAccess() && collection != 'secure_backups';
     }
 
     match /artifacts/tech-institute/public/data/admin_sessions/{uid} {
