@@ -73,6 +73,7 @@ export interface StockItem {
   name: string;
   quantity: number;
   boardNumber?: string;
+  onBox?: string;
   category: StockCategory;
   lastUpdated: string;
 }

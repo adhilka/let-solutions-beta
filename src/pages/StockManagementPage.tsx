@@ -51,6 +51,7 @@ export default function StockManagementPage() {
     name: '',
     quantity: 1,
     boardNumber: '',
+    onBox: '',
     category: 'ic' as StockCategory
   });
 
@@ -101,6 +102,7 @@ export default function StockManagementPage() {
         name: item.name,
         quantity: item.quantity,
         boardNumber: item.boardNumber || '',
+        onBox: item.onBox || '',
         category: item.category
       });
     } else {
@@ -109,6 +111,7 @@ export default function StockManagementPage() {
         name: '',
         quantity: 1,
         boardNumber: '',
+        onBox: '',
         category: 'ic'
       });
     }
@@ -207,7 +210,8 @@ export default function StockManagementPage() {
 
   const filteredStocks = stocks?.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         item.boardNumber?.toLowerCase().includes(searchQuery.toLowerCase());
+                         item.boardNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         item.onBox?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
     return matchesSearch && matchesCategory;
   }) || [];
@@ -233,9 +237,6 @@ export default function StockManagementPage() {
             </div>
             <span className="text-xl font-black text-blue-600 tracking-tighter">SERVIZIO</span>
           </div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:block">
-            Electronics Inventory Control
-          </div>
         </div>
       </header>
 
@@ -248,10 +249,6 @@ export default function StockManagementPage() {
       <div className="container-wide px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div>
-            <div className="flex items-center gap-2 text-slate-400 mb-1">
-              <ShieldCheck size={14} />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Access Level: Authorized</span>
-            </div>
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Stock Management</h1>
           </div>
           
@@ -399,9 +396,17 @@ export default function StockManagementPage() {
                   </div>
 
                   <h3 className="text-base font-bold text-slate-900 mb-1 leading-snug">{item.name}</h3>
-                  <div className="flex items-center gap-1.5 text-slate-400 mb-5">
-                    <span className="text-[10px] font-bold uppercase tracking-tight">Board ID:</span>
-                    <span className="text-[10px] font-medium uppercase font-mono">{item.boardNumber || 'N/A'}</span>
+                  <div className="flex flex-col gap-1 text-slate-400 mb-5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-tight">Board ID:</span>
+                      <span className="text-[10px] font-medium uppercase font-mono">{item.boardNumber || 'N/A'}</span>
+                    </div>
+                    {item.onBox && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-bold uppercase tracking-tight">Onbox:</span>
+                        <span className="text-[10px] font-medium uppercase font-mono text-blue-600 font-bold">{item.onBox}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
@@ -535,6 +540,17 @@ export default function StockManagementPage() {
                       placeholder="e.g. NM-A271"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">On-box (Location)</label>
+                  <input 
+                    type="text"
+                    value={formData.onBox}
+                    onChange={(e) => setFormData({ ...formData, onBox: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-slate-900 placeholder:text-slate-300 focus:bg-white focus:border-blue-600 outline-none transition-all font-semibold uppercase"
+                    placeholder="e.g. BOX 01"
+                  />
                 </div>
 
                 <div className="pt-4">
