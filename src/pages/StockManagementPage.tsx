@@ -12,7 +12,7 @@ import { useAuth } from '../hooks/useAuth';
 const ALLOWED_EMAIL = 'muhammedadhil856@gmail.com';
 
 export default function StockManagementPage() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,18 +26,25 @@ export default function StockManagementPage() {
 
   // Security Check: Seperate login/access check
   useEffect(() => {
-    // Domain-based security restriction
+    // 1. Domain-based security restriction
     if (window.location.hostname === 'letsolutions.in') {
       navigate('/', { replace: true });
       return;
     }
 
-    if (user && user.email !== ALLOWED_EMAIL) {
-      alert('Access Denied: You do not have permission to access the Stock Vault.');
-      logout();
-      navigate('/login');
+    // 2. Auth restriction
+    if (!loading) {
+      if (!user) {
+        // Not logged in at all
+        navigate('/admin/login');
+      } else if (user.email !== ALLOWED_EMAIL) {
+        // Logged in but wrong account
+        alert('Access Denied: You do not have permission to access the Stock Vault.');
+        logout();
+        navigate('/admin/login');
+      }
     }
-  }, [user, navigate, logout]);
+  }, [user, loading, navigate, logout]);
 
   // Form State
   const [formData, setFormData] = useState({

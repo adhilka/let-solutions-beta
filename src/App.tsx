@@ -109,10 +109,8 @@ export default function App() {
                 </Route>
               </Route>
 
-              {/* Stock Management Service */}
-              <Route path="/servizio" element={<AdminRoute />}>
-                <Route path="stocks" element={<StockManagementPage />} />
-              </Route>
+              {/* Stock Management Service - Handled internally for domain security */}
+              <Route path="/servizio/stocks" element={<StockManagementPage />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>
