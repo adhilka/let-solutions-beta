@@ -18,7 +18,6 @@ export const getDbB = () => {
   return dbB_instance;
 };
 
-// Export nullable instances for cases where we conditionally use it
 export const getOptionalDbB = () => {
   try {
     return getDbB();

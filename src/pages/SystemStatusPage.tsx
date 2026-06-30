@@ -49,7 +49,6 @@ export default function SystemStatusPage() {
           </div>
 
           <div className="p-8 space-y-8">
-            {/* Main Status */}
             <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${error ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
@@ -65,7 +64,6 @@ export default function SystemStatusPage() {
               </div>
             </div>
 
-            {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 border border-slate-100 rounded-2xl">
                 <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase mb-2">
@@ -85,7 +83,6 @@ export default function SystemStatusPage() {
               </div>
             </div>
 
-            {/* Technical Logs */}
             <div className="space-y-3">
               <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Raw Diagnostics</h4>
               <div className="p-4 bg-slate-900 rounded-2xl font-mono text-[11px] text-blue-400 overflow-x-auto min-h-[100px]">

@@ -13,7 +13,6 @@ export default function AdminRoute() {
     );
   }
 
-  // Domain-based security restriction
   if (window.location.hostname === 'let-solutions.vercel.app') {
     return <Navigate to="/" replace />;
   }

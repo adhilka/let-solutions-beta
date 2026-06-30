@@ -28,7 +28,7 @@ export interface StoredImage {
   thumbUrl:   string;
   deleteUrl:  string;
   imgbbId:    string;
-  uploadedAt: string;   // ISO 8601
+  uploadedAt: string;
 }
 
 export type CourseCategory =
@@ -94,6 +94,6 @@ export interface Testimonial {
 
 export interface PaginatedResult<T> {
   data:    T[];
-  lastDoc: any | null; // Using any to avoid direct Firestore SDK dependency in types
+  lastDoc: any | null;
   hasMore: boolean;
 }

@@ -51,12 +51,10 @@ export default function Navbar() {
       )}
     >
       <div className="container-wide h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src={logoUrl} alt={instituteName} className="h-10 w-auto object-contain brightness-0 invert" />
         </Link>
 
-        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
@@ -80,7 +78,6 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        {/* Mobile Menu Toggle */}
         <button
           className="md:hidden p-2 text-[var(--color-text-primary)]"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -90,7 +87,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div 

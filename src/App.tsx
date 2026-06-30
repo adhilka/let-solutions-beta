@@ -7,7 +7,6 @@ import { Layout } from './components/layout/Layout';
 import AdminLayout from './components/layout/AdminLayout';
 import InitialLoader from './components/layout/InitialLoader';
 
-// Import pages
 import HomePage from './pages/HomePage';
 import CoursesPage from './pages/CoursesPage';
 import AboutPage from './pages/AboutPage';
@@ -49,7 +48,6 @@ export default function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
-    // Global initial loading timer
     const timer = setTimeout(() => {
       setIsInitialLoading(false);
     }, 2800);
@@ -86,10 +84,8 @@ export default function App() {
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
 
-              {/* Admin Login Route */}
               <Route path="/admin/login" element={<LoginPage />} />
 
-              {/* Protected Admin Routes */}
               <Route path="/admin" element={<AdminRoute />}>
                 <Route element={<AdminLayout />}>
                   <Route index element={<AdminDashboard />} />
@@ -109,7 +105,6 @@ export default function App() {
                 </Route>
               </Route>
 
-              {/* Stock Management Service - Handled internally for domain security */}
               <Route path="/servizio/stocks" element={<StockManagementPage />} />
             </Routes>
           </BrowserRouter>

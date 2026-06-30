@@ -39,7 +39,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (token) {
         try {
-          // write session to db using dualWrite
           await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'admin_sessions', uid], {
             linkId: token,
             createdAt: new Date().toISOString()
@@ -52,13 +51,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             sessionValid = true;
           }
           
-          // remove token from url immediately
           window.history.replaceState({}, document.title, window.location.pathname);
         } catch (e) {
           console.error("Failed to assume shared admin state", e);
         }
       } else {
-        // Check if existing session is valid
         try {
           const db = getReadDb();
           const sessionSnapshot = await getDoc(doc(db, 'artifacts/tech-institute/public/data/admin_sessions', uid));
@@ -70,7 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
              }
           }
         } catch (e) {
-          // not found or no permission
         }
       }
 
@@ -85,7 +81,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       try {
         if (!user && token) {
-          // Sign in anonymously to assume the session
           const cred = await signInAnonymously(authA);
           await handleAdminToken(cred.user);
         } else if (user) {

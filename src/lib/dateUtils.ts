@@ -5,15 +5,12 @@ export function getAdmissionYearText(settings: any): string {
     return admissions.manualText;
   }
   
-  // Auto Mode
-  // Academic year usually starts around June/July in India
-  // If current month is >= June (5 index), it's the current year to next year
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
   
   let startYear, endYear;
-  if (currentMonth >= 4) { // May or later
+  if (currentMonth >= 4) { 
     startYear = currentYear;
     endYear = currentYear + 1;
   } else {

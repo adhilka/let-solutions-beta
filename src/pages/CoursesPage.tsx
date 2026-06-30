@@ -105,7 +105,6 @@ export default function CoursesPage() {
       </div>
 
       <div className="container-wide px-4 sm:px-6 lg:px-8 py-12">
-        {/* Content */}
         {error ? (
            <div className="text-center py-12">
              <p className="text-[var(--color-error)]">Failed to load courses. Please try again.</p>
@@ -116,7 +115,6 @@ export default function CoursesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Real Data rendering logic will map over allCourses */}
             {allCourses.map(course => (
               <Link 
                 key={course.id} 

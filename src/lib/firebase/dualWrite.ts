@@ -2,7 +2,6 @@ import { doc, setDoc, deleteDoc, Firestore } from 'firebase/firestore';
 import { getWriteDb, getMirrorDb } from './loadBalancer';
 import { sanitizePayload } from '../sanitize';
 
-// Timeout helper for Firestore writes
 async function withWriteTimeout<T>(promise: Promise<T>, timeoutMs: number = 10000): Promise<T> {
   let timeoutId: any;
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -19,12 +18,10 @@ async function withWriteTimeout<T>(promise: Promise<T>, timeoutMs: number = 1000
   }
 }
 
-// Custom wrapper to ensure dual writes to workaround free plan restrictions
 export async function dualWrite(pathSegments: string[], data: any): Promise<void> {
     const dbA = getWriteDb();
     const dbB_instance = getMirrorDb();
     
-    // Sanitize data recursively to protect the application against any HTML/JS/tag injection
     const sanitizedData = sanitizePayload(data);
     
     const writeOp = async (db: Firestore) => {

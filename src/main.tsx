@@ -74,7 +74,6 @@ const showErrorCapsule = (message: string, stack: string = '', type: 'error' | '
 
   container.appendChild(capsule);
   
-  // Auto-remove after 10 seconds if not expanded
   setTimeout(() => {
     if (!expanded && capsule.parentElement) {
       capsule.style.opacity = '0';
@@ -87,7 +86,6 @@ const showErrorCapsule = (message: string, stack: string = '', type: 'error' | '
 window.addEventListener('error', (event) => {
   const message = event.error?.message || event.message;
   
-  // Filter out benign environment errors
   if (message?.includes('WebSocket') || message?.includes('vite/client')) {
     return;
   }
@@ -103,7 +101,6 @@ window.addEventListener('error', (event) => {
 window.addEventListener('unhandledrejection', (event) => {
   const message = event.reason?.message || String(event.reason);
 
-  // Filter out benign environment errors (Common in sandboxed dev environments)
   if (message?.includes('WebSocket') || message?.includes('vite/client')) {
     return;
   }

@@ -2,13 +2,11 @@ import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, startAf
 import { getReadDb, reportReadFailure, lastUsed } from './firebase/loadBalancer';
 import { PaginatedResult } from '../types';
 
-// Helper to convert Firestore docs
 export const docToData = <T>(docSnapshot: any): T => ({
   id: docSnapshot.id,
   ...docSnapshot.data()
 } as T);
 
-// Timeout helper for Firestore calls
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 20000): Promise<T> {
   let timer: any;
   let finished = false;
@@ -50,7 +48,6 @@ async function withFailover<T>(operation: (db: Firestore) => Promise<T>): Promis
     const errorMsg = err.message || String(err);
     console.error(`[withFailover] Error on project ${currentProject}:`, errorMsg);
     
-    // Only failover on timeout or connection issues
     const isRetryable = errorMsg.includes('FIRESTORE_TIMEOUT') || 
                        err.code === 'unavailable' || 
                        errorMsg.toLowerCase().includes('failed-precondition') ||
@@ -166,20 +163,17 @@ export async function fetchFeaturedTestimonials() {
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => docToData<any>(doc));
       
-      // Sort in JS to prioritize pictured testimonials and latest first
       return data.sort((a, b) => {
-        // First priority: Presence of profile picture
         const hasImageA = !!a.imageUrl;
         const hasImageB = !!b.imageUrl;
         if (hasImageA !== hasImageB) {
           return hasImageA ? -1 : 1;
         }
 
-        // Second priority: Recency
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         return dateB - dateA;
-      }).slice(0, 10); // Take top 10 for home page slider
+      }).slice(0, 10);
     });
   } catch (err) {
     console.error("Error fetching testimonials:", err);
@@ -250,7 +244,6 @@ export async function fetchRecentEnquiries(limitCount: number = 5) {
 export async function fetchLatestPosts() {
   try {
     return await withFailover(async (db) => {
-      // We still want only published posts
       const q = query(
         collection(db, 'artifacts/tech-institute/public/data/posts'), 
         where('status', '==', 'published')
@@ -258,12 +251,11 @@ export async function fetchLatestPosts() {
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => docToData<any>(doc));
       
-      // Sort in JS to handle documents missing publishedAt
       return data.sort((a, b) => {
         const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
         const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
         return dateB - dateA;
-      }).slice(0, 12); // Limit to top 12
+      }).slice(0, 12);
     });
   } catch (err) {
     console.error("Error fetching latest posts:", err);

@@ -10,11 +10,10 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 dotenv.config();
 
-// Github file upload settings
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 20 * 1024 * 1024, // 20 MB limit
+    fileSize: 20 * 1024 * 1024,
   },
 });
 
@@ -22,23 +21,18 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Essential for Cloud Run/Load Balancer to trust headers like X-Forwarded-For
   app.set('trust proxy', 1);
 
-  // --- Standard Middlewares ---
   app.use(compression());
   app.use(cors());
   app.use(express.json());
 
-  // Logging
   app.use((req, res, next) => {
-    // Skip logging for health checks and pings to keep logs clean
     if (req.url === '/api/health' || req.url === '/api/ping') return next();
     console.log(`[Server] ${req.method} ${req.url}`);
     next();
   });
 
-  // Health check endpoint for Load Balancer
   app.get('/api/health', (req, res) => {
     console.log('Health check requested at:', new Date().toISOString());
     res.set('X-Robots-Tag', 'noindex');
@@ -53,15 +47,12 @@ async function startServer() {
     res.send('pong');
   });
 
-  // Simple logging for all requests
   app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
   });
 
-  // API route for GitHub upload
   app.post('/api/github/upload', upload.single('file'), async (req, res) => {
-    // 1. Enforce strict admin email authentication
     const authStatus = await verifyAdminToken(req);
     if (!authStatus.authorized) {
       console.warn(`[GitHub Upload Rejected] Unauthorized: ${authStatus.reason}`);
@@ -133,15 +124,11 @@ async function startServer() {
     }
   });
 
-  // --- Maintenance & Security Endpoints ---
-
-  // Helper to dynamically extract passcode from local firestore.rules
   function getSecurePasscode(): string {
     try {
       const rulesPath = path.join(process.cwd(), 'firestore.rules');
       if (fs.existsSync(rulesPath)) {
         const content = fs.readFileSync(rulesPath, 'utf-8');
-        // Looks for rules matching password == '#09'
         const match = content.match(/password\s*==\s*['"]([^'"]+)['"]/);
         if (match && match[1]) {
           return match[1];
@@ -150,7 +137,7 @@ async function startServer() {
     } catch (err) {
       console.error('[Backup System] Error reading firestore.rules:', err);
     }
-    return '#09'; // Fallback
+    return '#09';
   }
 
   let dbA_server: any = null;
@@ -186,7 +173,6 @@ async function startServer() {
     return dbB_server;
   }
 
-  // Helper to verify Firebase Auth ID token and check if it belongs to an authorized administrator.
   async function verifyAdminToken(req: express.Request): Promise<{ authorized: boolean; reason?: string }> {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -198,7 +184,6 @@ async function startServer() {
       return { authorized: false, reason: 'Empty token.' };
     }
 
-    // Load API Key from project config
     let apiKey = '';
     try {
       const configPath = path.join(process.cwd(), 'firebase-applet-config.json');
@@ -215,7 +200,6 @@ async function startServer() {
     }
 
     try {
-      // Validate the ID token against Google Identity Toolkit API
       const lookupUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`;
       const verifyRes = await fetch(lookupUrl, {
         method: 'POST',
@@ -239,14 +223,12 @@ async function startServer() {
       const emailVerified = userObj.emailVerified;
       const uid = userObj.localId;
 
-      // Master admin emails
       const ALLOWED_EMAILS = ['muhammedadhil856@gmail.com', 'sp.sanal3@gmail.com'];
 
       if (email && ALLOWED_EMAILS.includes(email) && emailVerified) {
         return { authorized: true };
       }
 
-      // Check if it's an anonymous session used in AI studio preview
       if (uid) {
         const db = getServerDbA();
         if (db) {
@@ -281,9 +263,7 @@ async function startServer() {
     }
   }
 
-  // Verify passcode endpoint
   app.post('/api/admin/maintenance/verify', async (req, res) => {
-    // Enforce strict admin email authentication
     const authStatus = await verifyAdminToken(req);
     if (!authStatus.authorized) {
       console.warn(`[Maintenance Verify Rejected] Unauthorized: ${authStatus.reason}`);
@@ -302,9 +282,7 @@ async function startServer() {
     }
   });
 
-  // Secure backup downloader
   app.post('/api/admin/maintenance/backup', async (req, res) => {
-    // Enforce strict admin email authentication
     const authStatus = await verifyAdminToken(req);
     if (!authStatus.authorized) {
       console.warn(`[Maintenance Backup Rejected] Unauthorized: ${authStatus.reason}`);
@@ -350,7 +328,6 @@ async function startServer() {
     }
 
     try {
-      // Extract from Server A
       for (const col of collectionsToBackup) {
         try {
           const snap = await getDocs(
@@ -366,7 +343,6 @@ async function startServer() {
         }
       }
 
-      // Extract from Server B
       if (dbB) {
         for (const col of collectionsToBackup) {
           try {
@@ -393,7 +369,6 @@ async function startServer() {
     }
   });
 
-  // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     console.log('[Server] Initializing Vite middleware (Development Mode)');
     const vite = await createViteServer({
@@ -411,21 +386,16 @@ async function startServer() {
       console.log(`[Server] dist directory found with ${fs.readdirSync(distPath).length} items`);
     }
 
-    // Serve static files from dist
     app.use(express.static(distPath, { 
       index: false,
-      fallthrough: true // Let it fall through to the catch-all for routes
+      fallthrough: true
     }));
     
-    // SPA Catch-all
     app.get('*', (req, res) => {
-      // Don't serve index.html for API requests
       if (req.path.startsWith('/api/')) {
         return res.status(404).json({ error: 'API route not found' });
       }
 
-      // Don't serve index.html for asset-like requests that missed express.static
-      // This prevents the "MIME type text/html" error for missing scripts
       const isAssetRequest = /\.(js|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|otf)$/.test(req.path);
       if (isAssetRequest) {
         console.warn(`[Server] Missing asset requested: ${req.path}`);

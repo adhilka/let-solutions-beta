@@ -2,11 +2,11 @@ export const API_KEY = import.meta.env.VITE_IMGBB_API_KEY || '';
 const ENDPOINT = 'https://api.imgbb.com/1/upload';
 
 export interface ImgBBResult {
-  url:        string;   // Full-size direct image URL
-  displayUrl: string;   // Display-optimized URL
-  thumbUrl:   string;   // 180x180 thumbnail
-  deleteUrl:  string;   // URL to delete the image via ImgBB
-  id:         string;   // ImgBB image ID
+  url:        string;
+  displayUrl: string;
+  thumbUrl:   string;
+  deleteUrl:  string;
+  id:         string;
 }
 
 function fileToBase64(file: File): Promise<string> {

@@ -24,21 +24,16 @@ export default function StockManagementPage() {
   const [editingItem, setEditingItem] = useState<StockItem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Security Check: Seperate login/access check
   useEffect(() => {
-    // 1. Domain-based security restriction
     if (window.location.hostname === 'letsolutions.in') {
       navigate('/', { replace: true });
       return;
     }
 
-    // 2. Auth restriction
     if (!loading) {
       if (!user) {
-        // Not logged in at all
         navigate('/admin/login');
       } else if (!ALLOWED_EMAILS.includes(user.email || '')) {
-        // Logged in but wrong account
         alert('Access Denied: You do not have permission to access the Stock Vault.');
         logout();
         navigate('/admin/login');
@@ -46,7 +41,6 @@ export default function StockManagementPage() {
     }
   }, [user, loading, navigate, logout]);
 
-  // Form State
   const [formData, setFormData] = useState({
     name: '',
     quantity: 1,
@@ -67,7 +61,6 @@ export default function StockManagementPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string, data: Partial<StockItem> }) => {
-      // Auto-delete if quantity hits 0
       if (data.quantity !== undefined && data.quantity <= 0) {
         await dualDelete(['artifacts', 'tech-institute', 'public', 'data', 'stocks', id]);
         return { deleted: true };
@@ -124,7 +117,6 @@ export default function StockManagementPage() {
     try {
       const id = editingItem?.id || `stock-${Date.now()}`;
       
-      // If updating existing and quantity becomes 0
       if (formData.quantity <= 0) {
         await dualDelete(['artifacts', 'tech-institute', 'public', 'data', 'stocks', id]);
       } else {
@@ -174,7 +166,6 @@ export default function StockManagementPage() {
       const newQuantity = deductionItem.quantity - 1;
       const historyId = `history-${Date.now()}`;
       
-      // Save History
       const historyData: StockHistory = {
         stockId: deductionItem.id!,
         stockName: deductionItem.name,
@@ -185,7 +176,6 @@ export default function StockManagementPage() {
 
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'stock_history', historyId], historyData);
 
-      // Update Stock
       if (newQuantity <= 0) {
         await dualDelete(['artifacts', 'tech-institute', 'public', 'data', 'stocks', deductionItem.id!]);
       } else {
@@ -269,7 +259,6 @@ export default function StockManagementPage() {
           </div>
         </div>
 
-        {/* Filters & Search */}
         <div className="bg-white p-2 sm:p-3 rounded-2xl border border-slate-200 shadow-sm mb-10">
           <div className="flex flex-col lg:flex-row gap-3">
             <div className="flex-1 relative">
@@ -312,7 +301,6 @@ export default function StockManagementPage() {
           </div>
         </div>
 
-        {/* Content Section */}
         {activeCategory === 'history' ? (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
@@ -461,7 +449,6 @@ export default function StockManagementPage() {
         )}
       </div>
 
-      {/* Add/Edit Modal */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -577,7 +564,6 @@ export default function StockManagementPage() {
         )}
       </AnimatePresence>
 
-      {/* Deduction Modal */}
       <AnimatePresence>
         {isDeductionModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">

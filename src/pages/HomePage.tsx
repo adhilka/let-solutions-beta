@@ -40,14 +40,12 @@ export default function HomePage() {
   const feedbacks = (() => {
     const rawFeedbacks = (feedbacksData && feedbacksData.length > 0) ? feedbacksData : FAILSAFE_TESTIMONIALS;
     return [...rawFeedbacks].sort((a, b) => {
-      // First priority: Presence of profile picture
       const hasImageA = !!a.imageUrl;
       const hasImageB = !!b.imageUrl;
       if (hasImageA !== hasImageB) {
         return hasImageA ? -1 : 1;
       }
 
-      // Second priority: Recency
       const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
       const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
       return dateB - dateA;
@@ -88,7 +86,7 @@ export default function HomePage() {
         ...formData,
         imageUrl: finalImageUrl,
         approved: true,
-        isFeatured: true, // Mark as featured for home page display
+        isFeatured: true,
         createdAt: new Date().toISOString()
       };
       await dualWrite(['artifacts', 'tech-institute', 'public', 'data', 'testimonials', newId], testimonialData);
@@ -96,7 +94,6 @@ export default function HomePage() {
       setIsModalOpen(false);
       setFormData({ name: '', course: '', rating: 5, content: '', imageUrl: '' });
       setImageFile(null);
-      // Invalidate to refresh
       window.location.reload(); 
     } catch (error) {
       console.error('Error submitting feedback:', error);
@@ -120,12 +117,10 @@ export default function HomePage() {
   const coursesData = (coursesDataRaw && coursesDataRaw.length > 0) ? coursesDataRaw : FAILSAFE_COURSES;
 
   const featuredCourses = (() => {
-    // Get pinned courses first from whatever source we are using (server or failsafe)
     const pinned = coursesData.filter((c: any) => c.isPinned).slice(0, 3);
     
     if (pinned.length >= 3) return pinned;
     
-    // Supplement with unpinned active courses if less than 3 are pinned
     const unpinned = coursesData.filter((c: any) => !c.isPinned).slice(0, 3 - pinned.length);
     
     return [...pinned, ...unpinned];
@@ -170,7 +165,6 @@ export default function HomePage() {
 
   const stickyPhotos = galleryImages && galleryImages.length > 0 ? galleryImages.slice(0, 3) : fallbackImages;
 
-  // Structured Data for Organization & WebSite
   const homeSchemas = [
     {
       "@context": "https://schema.org",
@@ -640,10 +634,8 @@ export default function HomePage() {
                     className={`relative p-3 pb-5 border rounded-sm ${chosenColor} flex flex-col justify-start flex-grow h-full`}
                     style={{ clipPath: paperStyle.clipPath }}
                   >
-                    {/* Subtle paper grain texture simulated via a soft highlight gradient */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-black/[0.015] via-transparent to-white/[0.04] rounded-sm pointer-events-none" />
 
-                    {/* Inner Polaroid Frame Image */}
                     <div className="bg-white/90 p-1.5 rounded-sm border border-slate-200/50 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden flex-grow group-hover:shadow-sm transition-shadow">
                       <div className="aspect-[4/3] bg-slate-100 overflow-hidden relative">
                         <img
@@ -656,7 +648,6 @@ export default function HomePage() {
                           {img.category || 'lab'}
                         </div>
 
-                        {/* Tap to View Zoom Overlay */}
                         <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
                           <div className="bg-white/95 text-slate-800 px-3 py-1.5 rounded shadow-md flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                             <ZoomIn size={12} className="text-slate-800" />
@@ -666,7 +657,6 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* Polaroid caption - typewriter styled for authentic paper feel */}
                     <div className="mt-4 text-center px-1">
                       <p className="text-xs font-semibold tracking-tight text-slate-700 font-mono truncate">
                         {img.title || 'Lab Practice'}
@@ -676,10 +666,8 @@ export default function HomePage() {
                     {paperStyle.flap}
                   </div>
 
-                  {/* Frosted tape at the top of the polaroid */}
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-white/30 backdrop-blur-[1px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] border border-white/20 -rotate-1 z-20 group-hover:bg-white/40 transition-colors pointer-events-none"></div>
                   
-                  {/* Push Pin effect style */}
                   <div className="absolute top-1 left-3 w-1.5 h-1.5 rounded-full bg-red-500/75 shadow-inner z-20 pointer-events-none"></div>
                 </motion.div>
               );
@@ -695,7 +683,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Recent Blog Posts Integration */}
           {recentPosts.length > 0 && (
             <div className="mt-24 pt-16 border-t border-white/5">
               <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
@@ -760,7 +747,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PHOTO LIGHTBOX MODAL */}
       <AnimatePresence>
         {activePhoto && (
           <motion.div
@@ -770,7 +756,6 @@ export default function HomePage() {
             onClick={() => setActivePhoto(null)}
             className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 z-[110] backdrop-blur-md cursor-zoom-out animate-none"
           >
-            {/* Close Button */}
             <button
               onClick={() => setActivePhoto(null)}
               className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 h-10 w-10 flex items-center justify-center rounded-full transition-all duration-200 z-[120]"
@@ -779,7 +764,6 @@ export default function HomePage() {
               <X size={20} />
             </button>
 
-            {/* Photo Container */}
             <motion.div
               initial={{ scale: 0.9, y: 10 }}
               animate={{ scale: 1, y: 0 }}
@@ -795,7 +779,6 @@ export default function HomePage() {
                 referrerPolicy="no-referrer"
               />
               
-              {/* Floating Caption Overlay or under-image subtitle */}
               <div className="mt-4 text-center">
                 <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                   {activePhoto.title || 'Lab Practice Snapshot'}
@@ -808,7 +791,6 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* Simple Dismiss Indicator */}
             <div className="mt-6 text-center pointer-events-none select-none">
               <p className="text-xs text-white/40 font-medium tracking-wide">
                 Tap anywhere to close
@@ -818,7 +800,6 @@ export default function HomePage() {
         )}
       </AnimatePresence>
 
-      {/* FEEDBACK MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
           <div className="bg-[var(--color-surface-alt)] border border-[var(--color-border)] rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">

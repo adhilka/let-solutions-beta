@@ -25,7 +25,6 @@ export default function AdmissionsPage() {
   const filteredOffers = offers?.filter((o: any) => o.showOnAdmissions) || [];
 
   useEffect(() => {
-    // If not loading and no filtered offers, redirect to contact
     if (!isLoading && filteredOffers.length === 0) {
       navigate('/contact', { replace: true });
     }
@@ -81,7 +80,6 @@ export default function AdmissionsPage() {
 
       <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
-        {/* Dynamic Offers Redesigned with Image Support */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-display font-extrabold text-[var(--color-text-primary)] tracking-tight">Current Offers & Notices</h2>
@@ -92,7 +90,6 @@ export default function AdmissionsPage() {
              {filteredOffers.length > 0 ? (
                 filteredOffers.map((offer: any) => (
                   <div key={offer.id} className="group bg-[var(--color-surface-alt)] rounded-3xl border border-[var(--color-border)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden">
-                     {/* Image Header */}
                      <div className="relative aspect-[16/10] bg-black overflow-hidden">
                         {offer.imageUrl ? (
                           <img 
