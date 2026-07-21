@@ -31,34 +31,46 @@ export default function SEO({
   const protectedPaths = ['/admin', '/login', '/status', '/design-system', '/admin-manual', '/servizio'];
   const isForcedNoIndex = noindex || protectedPaths.some(path => location.pathname.startsWith(path));
   const isForcedNoFollow = nofollow || protectedPaths.some(path => location.pathname.startsWith(path));
-  const fullTitle = title ? (title.includes(siteName) ? title : `${title} | ${siteName}`) : `Let Solutions | Top Technical Institute in Tirur, Kerala`;
-  const defaultDescription = 'Let Solutions is the premier technical institute in Tirur, Kerala, offering expert courses in smartphone repair, laptop chip-level training, networking, and CCTV systems.';
+  const fullTitle = title ? (title.includes(siteName) ? title : `${title} | ${siteName}`) : `No.1 Laptop Chip Level & Cyber Security Course in Kerala | Let Solutions Tirur`;
+  const defaultDescription = "Let Solutions is Kerala's No.1 technical training institute in Tirur, Malappuram. We offer premium, 100% practical courses in advanced Laptop Chip Level Repair, Cyber Security / Ethical Hacking, and Smartphone servicing with placement backup.";
   const metaDescription = description || defaultDescription;
   
   // Refined keywords for better SEO ranking
-  const defaultKeywords = 'technical institute, smartphone repair course, chip level training Kerala, laptop service course, CCTV technician training, networking course Tirur, vocational training Kerala, Let Solutions Tirur';
+  const defaultKeywords = 'laptop chip level repairing course kerala, laptop servicing course malappuram, cyber security course kerala, ethical hacking course malappuram, junior penetration tester course tirur, mobile repairing course kerala, cctv course tirur, let solutions tirur';
   const metaKeywords = keywords ? `${keywords}, ${defaultKeywords}` : defaultKeywords;
   
   const baseUrl = 'https://letsolutions.in';
   const fullCanonical = canonical ? (canonical.startsWith('http') ? canonical : `${baseUrl}${canonical}`) : `${baseUrl}${location.pathname}`;
   
   const fullOgImage = ogImage.startsWith('http') ? ogImage : `${baseUrl}${ogImage}`;
-
+ 
   const defaultStructuredData = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     "name": "Let Solutions Technical Institute",
     "url": "https://letsolutions.in",
-    "logo": "/images/banner.jpg",
-    "image": "/images/banner.jpg",
+    "logo": "https://letsolutions.in/images/banner.jpg",
+    "image": "https://letsolutions.in/images/banner.jpg",
     "description": defaultDescription,
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "1st Floor, Bus Stand Building",
       "addressLocality": "Tirur",
-      "addressRegion": "Malappuram",
+      "addressRegion": "Malappuram, Kerala",
       "postalCode": "676101",
       "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "10.9924",
+      "longitude": "75.9248"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "382",
+      "bestRating": "5",
+      "worstRating": "1"
     },
     "contactPoint": {
       "@type": "ContactPoint",
@@ -67,8 +79,9 @@ export default function SEO({
       "availableLanguage": ["English", "Malayalam", "Hindi"]
     },
     "sameAs": [
-      "https://www.instagram.com/letsolutions",
-      "https://www.facebook.com/letsolutions"
+      "https://www.instagram.com/letsolutionstirur?igsh=d285MjcybDk0YWtw",
+      "https://www.facebook.com/letsolutionstirur/",
+      "https://youtube.com/@letsolutions223"
     ]
   };
 

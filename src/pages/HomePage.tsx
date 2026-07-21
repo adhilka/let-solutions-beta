@@ -176,6 +176,36 @@ export default function HomePage() {
         "target": "https://letsolutions.in/courses?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which is the best institute for Laptop Chip Level Repairing course in Kerala?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Let Solutions in Tirur, Malappuram is Kerala's premium, top-rated institute for advanced Laptop Chip Level Repairing courses. We offer 100% practical, component-level motherboard diagnostics, BGA reballing, schematics, and boardview analysis in our high-end dedicated labs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Let Solutions offer placements for Cyber Security & Ethical Hacking training?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, our Junior Penetration Tester course (Cyber Security and Ethical Hacking) includes 100% placement support, real-world practical labs, and lifetime technical backup assistance from professional certified instructors."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are classes at Let Solutions in Tirur focused on theory or practicals?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All our professional programs—including Laptop Chip Level, Mobile Servicing, and Cyber Security—are completely lab-oriented with real-time practical diagnostic setups and zero dry theory. Hands-on learning is our highest priority."
+          }
+        }
+      ]
     }
   ];
 
@@ -184,9 +214,9 @@ export default function HomePage() {
   return (
     <>
       <SEO 
-        title="Let Solutions | #1 Technical Training Institute in Tirur, Kerala"
-        description="Master Smartphone Repairing, Laptop Chip-Level Engineering, Networking & CCTV at Let Solutions. Tirur's leading technical institute with 100% placement assistance."
-        keywords="smartphone repair course tirur, laptop chip level training malappuram, cctv technician course kerala, networking training tirur, technical institute kerala, let solutions vocational training"
+        title="No.1 Laptop Chip Level &amp; Cyber Security Course in Kerala | Let Solutions"
+        description="Enroll in Kerala's premium training center in Tirur, Malappuram for advanced Laptop Chip Level Repairing and Cyber Security / Ethical Hacking. 100% practical lab training with guaranteed placement backup!"
+        keywords="laptop chip level repairing course kerala, cyber security course malappuram, ethical hacking course tirur, let solutions tirur, best chip level laptop repair institute kerala, cybersecurity course kerala, mobile phone servicing malappuram, cctv course tirur, vocational training kerala"
         structuredData={homeSchemas}
       />
 

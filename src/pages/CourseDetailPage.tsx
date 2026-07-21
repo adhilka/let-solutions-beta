@@ -143,12 +143,35 @@ export default function CourseDetailPage() {
 
   const highlights = (course.highlights && course.highlights.length > 0) ? course.highlights : defaultHighlights;
 
+  // Determine optimized high-CTR SEO parameters for the target courses
+  const trimmedSlug = course.slug ? course.slug.trim() : '';
+  const isLaptopChipLevel = trimmedSlug === 'master-diploma-in-chiplevel-engeneering-';
+  const isCybersecurity = trimmedSlug === 'junior-penetration-tester';
+
+  const seoTitle = isLaptopChipLevel
+    ? 'No.1 Laptop Chip Level Repairing Course in Kerala | Let Solutions Tirur'
+    : isCybersecurity
+      ? 'Best Ethical Hacking &amp; Cyber Security Course in Kerala | Let Solutions'
+      : `${course.title} Course in Tirur, Malappuram, Kerala`;
+
+  const seoDesc = isLaptopChipLevel
+    ? "Master advanced BGA reballing, motherboard troubleshooting, schematics, and IC testing in Kerala's No.1 Laptop Chip Level Repairing Course. 100% practical labs with placement backup."
+    : isCybersecurity
+      ? "Become a certified cybersecurity specialist. Enroll in our 100% practical Cyber Security &amp; Ethical Hacking course in Tirur, Malappuram, Kerala. Learn web pentesting and Kali Linux."
+      : `${course.title} - ${course.shortDescription}. Get 100% practical lab training at Let Solutions Tirur, Malappuram with lifetime tech backup support.`;
+
+  const seoKeywords = isLaptopChipLevel
+    ? 'laptop chip level repairing course kerala, laptop repair training malappuram, chip level motherboard repair tirur, best chip level repairing institute kerala, learn bga reballing, laptop repair technician course'
+    : isCybersecurity
+      ? 'ethical hacking course kerala, cyber security training malappuram, junior penetration tester course tirur, hacking course kerala, certified ethical hacker malappuram, cyber security analyst'
+      : `${course.title.toLowerCase()}, technical institute kerala, let solutions course`;
+
   return (
     <>
       <SEO 
-        title={`${course.title} | Technical Training Course in Tirur`}
-        description={course.shortDescription}
-        keywords={`${course.title.toLowerCase()}, technician course kerala, vocational training Tirur, ${course.category} training`}
+        title={seoTitle}
+        description={seoDesc}
+        keywords={seoKeywords}
         ogType="course"
         ogImage={course.imageUrl}
         canonical={`/courses/${course.slug}`}

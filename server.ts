@@ -386,6 +386,26 @@ async function startServer() {
       console.log(`[Server] dist directory found with ${fs.readdirSync(distPath).length} items`);
     }
 
+    // Direct pre-rendered HTML serving for the Ethical Hacking course details page
+    app.get('/c/ethical-hacking', (req, res) => {
+      const staticPagePath = path.join(distPath, 'c/ethical-hacking/index.html');
+      if (fs.existsSync(staticPagePath)) {
+        res.sendFile(staticPagePath);
+      } else {
+        res.sendFile(path.join(distPath, 'index.html'));
+      }
+    });
+
+    // Direct pre-rendered HTML serving for the Laptop Chip Level course details page
+    app.get('/c/laptop-chip-level', (req, res) => {
+      const staticPagePath = path.join(distPath, 'c/laptop-chip-level/index.html');
+      if (fs.existsSync(staticPagePath)) {
+        res.sendFile(staticPagePath);
+      } else {
+        res.sendFile(path.join(distPath, 'index.html'));
+      }
+    });
+
     app.use(express.static(distPath, { 
       index: false,
       fallthrough: true

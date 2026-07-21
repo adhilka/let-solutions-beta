@@ -19,6 +19,8 @@ import GalleryPage from './pages/GalleryPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import CourseDetailPage from './pages/CourseDetailPage';
+import EthicalHackingPage from './pages/EthicalHackingPage';
+import LaptopChipLevelPage from './pages/LaptopChipLevelPage';
 import AdminDashboard from './pages/AdminDashboard';
 
 import AdminCoursesPage from './pages/AdminCoursesPage';
@@ -69,6 +71,8 @@ export default function App() {
                 <Route path="courses" element={<CoursesPage />} />
                 <Route path="course" element={<Navigate to="/courses" replace />} />
                 <Route path="courses/:slug" element={<CourseDetailPage />} />
+                <Route path="c/ethical-hacking" element={<EthicalHackingPage />} />
+                <Route path="c/laptop-chip-level" element={<LaptopChipLevelPage />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="contact" element={<ContactPage />} />
                 <Route path="admissions" element={<AdmissionsPage />} />
